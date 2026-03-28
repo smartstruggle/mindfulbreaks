@@ -13,9 +13,27 @@
 <div id="setup-screen">
 <h1>Trag deine Pausenzeit ein 🫶</h1>
 
-<input type="time" id="start-time">
-<input type="time" id="end-time">
+<div class="time-row">
+<div class="time-group">
+<label>Start</label>
+<select id="start-hour">
+<option value="">HH</option>
+</select>
+<select id="start-minute">
+<option value="">MM</option>
+</select>
+</div>
 
+<div class="time-group">
+<label>Ende</label>
+<select id="end-hour">
+<option value="">HH</option>
+</select>
+<select id="end-minute">
+<option value="">MM</option>
+</select>
+</div>
+</div>
 <button id="start-button">Bestätigen</button>
 </div>
 
