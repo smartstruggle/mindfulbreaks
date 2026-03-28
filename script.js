@@ -13,6 +13,7 @@ const waitingText = document.getElementById("waiting-text");
 const timer = document.getElementById("timer");
 
 const gongSound = new Audio("gong.mp3");
+const stickyWaitingTime = document.getElementById("sticky-waiting-time");
 
 function fillTimeOptions() {
 for (let i = 0; i < 24; i++) {
@@ -80,12 +81,11 @@ return;
 
 const startTime = `${startHour.value}:${startMinute.value}`;
 const endTime = `${endHour.value}:${endMinute.value}`;
-
+stickyWaitingTime.textContent = startTime + " Uhr";
 setupScreen.style.display = "none";
 waitingScreen.style.display = "block";
 breakScreen.style.display = "none";
 
-waitingText.textContent = "🌿 Deine nächste Pause ist um " + startTime;
 
 checkTime(startTime, endTime);
 });
