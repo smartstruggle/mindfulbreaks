@@ -14,7 +14,6 @@ const timer = document.getElementById("timer");
 
 const gongSound = new Audio("gong.mp3");
 
-// Dropdowns einmal beim Laden füllen
 function fillTimeOptions() {
 for (let i = 0; i < 24; i++) {
 const hour = i.toString().padStart(2, "0");
@@ -31,24 +30,48 @@ endMinute.innerHTML += `<option value="${minute}">${minute}</option>`;
 
 fillTimeOptions();
 
-startButton.addEventListener("click", async () => {
-// Sound auf iPhone möglichst freischalten
+async function unlockSound() {
 try {
 await gongSound.play();
 gongSound.pause();
 gongSound.currentTime = 0;
 } catch (error) {
-console.log("Sound konnte noch nicht freigeschaltet werden:", error);
+console.log("Sound konnte nicht freigeschaltet werden:", error);
+}
 }
 
-// Notification nur anfragen, wenn unterstützt
+async function requestNotificationPermission() {
 try {
 if ("Notification" in window && Notification.permission === "default") {
 await Notification.requestPermission();
 }
 } catch (error) {
-console.log("Notification nicht verfügbar:", error);
+console.log("Notification permission fehlgeschlagen:", error);
 }
+}
+
+function showNotification(title, body) {
+try {
+if ("Notification" in window && Notification.permission === "granted") {
+new Notification(title, { body });
+}
+} catch (error) {
+console.log("Notification konnte nicht angezeigt werden:", error);
+}
+}
+
+function playGong() {
+try {
+gongSound.currentTime = 0;
+gongSound.play();
+} catch (error) {
+console.log("Gong konnte nicht abgespielt werden:", error);
+}
+}
+
+startButton.addEventListener("click", async () => {
+await unlockSound();
+await requestNotificationPermission();
 
 if (!startHour.value || !startMinute.value || !endHour.value || !endMinute.value) {
 alert("Bitte beide Zeiten vollständig eingeben 🥺");
@@ -78,6 +101,10 @@ now.getMinutes().toString().padStart(2, "0");
 
 if (current === startTime) {
 clearInterval(interval);
+
+playGong();
+showNotification("Pause 💛", "Zeit für deine Pause 🌿");
+
 startBreak(endTime);
 }
 }, 1000);
@@ -98,22 +125,8 @@ now.getMinutes().toString().padStart(2, "0");
 if (current === endTime) {
 clearInterval(interval);
 
-try {
-gongSound.currentTime = 0;
-gongSound.play();
-} catch (error) {
-console.log("Gong konnte nicht abgespielt werden:", error);
-}
-
-try {
-if ("Notification" in window && Notification.permission === "granted") {
-new Notification("Pause 💛", {
-body: "Take a break, cutie 🌿",
-});
-}
-} catch (error) {
-console.log("Notification konnte nicht gezeigt werden:", error);
-}
+playGong();
+showNotification("Pause vorbei ✨", "Deine Pause ist jetzt vorbei.");
 
 breakScreen.style.display = "none";
 setupScreen.style.display = "block";
