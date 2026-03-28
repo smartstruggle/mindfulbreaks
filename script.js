@@ -1,4 +1,3 @@
-<script>
 const startButton = document.getElementById("start-button");
 
 const setupScreen = document.getElementById("setup-screen");
@@ -61,4 +60,4 @@ setupScreen.style.display = "block";
 }
 }, 1000);
 }
-<script>
+
