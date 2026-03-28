@@ -94,38 +94,40 @@ box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 min-width: 80px;
 }
 
-* Sticky Note Wrapper */
-.sticky-wrap {
+
+/* Waiting / Break Screen Wrapper */
+.waiting-note-wrap,
+.break-note-wrap {
 position: relative;
 display: inline-block;
-margin-top: 20px;
-transform: rotate(-1.8deg);
+margin-top: 46px;
+transform: rotate(-1.5deg);
 }
 
-/* Die eigentliche Note */
+/* Sticky Note */
 .sticky-note {
 position: relative;
-width: 240px;
-min-height: 170px;
-padding: 28px 22px 24px;
-border-radius: 6px 6px 18px 10px;
+width: 320px;
+min-height: 215px;
+padding: 34px 26px 30px;
+border-radius: 6px 6px 24px 18px;
 background:
 linear-gradient(
 145deg,
-#dfe58c 0%,
-#d5dc7e 18%,
-#cad46f 48%,
-#bcc85f 78%,
-#aeb84f 100%
+#d9df86 0%,
+#cfd775 22%,
+#c3cf67 52%,
+#b3c153 78%,
+#a4b244 100%
 );
 box-shadow:
-0 4px 6px rgba(60, 56, 25, 0.18),
-0 12px 18px rgba(60, 56, 25, 0.22),
-0 26px 34px rgba(60, 56, 25, 0.18);
-overflow: hidden;
+0 3px 4px rgba(61, 62, 30, 0.22),
+0 10px 14px rgba(61, 62, 30, 0.20),
+0 28px 32px rgba(61, 62, 30, 0.18),
+0 44px 48px rgba(61, 62, 30, 0.08);
 }
 
-/* Vorderkante leicht heller / Papierlook */
+/* Licht + Papieroberfläche */
 .sticky-note::before {
 content: "";
 position: absolute;
@@ -134,110 +136,198 @@ border-radius: inherit;
 background:
 linear-gradient(
 180deg,
-rgba(255, 255, 255, 0.30) 0%,
-rgba(255, 255, 255, 0.08) 22%,
-rgba(0, 0, 0, 0.02) 65%,
-rgba(0, 0, 0, 0.10) 100%
+rgba(255,255,255,0.23) 0%,
+rgba(255,255,255,0.08) 22%,
+rgba(0,0,0,0.03) 72%,
+rgba(0,0,0,0.10) 100%
 );
 pointer-events: none;
 }
 
-/* Leicht flatternde untere Ecke */
+/* Untere umgeknickte Ecke */
 .sticky-note::after {
 content: "";
 position: absolute;
 right: 0;
 bottom: 0;
-width: 58px;
-height: 58px;
-border-bottom-right-radius: 10px;
+width: 72px;
+height: 72px;
 background: linear-gradient(
 135deg,
-rgba(80, 86, 28, 0.02) 0%,
-rgba(80, 86, 28, 0.10) 35%,
-rgba(80, 86, 28, 0.22) 100%
+rgba(90, 92, 39, 0.02) 0%,
+rgba(90, 92, 39, 0.10) 36%,
+rgba(90, 92, 39, 0.24) 100%
 );
 clip-path: polygon(100% 0, 0 100%, 100% 100%);
-opacity: 0.75;
-transform: translate(2px, 2px);
-pointer-events: none;
+border-bottom-right-radius: 18px;
+opacity: 0.9;
 }
 
-/* Text innen */
-.sticky-note-inner {
+/* leichte untere Wölbung / Vorneffekt */
+.sticky-note .sticky-note-inner {
 position: relative;
 z-index: 2;
-font-size: 30px;
-line-height: 1.1;
-font-weight: 700;
-color: #352915;
-text-align: center;
-letter-spacing: -0.03em;
-text-shadow: 0 1px 0 rgba(255, 255, 255, 0.18);
+min-height: 155px;
 }
 
-/* Break-Variante etwas größer */
-.break-note {
-width: 270px;
-min-height: 185px;
+.sticky-note .sticky-note-inner::after {
+content: "";
+position: absolute;
+left: 9%;
+right: 9%;
+bottom: -16px;
+height: 20px;
+border-radius: 50%;
+background: rgba(86, 86, 45, 0.14);
+filter: blur(8px);
+transform: scaleY(0.7);
+z-index: -1;
+}
+
+/* Text */
+.sticky-title {
+text-align: center;
+font-size: 34px;
+line-height: 1.05;
+font-weight: 750;
+color: #352915;
+letter-spacing: -0.04em;
+margin-top: 4px;
+}
+
+.sticky-time {
+margin-top: 24px;
+text-align: center;
+font-size: 28px;
+font-weight: 700;
+color: #50371b;
 }
 
 /* Herz-Pins */
 .heart-pin {
 position: absolute;
-top: -12px;
-width: 20px;
-height: 20px;
-background: #f19aaa;
+top: -22px;
+width: 28px;
+height: 28px;
+background: #f39bac;
 transform: rotate(-45deg);
-z-index: 4;
+z-index: 6;
 box-shadow:
-0 1px 1px rgba(255,255,255,0.25) inset,
-0 3px 4px rgba(109, 49, 62, 0.20),
-0 8px 12px rgba(109, 49, 62, 0.14);
+inset 0 2px 2px rgba(255,255,255,0.24),
+0 4px 6px rgba(130, 67, 82, 0.24),
+0 10px 18px rgba(130, 67, 82, 0.15);
 }
 
 .heart-pin::before,
 .heart-pin::after {
 content: "";
 position: absolute;
-width: 20px;
-height: 20px;
-background: #f19aaa;
+width: 28px;
+height: 28px;
+background: #f39bac;
 border-radius: 50%;
 }
 
 .heart-pin::before {
-top: -10px;
+top: -14px;
 left: 0;
 }
 
 .heart-pin::after {
-left: 10px;
 top: 0;
+left: 14px;
 }
 
-/* Position der beiden Pins */
+/* dunklere rosa Kontur */
+.heart-pin {
+outline: 3px solid rgba(182, 89, 113, 0.22);
+outline-offset: -2px;
+}
+
+/* Nadel sichtbar */
+.pin-needle {
+position: absolute;
+left: 50%;
+top: 22px;
+width: 3px;
+height: 24px;
+background: linear-gradient(
+180deg,
+#7b6b5e 0%,
+#544538 60%,
+#2f261f 100%
+);
+transform: translateX(-50%) rotate(9deg);
+border-radius: 2px;
+z-index: 7;
+box-shadow: 0 1px 2px rgba(0,0,0,0.16);
+}
+
+.pin-needle::after {
+content: "";
+position: absolute;
+bottom: -5px;
+left: 50%;
+width: 0;
+height: 0;
+transform: translateX(-50%);
+border-left: 3px solid transparent;
+border-right: 3px solid transparent;
+border-top: 7px solid #2b221d;
+}
+
+/* Positionen */
 .pin-left {
-left: 42px;
+left: 58px;
 }
 
 .pin-right {
-right: 42px;
+right: 58px;
 }
 
-/* kleiner Faden / Pin-Schatten */
-.pin-left,
+/* Desktop + Mobile gleich sichtbar */
+.sticky-wrap {
+overflow: visible;
+}
+
+#waiting-screen,
+#break-screen {
+overflow: visible;
+}
+
+/* damit Pins nie hinter dem Note verschwinden */
+.sticky-note {
+z-index: 2;
+}
+
+.heart-pin {
+z-index: 8;
+}
+
+/* Mobile Feinschliff */
+@media (max-width: 768px) {
+.sticky-note {
+width: 330px;
+min-height: 235px;
+padding: 34px 22px 28px;
+}
+
+.sticky-title {
+font-size: 32px;
+}
+
+.sticky-time {
+font-size: 27px;
+}
+
+.pin-left {
+left: 52px;
+}
+
 .pin-right {
-filter: drop-shadow(0 2px 3px rgba(98, 40, 53, 0.18));
+right: 52px;
 }
-
-/* Optional: Übergang für leicht lebendiges Gefühl */
-.sticky-wrap:hover {
-transform: rotate(-1deg) translateY(-1px);
-transition: transform 180ms ease;
 }
-
 
 
 
