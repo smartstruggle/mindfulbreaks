@@ -13,6 +13,18 @@ const waitingText = document.getElementById("waiting-text");
 const timer = document.getElementById("timer");
 const gongSound = new Audio("gong.mp3");
 
+let soundEnabled = false;
+
+document.addEventListener("click", () => {
+if (!soundEnabled) {
+gongSound.play().then(() => {
+gongSound.pause();
+gongSound.currentTime = 0;
+soundEnabled = true;
+}).catch(() => {});
+}
+});
+
 // Dropdowns EINMAL beim Laden befüllen
 function fillTimeOptions() {
 for (let i = 0; i < 24; i++) {
@@ -33,6 +45,8 @@ endMinute.innerHTML += `<option value="${minute}">${minute}</option>`;
 fillTimeOptions();
 
 startButton.addEventListener("click", () => {
+Notification.requestPermission();
+
 if (!startHour.value || !startMinute.value || !endHour.value || !endMinute.value) {
 alert("Bitte beide Zeiten vollständig eingeben 🥺");
 return;
