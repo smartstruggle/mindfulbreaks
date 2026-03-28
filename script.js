@@ -11,6 +11,7 @@ const endMinute = document.getElementById("end-minute");
 
 const waitingText = document.getElementById("waiting-text");
 const timer = document.getElementById("timer");
+const gongSound = new Audio("gong.mp3");
 
 // Dropdowns EINMAL beim Laden befüllen
 function fillTimeOptions() {
@@ -79,7 +80,8 @@ now.getMinutes().toString().padStart(2, "0");
 
 if (current === endTime) {
 clearInterval(interval);
-
+gongSound.currentTime = 0;
+gongSound.play();
 breakScreen.style.display = "none";
 setupScreen.style.display = "block";
 
