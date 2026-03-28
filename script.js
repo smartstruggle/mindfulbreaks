@@ -8,15 +8,11 @@ const startHour = document.getElementById("start-hour");
 const startMinute = document.getElementById("start-minute");
 const endHour = document.getElementById("end-hour");
 const endMinute = document.getElementById("end-minute");
+
 const waitingText = document.getElementById("waiting-text");
 const timer = document.getElementById("timer");
 
-startButton.addEventListener("click", () => {
-const startTime = `${startHour.value}:${startMinute.value}`;
-const endTime = `${endHour.value}:${endMinute.value}`;
-
-
-
+// Dropdowns EINMAL beim Laden befüllen
 function fillTimeOptions() {
 for (let i = 0; i < 24; i++) {
 const hour = i.toString().padStart(2, "0");
@@ -35,15 +31,18 @@ endMinute.innerHTML += `<option value="${minute}">${minute}</option>`;
 
 fillTimeOptions();
 
-  
+startButton.addEventListener("click", () => {
 if (!startHour.value || !startMinute.value || !endHour.value || !endMinute.value) {
 alert("Bitte beide Zeiten vollständig eingeben 🥺");
 return;
 }
 
-// Screens wechseln
+const startTime = `${startHour.value}:${startMinute.value}`;
+const endTime = `${endHour.value}:${endMinute.value}`;
+
 setupScreen.style.display = "none";
 waitingScreen.style.display = "block";
+breakScreen.style.display = "none";
 
 waitingText.textContent = "Deine nächste Pause ist um " + startTime;
 
@@ -54,7 +53,9 @@ function checkTime(startTime, endTime) {
 const interval = setInterval(() => {
 const now = new Date();
 
-const current = now.getHours().toString().padStart(2, "0") + ":" +
+const current =
+now.getHours().toString().padStart(2, "0") +
+":" +
 now.getMinutes().toString().padStart(2, "0");
 
 if (current === startTime) {
@@ -71,7 +72,9 @@ breakScreen.style.display = "block";
 const interval = setInterval(() => {
 const now = new Date();
 
-const current = now.getHours().toString().padStart(2, "0") + ":" +
+const current =
+now.getHours().toString().padStart(2, "0") +
+":" +
 now.getMinutes().toString().padStart(2, "0");
 
 if (current === endTime) {
@@ -83,8 +86,9 @@ setupScreen.style.display = "block";
 startHour.value = "";
 startMinute.value = "";
 endHour.value = "";
-endMinute.value = "";  
+endMinute.value = "";
+
+timer.textContent = "00:00";
 }
 }, 1000);
 }
-
