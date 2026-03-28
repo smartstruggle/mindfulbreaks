@@ -11,21 +11,11 @@ const endMinute = document.getElementById("end-minute");
 
 const waitingText = document.getElementById("waiting-text");
 const timer = document.getElementById("timer");
+
 const gongSound = new Audio("gong.mp3");
 
-let soundEnabled = false;
 
-document.addEventListener("click", () => {
-if (!soundEnabled) {
-gongSound.play().then(() => {
-gongSound.pause();
-gongSound.currentTime = 0;
-soundEnabled = true;
-}).catch(() => {});
-}
-});
-
-// Dropdowns EINMAL beim Laden befüllen
+// 🔹 Dropdowns einmal beim Laden füllen
 function fillTimeOptions() {
 for (let i = 0; i < 24; i++) {
 const hour = i.toString().padStart(2, "0");
@@ -44,9 +34,20 @@ endMinute.innerHTML += `<option value="${minute}">${minute}</option>`;
 
 fillTimeOptions();
 
+
+// 🔹 Button Klick
 startButton.addEventListener("click", () => {
+
+// 👉 Sound auf iPhone freischalten
+gongSound.play().then(() => {
+gongSound.pause();
+gongSound.currentTime = 0;
+}).catch(() => {});
+
+// 👉 Notification-Erlaubnis holen
 Notification.requestPermission();
 
+// 👉 Validierung
 if (!startHour.value || !startMinute.value || !endHour.value || !endMinute.value) {
 alert("Bitte beide Zeiten vollständig eingeben 🥺");
 return;
@@ -55,15 +56,18 @@ return;
 const startTime = `${startHour.value}:${startMinute.value}`;
 const endTime = `${endHour.value}:${endMinute.value}`;
 
+// 👉 Screen wechseln
 setupScreen.style.display = "none";
 waitingScreen.style.display = "block";
 breakScreen.style.display = "none";
 
-waitingText.textContent = "Deine nächste Pause ist um " + startTime;
+waitingText.textContent = "🌿 Deine nächste Pause ist um " + startTime;
 
 checkTime(startTime, endTime);
 });
 
+
+// 🔹 Wartet bis Startzeit erreicht ist
 function checkTime(startTime, endTime) {
 const interval = setInterval(() => {
 const now = new Date();
@@ -80,6 +84,8 @@ startBreak(endTime);
 }, 1000);
 }
 
+
+// 🔹 Break startet
 function startBreak(endTime) {
 waitingScreen.style.display = "none";
 breakScreen.style.display = "block";
@@ -94,8 +100,19 @@ now.getMinutes().toString().padStart(2, "0");
 
 if (current === endTime) {
 clearInterval(interval);
+
+// 🔔 Gong abspielen
 gongSound.currentTime = 0;
 gongSound.play();
+
+// 🔔 Optional: Notification
+if (Notification.permission === "granted") {
+new Notification("Pause 💛", {
+body: "Take a break, cutie 🌿",
+});
+}
+
+// 👉 Reset UI
 breakScreen.style.display = "none";
 setupScreen.style.display = "block";
 
