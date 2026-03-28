@@ -1,0 +1,61 @@
+body {
+margin: 0;
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+background: linear-gradient(180deg, #f5f7fb, #e6ecf5);
+
+display: flex;
+justify-content: center;
+align-items: center;
+height: 100vh;
+}
+
+/* Container für alle Screens */
+#setup-screen,
+#waiting-screen,
+#break-screen {
+text-align: center;
+width: 90%;
+max-width: 400px;
+}
+
+/* Überschrift */
+h1, h2 {
+font-weight: 500;
+color: #2d2f36;
+margin-bottom: 30px;
+}
+
+/* Inputs schöner machen */
+input[type="time"] {
+padding: 12px;
+margin: 8px;
+border-radius: 12px;
+border: none;
+font-size: 16px;
+box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Button */
+button {
+margin-top: 15px;
+padding: 14px 24px;
+border: none;
+border-radius: 20px;
+background: #2d2f36;
+color: white;
+font-size: 16px;
+cursor: pointer;
+box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+/* Hover Effekt */
+button:hover {
+opacity: 0.9;
+}
+
+/* Timer */
+#timer {
+font-size: 28px;
+margin-bottom: 20px;
+color: #2d2f36;
+}
