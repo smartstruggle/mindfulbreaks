@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mindful Breaks</title>
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- STARTSCREEN -->
+<div id="setup-screen">
+<h1>Trag deine Pausenzeit ein 🫶</h1>
+
+<input type="time" id="start-time">
+<input type="time" id="end-time">
+
+<button id="start-button">Bestätigen</button>
+</div>
+
+<!-- TRANSITION SCREEN -->
+<div id="waiting-screen" class="hidden">
+<h2 id="waiting-text">Deine nächste Pause ist um ...</h2>
+</div>
+
+<!-- BREAK SCREEN -->
+<div id="break-screen" class="hidden">
+<div id="timer">00:00</div>
+<h2>Take a break, cutie 🫶</h2>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
