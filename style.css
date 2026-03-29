@@ -40,12 +40,12 @@ inset 0 0 50px rgba(0, 0, 0, 0.025);
 /* Überschrift */
 #setup-screen.start-screen h1 {
 margin: 0 0 20px;
-font-size: 26px;
+font-size: 30px;
 line-height: 1.2;
 font-weight: 400;
 color: #2e3138;
 text-align: center;
-letter-spacing: -0.01em;
+letter-spacing: -0.02em;
 }
 
 /* Optionaler Subtext, falls du ein <p> einfügst */
@@ -53,7 +53,7 @@ letter-spacing: -0.01em;
 margin: 0 0 34px;
 font-size: 17px;
 line-height: 1.4;
-color: #6f7682;
+color: #9aa0aa;
 text-align: center;
 }
 
@@ -119,7 +119,7 @@ color: #9aa0aa;
 display: flex;
 align-items: center;
 justify-content: flex-start;
-gap: 16px;
+gap: 14px;
 }
 
 /* Doppelpunkt optisch größer */
@@ -133,9 +133,9 @@ appearance: none;
 -webkit-appearance: none;
 -moz-appearance: none;
 
-min-width: 120px;
-height: 64px;
-padding: 0 16px;
+min-width: 112px;
+height: 94px;
+padding: 0 18px;
 
 border: 1px solid rgba(80, 90, 110, 0.08);
 border-radius: 16px;
@@ -211,7 +211,7 @@ padding: 36px 24px 42px;
 }
 
 #setup-screen.start-screen h1 {
-font-size: 26px;
+font-size: 28px;
 }
 
 #setup-screen.start-screen p {
@@ -228,7 +228,7 @@ margin: 0 0 16px;
 #setup-screen.start-screen .time-group {
 width: 100%;
 min-height: auto;
-padding: 28px 20px 20px;
+padding: 22px 20px 20px;
 }
 
 #setup-screen.start-screen .time-group label {
@@ -242,10 +242,10 @@ gap: 10px;
 }
 
 #setup-screen.start-screen .time-inputs select {
-min-width: 120px;
-height: 64px;
-font-size: 20px;
-border-radius: 16px;
+min-width: 96px;
+height: 76px;
+font-size: 22px;
+border-radius: 14px;
 }
 
 #setup-screen.start-screen .time-inputs span,
