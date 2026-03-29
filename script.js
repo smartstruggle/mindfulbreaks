@@ -17,9 +17,11 @@ const flipMinOnes = document.getElementById("flip-min-ones");
 const flipSecTens = document.getElementById("flip-sec-tens");
 const flipSecOnes = document.getElementById("flip-sec-ones");
 
-
 const gongSound = new Audio("gong.mp3");
 const stickyWaitingTime = document.getElementById("sticky-waiting-time");
+
+let waitingInterval = null;
+let breakInterval = null;
 
 function fillTimeOptions() {
 for (let i = 0; i < 24; i++) {
@@ -76,6 +78,43 @@ console.log("Gong konnte nicht abgespielt werden:", error);
 }
 }
 
+function updateFlipClock(totalSeconds) {
+const minutes = Math.floor(totalSeconds / 60);
+const seconds = totalSeconds % 60;
+
+const minString = minutes.toString().padStart(2, "0");
+const secString = seconds.toString().padStart(2, "0");
+
+if (flipMinTens) flipMinTens.textContent = minString[0];
+if (flipMinOnes) flipMinOnes.textContent = minString[1];
+if (flipSecTens) flipSecTens.textContent = secString[0];
+if (flipSecOnes) flipSecOnes.textContent = secString[1];
+}
+
+function resetApp() {
+setupScreen.style.display = "block";
+waitingScreen.style.display = "none";
+breakScreen.style.display = "none";
+
+startHour.value = "";
+startMinute.value = "";
+endHour.value = "";
+endMinute.value = "";
+
+if (timer) timer.textContent = "00:00";
+updateFlipClock(0);
+
+if (waitingInterval) {
+clearInterval(waitingInterval);
+waitingInterval = null;
+}
+
+if (breakInterval) {
+clearInterval(breakInterval);
+breakInterval = null;
+}
+}
+
 startButton.addEventListener("click", async () => {
 await unlockSound();
 await requestNotificationPermission();
@@ -87,17 +126,26 @@ return;
 
 const startTime = `${startHour.value}:${startMinute.value}`;
 const endTime = `${endHour.value}:${endMinute.value}`;
+
 stickyWaitingTime.textContent = startTime + " Uhr";
+
 setupScreen.style.display = "none";
 waitingScreen.style.display = "block";
 breakScreen.style.display = "none";
 
+if (waitingText) {
+waitingText.textContent = `Deine nächste Pause ist um ${startTime}`;
+}
 
 checkTime(startTime, endTime);
 });
 
 function checkTime(startTime, endTime) {
-const interval = setInterval(() => {
+if (waitingInterval) {
+clearInterval(waitingInterval);
+}
+
+waitingInterval = setInterval(() => {
 const now = new Date();
 
 const current =
@@ -106,7 +154,8 @@ now.getHours().toString().padStart(2, "0") +
 now.getMinutes().toString().padStart(2, "0");
 
 if (current === startTime) {
-clearInterval(interval);
+clearInterval(waitingInterval);
+waitingInterval = null;
 
 playGong();
 showNotification("Pause 💛", "Zeit für deine Pause 🌿");
@@ -114,19 +163,6 @@ showNotification("Pause 💛", "Zeit für deine Pause 🌿");
 startBreak(endTime);
 }
 }, 1000);
-}
-
-function updateFlipClock(totalSeconds) {
-const minutes = Math.floor(totalSeconds / 60);
-const seconds = totalSeconds % 60;
-
-const minString = minutes.toString().padStart(2, "0");
-const secString = seconds.toString().padStart(2, "0");
-
-flipMinTens.textContent = minString[0];
-flipMinOnes.textContent = minString[1];
-flipSecTens.textContent = secString[0];
-flipSecOnes.textContent = secString[1];
 }
 
 function startBreak(endTime) {
@@ -150,31 +186,30 @@ remainingSeconds = 0;
 }
 
 updateFlipClock(remainingSeconds);
+
+if (timer) {
 timer.textContent = `${Math.floor(remainingSeconds / 60)
 .toString()
 .padStart(2, "0")}:${(remainingSeconds % 60)
 .toString()
 .padStart(2, "0")}`;
+}
 
-const interval = setInterval(() => {
+if (breakInterval) {
+clearInterval(breakInterval);
+}
+
+breakInterval = setInterval(() => {
 remainingSeconds--;
 
 if (remainingSeconds < 0) {
-clearInterval(interval);
+clearInterval(breakInterval);
+breakInterval = null;
 
 playGong();
 showNotification("Pause vorbei ✨", "Deine Pause ist jetzt vorbei.");
 
-breakScreen.style.display = "none";
-setupScreen.style.display = "block";
-
-startHour.value = "";
-startMinute.value = "";
-endHour.value = "";
-endMinute.value = "";
-
-timer.textContent = "00:00";
-updateFlipClock(0);
+resetApp();
 return;
 }
 
@@ -187,17 +222,8 @@ const seconds = (remainingSeconds % 60)
 .toString()
 .padStart(2, "0");
 
+if (timer) {
 timer.textContent = `${minutes}:${seconds}`;
-}, 1000);
 }
-
-
-
-const flipMinTens = document.getElementById("flip-min-tens");
-const flipMinOnes = document.getElementById("flip-min-ones");
-const flipSecTens = document.getElementById("flip-sec-tens");
-const flipSecOnes = document.getElementById("flip-sec-ones");
-
-timer.textContent = `${minutes}:${seconds}`;
 }, 1000);
 }
