@@ -11,7 +11,7 @@ height: 100vh;
 STARTSCREEN – COMPLETE
 ========================= */
 
-#setup-screen.start-screen {
+#setup-screen .start-screen {
 width: min(82vw, 980px);
 aspect-ratio: 210 / 297;
 margin: 50px auto;
@@ -38,7 +38,7 @@ inset 0 0 50px rgba(0, 0, 0, 0.025);
 }
 
 /* Überschrift */
-#setup-screen.start-screen h1 {
+#setup-screen .start-screen h1 {
 margin: 0 0 20px;
 font-size: 26px;
 line-height: 1.2;
@@ -49,7 +49,7 @@ letter-spacing: -0.01em;
 }
 
 /* Optionaler Subtext, falls du ein <p> einfügst */
-#setup-screen.start-screen p {
+#setup-screen .start-screen p {
 margin: 0 0 34px;
 font-size: 17px;
 line-height: 1.4;
@@ -58,19 +58,19 @@ text-align: center;
 }
 
 /* Falls du keinen <p> hast, etwas Abstand nach der H1 */
-#setup-screen.start-screen h1 + .time-group,
-#setup-screen.start-screen h1 + .time-row,
-#setup-screen.start-screen h1 + .subtitle-spacer {
+#setup-screen .start-screen h1 + .time-group,
+#setup-screen .start-screen h1 + .time-row,
+#setup-screen .start-screen h1 + .subtitle-spacer {
 margin-top: 26px;
 }
 
 /* Row für Start / Ende nebeneinander
 Falls deine time-groups noch untereinander stehen, hilft das direkt */
-#setup-screen.start-screen {
+#setup-screen .start-screen {
 gap: 18px;
 }
 
-#setup-screen.start-screen .time-row {
+#setup-screen .start-screen .time-row {
 width: 100%;
 display: flex;
 justify-content: center;
@@ -79,7 +79,7 @@ margin-top: 10px;
 }
 
 /* Wenn du KEINE .time-row im HTML hast, werden die time-groups trotzdem hübsch */
-#setup-screen.start-screen .time-group {
+#setup-screen .start-screen .time-group {
 background: rgba(255, 255, 255, 0.72);
 backdrop-filter: blur(4px);
 
@@ -98,14 +98,14 @@ inset 0 1px 0 rgba(255, 255, 255, 0.65);
 
 /* Wenn Start und Ende aktuell untereinander stehen:
 Mach sie nebeneinander, sobald zwei time-groups direkt in setup-screen liegen */
-#setup-screen.start-screen > .time-group {
+#setup-screen .start-screen > .time-group {
 display: inline-block;
 vertical-align: top;
 margin: 0 10px;
 }
 
 /* Labels Start / Ende */
-#setup-screen.start-screen .time-group label {
+#setup-screen .start-screen .time-group label {
 display: block;
 margin: 0 0 24px;
 font-size: 18px;
@@ -115,7 +115,7 @@ color: #9aa0aa;
 }
 
 /* Inputs HH / MM */
-#setup-screen.start-screen .time-inputs {
+#setup-screen .start-screen .time-inputs {
 display: flex;
 align-items: center;
 justify-content: flex-start;
@@ -123,12 +123,12 @@ gap: 16px;
 }
 
 /* Doppelpunkt optisch größer */
-#setup-screen.start-screen .time-inputs::before,
+#setup-screen .start-screen .time-inputs::before,
 #setup-screen.start-screen .time-inputs::after {
 display: none;
 }
 
-#setup-screen.start-screen .time-inputs select {
+#setup-screen .start-screen .time-inputs select {
 appearance: none;
 -webkit-appearance: none;
 -moz-appearance: none;
@@ -155,8 +155,8 @@ cursor: pointer;
 }
 
 /* Wenn du den Doppelpunkt im HTML als Text hast, z. B. ":" */
-#setup-screen.start-screen .time-inputs span,
-#setup-screen.start-screen .time-inputs .colon {
+#setup-screen .start-screen .time-inputs span,
+#setup-screen .start-screen .time-inputs .colon {
 font-size: 38px;
 line-height: 1;
 color: #383d46;
@@ -165,8 +165,8 @@ margin: 0 2px;
 }
 
 /* Button */
-#setup-screen.start-screen button,
-#setup-screen.start-screen #start-button {
+#setup-screen .start-screen button,
+#setup-screen .start-screen #start-button {
 margin-top: 34px;
 padding: 18px 42px;
 min-width: 260px;
@@ -193,8 +193,8 @@ inset 0 1px 0 rgba(255, 255, 255, 0.10);
 transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 
-#setup-screen.start-screen button:hover,
-#setup-screen.start-screen #start-button:hover {
+#setup-screen .start-screen button:hover,
+#setup-screen .start-screen #start-button:hover {
 transform: translateY(-1px);
 box-shadow:
 0 14px 28px rgba(0, 0, 0, 0.20),
@@ -203,58 +203,58 @@ inset 0 1px 0 rgba(255, 255, 255, 0.10);
 
 /* Responsive */
 @media (max-width: 900px) {
-#setup-screen.start-screen {
+#setup-screen .start-screen {
 width: 92vw;
 aspect-ratio: auto;
 min-height: auto;
 padding: 36px 24px 42px;
 }
 
-#setup-screen.start-screen h1 {
+#setup-screen .start-screen h1 {
 font-size: 26px;
 }
 
-#setup-screen.start-screen p {
+#setup-screen .start-screen p {
 font-size: 15px;
 margin-bottom: 28px;
 }
 
-#setup-screen.start-screen > .time-group {
+#setup-screen .start-screen > .time-group {
 display: block;
 width: 100%;
 margin: 0 0 16px;
 }
 
-#setup-screen.start-screen .time-group {
+#setup-screen .start-screen .time-group {
 width: 100%;
 min-height: auto;
 padding: 28px 20px 20px;
 }
 
-#setup-screen.start-screen .time-group label {
+#setup-screen .start-screen .time-group label {
 margin-bottom: 16px;
 font-size: 17px;
 }
 
-#setup-screen.start-screen .time-inputs {
+#setup-screen .start-screen .time-inputs {
 justify-content: center;
 gap: 10px;
 }
 
-#setup-screen.start-screen .time-inputs select {
+#setup-screen .start-screen .time-inputs select {
 min-width: 120px;
 height: 64px;
 font-size: 20px;
 border-radius: 16px;
 }
 
-#setup-screen.start-screen .time-inputs span,
-#setup-screen.start-screen .time-inputs .colon {
+#setup-screen .start-screen .time-inputs span,
+#setup-screen .start-screen .time-inputs .colon {
 font-size: 30px;
 }
 
-#setup-screen.start-screen button,
-#setup-screen.start-screen #start-button {
+#setup-screen .start-screen button,
+#setup-screen .start-screen #start-button {
 min-width: 220px;
 font-size: 18px;
 padding: 16px 32px;
@@ -883,4 +883,27 @@ linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
 
 background-size: 24px 24px;
 background-color: #f7f6f2;
+}
+
+
+
+/* =========================
+SCREEN CENTERING SYSTEM
+========================= */
+
+.screen-center {
+min-height: 100vh;
+width: 100%;
+
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+
+padding: 40px 20px;
+box-sizing: border-box;
+}
+
+.screen-center > * {
+max-width: 100%;
 }
