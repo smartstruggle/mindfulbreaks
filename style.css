@@ -597,3 +597,15 @@ OPTIONAL: LEICHT MEHR BREITE
 max-width: 820px;
 }
 
+/* =========================
+SIZE & PROPORTION FIX
+========================= */
+
+.flip-display {
+width: 82%;
+margin: 0 auto;
+}
+
+.flip-clock-panel {
+padding: 36px 48px 34px !important;
+}
