@@ -249,7 +249,6 @@ body {
   border: 1px solid rgba(164, 120, 24, 0.18);
 }
 
-/* leichter Papierlook */
 .sticky-note::before {
   content: "";
   position: absolute;
@@ -263,7 +262,6 @@ body {
   mix-blend-mode: multiply;
 }
 
-/* realistischer umgeknickter Eselsohr-Effekt */
 .sticky-note::after {
   content: "";
   position: absolute;
@@ -293,7 +291,6 @@ body {
   padding-top: 22px;
 }
 
-/* spezielle Variante für Break Screen */
 .break-note .sticky-note-inner {
   font-size: 46px;
   line-height: 0.95;
@@ -647,12 +644,11 @@ body {
   }
 
   .time-inputs {
-    justify-content: center;
+    max-width: 100%;
     gap: 10px;
   }
 
   .time-inputs select {
-    min-width: 96px;
     height: 76px;
     font-size: 22px;
     border-radius: 14px;
@@ -671,7 +667,7 @@ body {
 }
 
 @media (max-width: 768px) {
- .screen-center {
+  .screen-center {
     padding: 28px 20px 36px;
     justify-content: flex-start;
   }
@@ -822,10 +818,9 @@ body {
   .flip-group::after {
     right: -2px;
   }
-}
 
   .sticky-wrap {
     transform: scale(0.9);
     transform-origin: top center;
   }
-
+}
