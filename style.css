@@ -39,10 +39,10 @@ inset 0 0 50px rgba(0, 0, 0, 0.025);
 
 /* Überschrift */
 #setup-screen.start-screen h1 {
-margin: 0 0 14px;
-font-size: 34px;
+margin: 0 0 20px;
+font-size: 30px;
 line-height: 1.2;
-font-weight: 500;
+font-weight: 400;
 color: #2e3138;
 text-align: center;
 letter-spacing: -0.02em;
@@ -50,10 +50,10 @@ letter-spacing: -0.02em;
 
 /* Optionaler Subtext, falls du ein <p> einfügst */
 #setup-screen.start-screen p {
-margin: 0 0 42px;
+margin: 0 0 34px;
 font-size: 17px;
 line-height: 1.4;
-color: #8a9099;
+color: #9aa0aa;
 text-align: center;
 }
 
