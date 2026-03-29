@@ -665,3 +665,22 @@ inset 0 1px 1px rgba(255,255,255,0.45),
 inset 0 -1px 1px rgba(0,0,0,0.35);
 }
 
+/* =========================
+DESKTOP FIX – MIDDLE PANEL
+========================= */
+
+.flip-middle-panel {
+width: 72px !important;
+height: 210px !important;
+margin: 0 -6px;
+border-radius: 10px;
+}
+
+.flip-separator {
+gap: 16px !important;
+}
+
+.flip-separator span {
+width: 12px !important;
+height: 12px !important;
+}
