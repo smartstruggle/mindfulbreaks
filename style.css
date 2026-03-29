@@ -555,3 +555,45 @@ height: 8px;
 }
 }
 
+/* =========================
+FIX 1: LABEL INS PANEL
+========================= */
+
+.flip-label {
+position: relative;
+z-index: 2;
+margin: 0 0 18px;
+text-align: center;
+font-size: 28px;
+font-weight: 600;
+color: #f2d99a;
+}
+
+
+/* =========================
+FIX 2: PANEL GRÖSSER / MEHR LUFT
+========================= */
+
+.flip-clock-panel {
+padding: 26px 28px 28px !important;
+}
+
+
+/* =========================
+FIX 3: MEHR ABSTAND UM DIE ZAHLEN
+========================= */
+
+.flip-display {
+padding: 28px 28px 30px !important;
+gap: 14px !important;
+}
+
+
+/* =========================
+OPTIONAL: LEICHT MEHR BREITE
+========================= */
+
+.flip-clock-wrap {
+max-width: 820px;
+}
+
