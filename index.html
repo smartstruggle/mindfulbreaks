@@ -13,16 +13,24 @@
 <div id="setup-screen">
 <div class="screen-center start-screen">
 
-<h1 class="title">
-Wann möchtest du heute Pause machen?
-</h1>
+<h1 class="title">Wann möchtest du heute Pause machen?</h1>
+<p class="subtitle">Lege Start und Ende fest.</p>
 
-<p class="subtitle">
-Lege Start und Ende fest.
-</p>
+<div class="time-row">
+<div class="time-group">
+<label for="start-hour">Start</label>
+<div class="time-inputs">
+<select id="start-hour">
+<option value="">HH</option>
+</select>
+<select id="start-minute">
+<option value="">MM</option>
+</select>
+</div>
+</div>
 
 <div class="time-group">
-<label>Ende</label>
+<label for="end-hour">Ende</label>
 <div class="time-inputs">
 <select id="end-hour">
 <option value="">HH</option>
@@ -32,12 +40,11 @@ Lege Start und Ende fest.
 </select>
 </div>
 </div>
+</div>
 
 <button id="start-button">Pause planen</button>
 
-<p class="dedication">
-Für Joanna, Helen, Mirjam, Melanie & Dilek 🤍
-</p>
+<p class="dedication">Für Joanna, Helen, Mirjam, Melanie & Dilek</p>
 
 </div>
 </div>
