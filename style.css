@@ -24,6 +24,14 @@ body {
   max-width: 100%;
 }
 
+/* Extra für den Startscreen auf Desktop:
+   etwas höher platzieren */
+.setup-center {
+  justify-content: flex-start;
+  padding-top: 28px;
+  padding-bottom: 28px;
+}
+
 /* =========================
    STARTSCREEN
 ========================= */
@@ -36,14 +44,14 @@ body {
   width: min(82vw, 980px);
   aspect-ratio: 210 / 297;
   margin: 0 auto;
-  padding: 58px 56px 64px;
+  padding: 44px 56px 50px;
   box-sizing: border-box;
 
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 22px;
+  justify-content: flex-start;
+  gap: 18px;
 
   background-color: #f8f7f3;
   background-image:
@@ -58,17 +66,18 @@ body {
 }
 
 .title {
-  margin: 0 0 6px;
+  margin: 0 0 4px;
   font-family: "Caveat", cursive;
   font-size: 52px;
   font-weight: 500;
   line-height: 1.05;
   color: #2f3440;
   text-align: center;
+  max-width: 700px;
 }
 
 .subtitle {
-  margin: 0 0 20px;
+  margin: 0 0 10px;
   font-size: 16px;
   line-height: 1.4;
   color: #7d8693;
@@ -78,18 +87,18 @@ body {
 .time-row {
   width: 100%;
   display: flex;
-  justify-content: center;
-  gap: 26px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
 }
 
 .time-group {
   background: rgba(255, 255, 255, 0.72);
   backdrop-filter: blur(4px);
 
-  width: 320px;
-  min-height: 188px;
-  padding: 26px 28px 24px;
+  width: min(100%, 700px);
+  min-height: 170px;
+  padding: 24px 28px 22px;
   box-sizing: border-box;
   border-radius: 18px;
   text-align: left;
@@ -101,7 +110,7 @@ body {
 
 .time-group label {
   display: block;
-  margin: 0 0 24px;
+  margin: 0 0 22px;
   font-size: 18px;
   line-height: 1.2;
   font-weight: 500;
@@ -111,7 +120,7 @@ body {
 .time-inputs {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 14px;
 }
 
@@ -150,9 +159,9 @@ body {
 }
 
 #start-button {
-  margin-top: 18px;
+  margin-top: 8px;
   padding: 18px 42px;
-  min-width: 260px;
+  width: min(100%, 700px);
 
   border: none;
   border-radius: 999px;
@@ -179,7 +188,7 @@ body {
 }
 
 .dedication {
-  margin: 6px 0 0;
+  margin: 2px 0 0;
   font-size: 11.5px;
   color: #aab1bc;
   opacity: 0.65;
@@ -585,13 +594,6 @@ body {
     inset 0 -1px 1px rgba(0, 0, 0, 0.35);
 }
 
-.break-headline {
-  margin: 0;
-  font-size: 22px;
-  text-align: center;
-}
-
-/* hidden fallback timer */
 #timer {
   display: none;
 }
@@ -605,15 +607,23 @@ body {
 ========================= */
 
 @media (max-width: 900px) {
+  .setup-center {
+    justify-content: center;
+    padding-top: 28px;
+    padding-bottom: 28px;
+  }
+
   .start-screen {
     width: 92vw;
     aspect-ratio: auto;
     min-height: auto;
     padding: 36px 24px 42px;
+    justify-content: center;
   }
 
   .title {
     font-size: 32px;
+    max-width: 100%;
   }
 
   .subtitle {
@@ -655,7 +665,8 @@ body {
   }
 
   #start-button {
-    min-width: 220px;
+    width: 100%;
+    min-width: 0;
     font-size: 18px;
     padding: 16px 32px;
   }
@@ -665,6 +676,36 @@ body {
   .screen-center {
     padding: 28px 20px 36px;
     justify-content: flex-start;
+  }
+
+  .setup-center {
+    justify-content: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  .start-screen {
+    padding: 34px 20px 38px;
+    gap: 20px;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  .subtitle {
+    font-size: 15px;
+  }
+
+  .time-group {
+    max-width: 100%;
+  }
+
+  .time-inputs select {
+    width: 96px;
+    min-width: 96px;
+    height: 58px;
+    font-size: 18px;
   }
 
   .sticky-wrap {
@@ -772,10 +813,6 @@ body {
 
   .flip-group::after {
     right: -2px;
-  }
-
-  .break-headline {
-    font-size: 22px;
   }
 
   .sticky-wrap {
