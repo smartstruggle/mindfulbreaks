@@ -700,12 +700,27 @@ body {
     max-width: 100%;
   }
 
-  .time-inputs select {
-    width: 96px;
-    min-width: 96px;
-    height: 58px;
-    font-size: 18px;
-  }
+  .time-inputs {
+  width: 100%;
+  max-width: 100%;
+  gap: 8px;
+}
+
+.time-inputs select {
+  width: 42%;
+  max-width: 42%;
+  min-width: 0;
+  height: 62px;
+  font-size: 20px;
+  padding: 0 10px;
+  flex: 0 0 42%;
+}
+
+.time-inputs .colon {
+  flex: 0 0 auto;
+  font-size: 28px;
+  margin: 0;
+}
 
   .sticky-wrap {
     margin-top: 26px;
