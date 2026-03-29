@@ -6,22 +6,16 @@
 <title>Mindful Breaks</title>
 
 <link rel="stylesheet" href="style.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <!-- STARTSCREEN -->
-<div id="setup-screen">
-<div class="screen-center start-screen">
+<div id="setup-screen" class="start-screen">
+<h1>Wann möchtest du heute Pause machen?</h1>
+<p>Lege Start und Ende fest.</p>  
 
-<h1 class="title">Wann möchtest du heute Pause machen?</h1>
-<p class="subtitle">Lege Start und Ende fest.</p>
-
-<div class="time-row">
 <div class="time-group">
-<label for="start-hour">Start</label>
+<label>Start</label>
 <div class="time-inputs">
 <select id="start-hour">
 <option value="">HH</option>
@@ -33,7 +27,7 @@
 </div>
 
 <div class="time-group">
-<label for="end-hour">Ende</label>
+<label>Ende</label>
 <div class="time-inputs">
 <select id="end-hour">
 <option value="">HH</option>
@@ -43,18 +37,12 @@
 </select>
 </div>
 </div>
-</div>
 
 <button id="start-button">Pause planen</button>
-
-<p class="dedication">Für Joanna, Helen, Mirjam, Melanie & Dilek</p>
-
-</div>
 </div>
 
 <!-- TRANSITION SCREEN -->
 <div id="waiting-screen" style="display:none;">
-<div class="screen-center">
 <h2 id="waiting-text">Deine nächste Pause ist um ...</h2>
 
 <div class="sticky-wrap">
@@ -69,11 +57,9 @@ Nächste Pause<br>
 </div>
 </div>
 </div>
-</div>
 
 <!-- BREAK SCREEN -->
 <div id="break-screen" style="display:none;">
-<div class="screen-center">
 <div class="flip-clock-wrap">
 <div class="flip-clock-panel">
 <div class="flip-label" id="flip-label">Break ends in</div>
@@ -98,7 +84,6 @@ Nächste Pause<br>
 </div>
 </div>
 </div>
-
 <h2>Take a break, cutie 🫶</h2>
 
 <div class="sticky-wrap">
@@ -112,9 +97,7 @@ Take a break
 </div>
 </div>
 </div>
-</div>
 
 <script src="script.js"></script>
 </body>
 </html>
-
