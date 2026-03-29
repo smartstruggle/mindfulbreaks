@@ -694,3 +694,69 @@ padding-top: 0px !important;
 padding-bottom: 0px !important;
 }
 
+
+/* =========================
+CENTER SPINE REFINED
+========================= */
+
+.flip-middle-panel {
+.flip-middle-panel {
+position: relative;
+width: 96px !important;
+height: 100% !important;
+min-height: 170px;
+margin: 0 -8px !important;
+border-radius: 0 !important;
+
+background: linear-gradient(
+180deg,
+#504941 0%,
+#433d37 35%,
+#39342f 68%,
+#312d29 100%
+);
+
+box-shadow:
+inset 0 1px 0 rgba(255,255,255,0.04),
+inset 0 -6px 10px rgba(0,0,0,0.25);
+}
+
+
+
+.flip-middle-panel::before,
+.flip-middle-panel::after {
+content: "";
+position: absolute;
+left: 50%;
+transform: translateX(-50%);
+width: 96px;
+height: 26px;
+background: inherit;
+z-index: -1;
+}
+
+
+/* obere und untere Verbindung weicher machen */
+.flip-middle-panel::before,
+.flip-middle-panel::after {
+content: "";
+position: absolute;
+left: 50%;
+transform: translateX(-50%);
+width: 96px;
+height: 26px;
+background: inherit;
+z-index: -1;
+}
+
+.flip-middle-panel::before {
+top: -10px;
+border-bottom-left-radius: 18px;
+border-bottom-right-radius: 18px;
+}
+
+.flip-middle-panel::after {
+bottom: -10px;
+border-top-left-radius: 18px;
+border-top-right-radius: 18px;
+}
