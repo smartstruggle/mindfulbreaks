@@ -148,12 +148,14 @@ clearInterval(waitingInterval);
 waitingInterval = setInterval(() => {
 const now = new Date();
 
-const current =
-now.getHours().toString().padStart(2, "0") +
-":" +
-now.getMinutes().toString().padStart(2, "0");
+const [startHourValue, startMinuteValue] = startTime.split(":");
+const startDate = new Date();
+startDate.setHours(parseInt(startHourValue, 10));
+startDate.setMinutes(parseInt(startMinuteValue, 10));
+startDate.setSeconds(0);
+startDate.setMilliseconds(0);
 
-if (current === startTime) {
+if (now >= startDate) {
 clearInterval(waitingInterval);
 waitingInterval = null;
 
