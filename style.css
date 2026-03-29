@@ -709,3 +709,13 @@ bottom: -10px;
 border-top-left-radius: 18px;
 border-top-right-radius: 18px;
 }
+
+
+.start-screen {
+background:
+linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+
+background-size: 24px 24px;
+background-color: #f7f6f2;
+}
