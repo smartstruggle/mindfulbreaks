@@ -735,7 +735,6 @@ background: inherit;
 z-index: -1;
 }
 
-
 /* obere und untere Verbindung weicher machen */
 .flip-middle-panel::before,
 .flip-middle-panel::after {
