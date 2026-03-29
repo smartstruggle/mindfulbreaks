@@ -263,166 +263,330 @@ display: none;
 }
 
 
+/* =========================
+FLIP CLOCK – refined
+========================= */
+
 .flip-clock-wrap {
 display: flex;
 justify-content: center;
 align-items: center;
 width: 100%;
+margin-bottom: 18px;
 }
 
 .flip-clock {
-width: 680px;
+width: 720px;
 max-width: 92vw;
-padding: 18px 22px 22px;
+padding: 6px;
 border-radius: 34px;
 background: linear-gradient(
 180deg,
-#ffb14a 0%,
-#ff941e 48%,
-#ef7f00 100%
+#ffad3d 0%,
+#ff9115 48%,
+#e97800 100%
 );
 box-sizing: border-box;
+}
+
+/* orange plastic frame should feel thin and slightly raised */
+.flip-clock::before {
+content: "";
+display: block;
 }
 
 .flip-label {
 text-align: center;
-font-size: 32px;
+font-size: 31px;
 font-weight: 700;
-letter-spacing: -0.02em;
-color: #f6dd9b;
-margin-bottom: 18px;
+letter-spacing: -0.03em;
+color: #f1d898;
+margin: 10px 0 16px;
 font-family: Arial, sans-serif;
 }
 
 .flip-display {
+position: relative;
 display: flex;
 justify-content: center;
 align-items: center;
-gap: 18px;
-padding: 24px 26px;
-border-radius: 26px;
-background: linear-gradient(
+gap: 10px;
+padding: 20px 22px 22px;
+border-radius: 28px;
+background:
+linear-gradient(
 180deg,
-#4a443d 0%,
-#3e3832 48%,
-#332e29 100%
+#504a44 0%,
+#443f3a 34%,
+#3a3531 66%,
+#302c28 100%
 );
 box-shadow:
-inset 0 2px 2px rgba(255,255,255,0.05),
-inset 0 -2px 4px rgba(0,0,0,0.18);
+inset 0 1px 0 rgba(255,255,255,0.06),
+inset 0 12px 24px rgba(255,255,255,0.015),
+inset 0 -14px 26px rgba(0,0,0,0.42);
+}
+
+/* optional subtle matte texture feeling */
+.flip-display::before {
+content: "";
+position: absolute;
+inset: 0;
+border-radius: 28px;
+background:
+radial-gradient(circle at 20% 20%, rgba(255,255,255,0.035) 0, transparent 18%),
+radial-gradient(circle at 80% 70%, rgba(255,255,255,0.02) 0, transparent 22%);
+pointer-events: none;
 }
 
 .flip-group {
 display: flex;
-gap: 0;
+gap: 2px; /* much tighter like the reference */
 }
 
 .flip-card {
 position: relative;
-width: 150px;
-height: 170px;
+width: 118px;
+height: 156px;
 display: flex;
 justify-content: center;
 align-items: center;
-background: linear-gradient(
+background:
+linear-gradient(
 180deg,
-#3a3a38 0%,
-#2f2f2d 50%,
-#262624 100%
+#3f403d 0%,
+#343532 44%,
+#2a2b28 100%
 );
-color: #f4f1e8;
-font-size: 122px;
+color: #f4efe5;
+font-size: 104px;
 font-weight: 700;
 line-height: 1;
 font-family: Arial, sans-serif;
-border-radius: 12px;
-border: 2px solid #1c1c1b;
+border-radius: 8px;
+border: 2px solid #181816;
 box-sizing: border-box;
+
+/* this is the key "recessed into screen" feeling */
 box-shadow:
-inset 0 10px 18px rgba(255,255,255,0.03),
-inset 0 -12px 18px rgba(0,0,0,0.22),
-inset 10px 0 14px rgba(255,255,255,0.02),
-inset -10px 0 14px rgba(0,0,0,0.18);
+inset 0 14px 18px rgba(255,255,255,0.04),
+inset 0 -18px 18px rgba(0,0,0,0.34),
+inset 9px 0 12px rgba(255,255,255,0.02),
+inset -10px 0 14px rgba(0,0,0,0.34),
+0 0 0 1px rgba(255,255,255,0.02);
 }
 
-.flip-card + .flip-card {
-margin-left: -2px;
-}
-
+/* dark cavity around the cards, makes them look more sunk in */
 .flip-card::before {
+content: "";
+position: absolute;
+inset: -10px;
+border-radius: 12px;
+z-index: -1;
+box-shadow:
+inset 0 10px 16px rgba(0,0,0,0.65),
+inset 0 -4px 6px rgba(255,255,255,0.03);
+}
+
+/* flip hinge line */
+.flip-card::after {
 content: "";
 position: absolute;
 left: 0;
 right: 0;
 top: 50%;
 height: 2px;
-background: rgba(0,0,0,0.65);
 transform: translateY(-50%);
-z-index: 2;
-}
-
-.flip-card::after {
-content: "";
-position: absolute;
-inset: 0;
-border-radius: 10px;
 background:
 linear-gradient(
 180deg,
-rgba(255,255,255,0.06) 0%,
-rgba(255,255,255,0.01) 22%,
-rgba(0,0,0,0.00) 48%,
-rgba(0,0,0,0.12) 100%
+rgba(255,255,255,0.18) 0%,
+rgba(0,0,0,0.68) 100%
 );
-pointer-events: none;
+z-index: 3;
 }
 
+/* slight highlight top half + lower shadow = more realistic plates */
+.flip-card span {
+position: relative;
+z-index: 4;
+}
+
+.flip-card + .flip-card {
+margin-left: -1px;
+}
+
+/* tiny side pivots / hinges */
+.flip-group .flip-card:first-child .hinge,
+.flip-group .flip-card:last-child .hinge {
+display: none;
+}
+
+/* build pivot dots visually with pseudo elements */
+.flip-group .flip-card:first-child {
+overflow: visible;
+}
+
+.flip-group .flip-card:last-child {
+overflow: visible;
+}
+
+.flip-group .flip-card:first-child:focus,
+.flip-group .flip-card:last-child:focus {
+outline: none;
+}
+
+/* metallic pivot caps */
+.flip-group .flip-card:first-child,
+.flip-group .flip-card:last-child {
+position: relative;
+}
+
+.flip-group .flip-card:first-child .pivot,
+.flip-group .flip-card:last-child .pivot {
+display: none;
+}
+
+.flip-group .flip-card:first-child::selection,
+.flip-group .flip-card:last-child::selection {
+background: transparent;
+}
+
+/* left and right metal axle caps */
+.flip-group .flip-card:first-child > *,
+.flip-group .flip-card:last-child > * {
+position: relative;
+z-index: 4;
+}
+
+.flip-group .flip-card:first-child::marker,
+.flip-group .flip-card:last-child::marker {
+content: "";
+}
+
+/* create the metal side points */
+.flip-group .flip-card:first-child::before,
+.flip-group .flip-card:last-child::before {
+box-shadow:
+inset 0 10px 16px rgba(0,0,0,0.65),
+inset 0 -4px 6px rgba(255,255,255,0.03);
+}
+
+/* actual metallic caps */
+.flip-group .flip-card:first-child .cap,
+.flip-group .flip-card:last-child .cap {
+display: none;
+}
+
+/* use extra pseudo via wrapper trick */
+.flip-group {
+position: relative;
+}
+
+.flip-group::before,
+.flip-group::after {
+content: "";
+position: absolute;
+top: 50%;
+width: 10px;
+height: 28px;
+transform: translateY(-50%);
+border-radius: 6px;
+background:
+linear-gradient(
+180deg,
+#d5d1cb 0%,
+#8c8781 50%,
+#5d5954 100%
+);
+box-shadow:
+inset 0 1px 1px rgba(255,255,255,0.35),
+inset 0 -1px 2px rgba(0,0,0,0.4);
+z-index: 5;
+}
+
+.flip-group::before {
+left: -5px;
+}
+
+.flip-group::after {
+right: -5px;
+}
+
+/* separator with small metallic dots */
 .flip-separator {
 display: flex;
 flex-direction: column;
 justify-content: center;
-gap: 18px;
+gap: 12px;
 align-items: center;
-width: 22px;
+width: 20px;
 }
 
 .flip-separator span {
-width: 12px;
-height: 12px;
+width: 11px;
+height: 11px;
 border-radius: 50%;
-background: #ece6d9;
+background:
+linear-gradient(
+180deg,
+#e3ddd4 0%,
+#a9a39a 50%,
+#6a655f 100%
+);
 box-shadow:
-inset 0 1px 1px rgba(255,255,255,0.4),
-inset 0 -1px 1px rgba(0,0,0,0.22);
+inset 0 1px 1px rgba(255,255,255,0.45),
+inset 0 -1px 1px rgba(0,0,0,0.35);
 }
 
+/* mobile */
 @media (max-width: 768px) {
 .flip-clock {
-padding: 14px 14px 16px;
-border-radius: 26px;
+width: 100%;
+max-width: 94vw;
+padding: 5px;
+border-radius: 28px;
 }
 
 .flip-label {
-font-size: 24px;
-margin-bottom: 12px;
+font-size: 22px;
+margin: 8px 0 12px;
 }
 
 .flip-display {
-gap: 12px;
-padding: 14px 14px;
-border-radius: 20px;
+gap: 8px;
+padding: 14px 14px 16px;
+border-radius: 22px;
 }
 
 .flip-card {
-width: 84px;
-height: 100px;
-font-size: 70px;
-border-radius: 10px;
+width: 82px;
+height: 106px;
+font-size: 68px;
+border-radius: 8px;
+}
+
+.flip-group {
+gap: 2px;
+}
+
+.flip-group::before,
+.flip-group::after {
+width: 8px;
+height: 20px;
+}
+
+.flip-group::before {
+left: -4px;
+}
+
+.flip-group::after {
+right: -4px;
 }
 
 .flip-separator {
 width: 14px;
-gap: 12px;
+gap: 9px;
 }
 
 .flip-separator span {
@@ -430,7 +594,3 @@ width: 8px;
 height: 8px;
 }
 }
-
-
-
-
