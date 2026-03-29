@@ -1,231 +1,103 @@
-const startButton = document.getElementById("start-button");
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mindful Breaks</title>
 
-const setupScreen = document.getElementById("setup-screen");
-const waitingScreen = document.getElementById("waiting-screen");
-const breakScreen = document.getElementById("break-screen");
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-const startHour = document.getElementById("start-hour");
-const startMinute = document.getElementById("start-minute");
-const endHour = document.getElementById("end-hour");
-const endMinute = document.getElementById("end-minute");
+<!-- STARTSCREEN -->
+<div id="setup-screen" class="start-screen">
+<h1>Wann möchtest du heute Pause machen?</h1>
+<p>Lege Start und Ende fest.</p>  
 
-const waitingText = document.getElementById("waiting-text");
-const timer = document.getElementById("timer");
+<div class="time-group">
+<label>Start</label>
+<div class="time-inputs">
+<select id="start-hour">
+<option value="">HH</option>
+</select>
+<select id="start-minute">
+<option value="">MM</option>
+</select>
+</div>
+</div>
 
-const flipMinTens = document.getElementById("flip-min-tens");
-const flipMinOnes = document.getElementById("flip-min-ones");
-const flipSecTens = document.getElementById("flip-sec-tens");
-const flipSecOnes = document.getElementById("flip-sec-ones");
+<div class="time-group">
+<label>Ende</label>
+<div class="time-inputs">
+<select id="end-hour">
+<option value="">HH</option>
+</select>
+<select id="end-minute">
+<option value="">MM</option>
+</select>
+</div>
+</div>
 
-const gongSound = new Audio("gong.mp3");
-const stickyWaitingTime = document.getElementById("sticky-waiting-time");
+<button id="start-button">Pause planen</button>
+</div>
 
-let waitingInterval = null;
-let breakInterval = null;
+<!-- TRANSITION SCREEN -->
+<div id="waiting-screen" style="display:none;">
+<h2 id="waiting-text">Deine nächste Pause ist um ...</h2>
 
-function fillTimeOptions() {
-for (let i = 0; i < 24; i++) {
-const hour = i.toString().padStart(2, "0");
-startHour.innerHTML += `<option value="${hour}">${hour}</option>`;
-endHour.innerHTML += `<option value="${hour}">${hour}</option>`;
-}
+<div class="sticky-wrap">
+<div class="heart-pin pin-left"></div>
+<div class="heart-pin pin-right"></div>
 
-for (let i = 0; i < 60; i++) {
-const minute = i.toString().padStart(2, "0");
-startMinute.innerHTML += `<option value="${minute}">${minute}</option>`;
-endMinute.innerHTML += `<option value="${minute}">${minute}</option>`;
-}
-}
+<div class="sticky-note">
+<div class="sticky-note-inner">
+Nächste Pause<br>
+<span id="sticky-waiting-time">--:-- Uhr</span>
+</div>
+</div>
+</div>
+</div>
 
-fillTimeOptions();
+<!-- BREAK SCREEN -->
+<div id="break-screen" style="display:none;">
+<div class="flip-clock-wrap">
+<div class="flip-clock-panel">
+<div class="flip-label" id="flip-label">Break ends in</div>
 
-async function unlockSound() {
-try {
-await gongSound.play();
-gongSound.pause();
-gongSound.currentTime = 0;
-} catch (error) {
-console.log("Sound konnte nicht freigeschaltet werden:", error);
-}
-}
+<div class="flip-display">
+<div class="flip-group">
+<div class="flip-card" id="flip-min-tens">0</div>
+<div class="flip-card" id="flip-min-ones">4</div>
+</div>
 
-async function requestNotificationPermission() {
-try {
-if ("Notification" in window && Notification.permission === "default") {
-await Notification.requestPermission();
-}
-} catch (error) {
-console.log("Notification permission fehlgeschlagen:", error);
-}
-}
+<div class="flip-middle-panel">
+<div class="flip-separator">
+<span></span>
+<span></span>
+</div>
+</div>
 
-function showNotification(title, body) {
-try {
-if ("Notification" in window && Notification.permission === "granted") {
-new Notification(title, { body });
-}
-} catch (error) {
-console.log("Notification konnte nicht angezeigt werden:", error);
-}
-}
+<div class="flip-group">
+<div class="flip-card" id="flip-sec-tens">5</div>
+<div class="flip-card" id="flip-sec-ones">9</div>
+</div>
+</div>
+</div>
+</div>
+<h2>Take a break, cutie 🫶</h2>
 
-function playGong() {
-try {
-gongSound.currentTime = 0;
-gongSound.play();
-} catch (error) {
-console.log("Gong konnte nicht abgespielt werden:", error);
-}
-}
+<div class="sticky-wrap">
+<div class="heart-pin pin-left"></div>
+<div class="heart-pin pin-right"></div>
 
-function updateFlipClock(totalSeconds) {
-const minutes = Math.floor(totalSeconds / 60);
-const seconds = totalSeconds % 60;
+<div class="sticky-note break-note">
+<div class="sticky-note-inner">
+Take a break
+</div>
+</div>
+</div>
+</div>
 
-const minString = minutes.toString().padStart(2, "0");
-const secString = seconds.toString().padStart(2, "0");
-
-if (flipMinTens) flipMinTens.textContent = minString[0];
-if (flipMinOnes) flipMinOnes.textContent = minString[1];
-if (flipSecTens) flipSecTens.textContent = secString[0];
-if (flipSecOnes) flipSecOnes.textContent = secString[1];
-}
-
-function resetApp() {
-setupScreen.style.display = "block";
-waitingScreen.style.display = "none";
-breakScreen.style.display = "none";
-
-startHour.value = "";
-startMinute.value = "";
-endHour.value = "";
-endMinute.value = "";
-
-if (timer) timer.textContent = "00:00";
-updateFlipClock(0);
-
-if (waitingInterval) {
-clearInterval(waitingInterval);
-waitingInterval = null;
-}
-
-if (breakInterval) {
-clearInterval(breakInterval);
-breakInterval = null;
-}
-}
-
-startButton.addEventListener("click", async () => {
-await unlockSound();
-await requestNotificationPermission();
-
-if (!startHour.value || !startMinute.value || !endHour.value || !endMinute.value) {
-alert("Bitte beide Zeiten vollständig eingeben 🥺");
-return;
-}
-
-const startTime = `${startHour.value}:${startMinute.value}`;
-const endTime = `${endHour.value}:${endMinute.value}`;
-
-stickyWaitingTime.textContent = startTime + " Uhr";
-
-setupScreen.style.display = "none";
-waitingScreen.style.display = "block";
-breakScreen.style.display = "none";
-
-if (waitingText) {
-waitingText.textContent = `Deine nächste Pause ist um ${startTime}`;
-}
-
-checkTime(startTime, endTime);
-});
-
-function checkTime(startTime, endTime) {
-if (waitingInterval) {
-clearInterval(waitingInterval);
-}
-
-waitingInterval = setInterval(() => {
-const now = new Date();
-
-const [startHourValue, startMinuteValue] = startTime.split(":");
-const startDate = new Date();
-startDate.setHours(parseInt(startHourValue, 10));
-startDate.setMinutes(parseInt(startMinuteValue, 10));
-startDate.setSeconds(0);
-startDate.setMilliseconds(0);
-
-if (now >= startDate) {
-clearInterval(waitingInterval);
-waitingInterval = null;
-
-playGong();
-showNotification("Pause 💛", "Zeit für deine Pause 🌿");
-
-startBreak(endTime);
-}
-}, 1000);
-}
-
-function startBreak(endTime) {
-waitingScreen.style.display = "none";
-breakScreen.style.display = "block";
-
-const now = new Date();
-
-const [endHourValue, endMinuteValue] = endTime.split(":");
-const endDate = new Date();
-
-endDate.setHours(parseInt(endHourValue, 10));
-endDate.setMinutes(parseInt(endMinuteValue, 10));
-endDate.setSeconds(0);
-endDate.setMilliseconds(0);
-
-let remainingSeconds = Math.floor((endDate - now) / 1000);
-
-if (remainingSeconds < 0) {
-remainingSeconds = 0;
-}
-
-updateFlipClock(remainingSeconds);
-
-if (timer) {
-timer.textContent = `${Math.floor(remainingSeconds / 60)
-.toString()
-.padStart(2, "0")}:${(remainingSeconds % 60)
-.toString()
-.padStart(2, "0")}`;
-}
-
-if (breakInterval) {
-clearInterval(breakInterval);
-}
-
-breakInterval = setInterval(() => {
-remainingSeconds--;
-
-if (remainingSeconds < 0) {
-clearInterval(breakInterval);
-breakInterval = null;
-
-playGong();
-showNotification("Pause vorbei ✨", "Deine Pause ist jetzt vorbei.");
-
-resetApp();
-return;
-}
-
-updateFlipClock(remainingSeconds);
-
-const minutes = Math.floor(remainingSeconds / 60)
-.toString()
-.padStart(2, "0");
-const seconds = (remainingSeconds % 60)
-.toString()
-.padStart(2, "0");
-
-if (timer) {
-timer.textContent = `${minutes}:${seconds}`;
-}
-}, 1000);
-}
+<script src="script.js"></script>
+</body>
+</html>
