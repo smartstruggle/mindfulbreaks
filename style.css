@@ -610,10 +610,8 @@ margin: 0 auto;
 padding: 36px 48px 34px !important;
 }
 
-
 /* =========================
-MIDDLE PANEL BETWEEN
-MINUTES AND SECONDS
+MIDDLE PANEL CLEAN
 ========================= */
 
 .flip-display {
@@ -621,24 +619,30 @@ display: flex;
 justify-content: center;
 align-items: center;
 gap: 10px;
+padding-top: 0 !important;
+padding-bottom: 0 !important;
 }
 
 .flip-middle-panel {
-width: 34px;
-height: 156px;
+position: relative;
+width: 96px !important;
+min-height: 170px;
+align-self: stretch;
 display: flex;
 justify-content: center;
 align-items: center;
-border-radius: 8px;
+margin: 0 -8px !important;
+border-radius: 0 !important;
 background: linear-gradient(
 180deg,
-#3a3835 0%,
-#2f2c29 50%,
-#262320 100%
+#504941 0%,
+#433d37 35%,
+#39342f 68%,
+#312d29 100%
 );
 box-shadow:
-inset 0 10px 14px rgba(255,255,255,0.03),
-inset 0 -12px 18px rgba(0,0,0,0.35);
+inset 0 1px 0 rgba(255,255,255,0.04),
+inset 0 -6px 10px rgba(0,0,0,0.25);
 }
 
 .flip-separator {
@@ -646,13 +650,13 @@ display: flex;
 flex-direction: column;
 justify-content: center;
 align-items: center;
-gap: 12px;
+gap: 16px !important;
 width: auto;
 }
 
 .flip-separator span {
-width: 10px;
-height: 10px;
+width: 12px !important;
+height: 12px !important;
 border-radius: 50%;
 background: linear-gradient(
 180deg,
@@ -665,77 +669,6 @@ inset 0 1px 1px rgba(255,255,255,0.45),
 inset 0 -1px 1px rgba(0,0,0,0.35);
 }
 
-/* =========================
-DESKTOP FIX – MIDDLE PANEL
-========================= */
-
-.flip-middle-panel {
-width: 72px !important;
-height: 210px !important;
-margin: 0 -6px;
-border-radius: 10px;
-}
-
-.flip-separator {
-gap: 16px !important;
-}
-
-.flip-separator span {
-width: 12px !important;
-height: 12px !important;
-}
-
-/* =========================
-ONLY VERTICAL DISPLAY FIX
-========================= */
-
-.flip-display {
-padding-top: 0px !important;
-padding-bottom: 0px !important;
-}
-
-
-/* =========================
-CENTER SPINE REFINED
-========================= */
-
-.flip-middle-panel {
-.flip-middle-panel {
-position: relative;
-width: 96px !important;
-height: 100% !important;
-min-height: 170px;
-margin: 0 -8px !important;
-border-radius: 0 !important;
-
-background: linear-gradient(
-180deg,
-#504941 0%,
-#433d37 35%,
-#39342f 68%,
-#312d29 100%
-);
-
-box-shadow:
-inset 0 1px 0 rgba(255,255,255,0.04),
-inset 0 -6px 10px rgba(0,0,0,0.25);
-}
-
-
-
-.flip-middle-panel::before,
-.flip-middle-panel::after {
-content: "";
-position: absolute;
-left: 50%;
-transform: translateX(-50%);
-width: 96px;
-height: 26px;
-background: inherit;
-z-index: -1;
-}
-
-/* obere und untere Verbindung weicher machen */
 .flip-middle-panel::before,
 .flip-middle-panel::after {
 content: "";
@@ -759,3 +692,9 @@ bottom: -10px;
 border-top-left-radius: 18px;
 border-top-right-radius: 18px;
 }
+
+
+.flip-middle-panel {
+background: red !important;
+}
+
