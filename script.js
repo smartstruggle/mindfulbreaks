@@ -21,8 +21,13 @@ const stickyWaitingTime = document.getElementById("sticky-waiting-time");
 
 const gongSound = new Audio("gong.mp3");
 
-let waitingInterval = null;
-let breakInterval = null;
+let appState = {
+  mode: "setup", // setup | waiting | break
+  startTime: null,
+  endTime: null
+};
+
+let heartbeatInterval = null;
 
 function fillTimeOptions() {
   for (let i = 0; i < 24; i++) {
@@ -92,24 +97,42 @@ function playGong() {
   }
 }
 
-function clearIntervals() {
-  if (waitingInterval) {
-    clearInterval(waitingInterval);
-    waitingInterval = null;
-  }
+function getTodayDateForTime(timeString) {
+  const [hours, minutes] = timeString.split(":").map(Number);
+  const date = new Date();
 
-  if (breakInterval) {
-    clearInterval(breakInterval);
-    breakInterval = null;
-  }
+  date.setHours(hours);
+  date.setMinutes(minutes);
+  date.setSeconds(0);
+  date.setMilliseconds(0);
+
+  return date;
 }
 
-function resetApp() {
-  clearIntervals();
-
+function showSetupScreen() {
   setupScreen.style.display = "block";
   waitingScreen.style.display = "none";
   breakScreen.style.display = "none";
+}
+
+function showWaitingScreen() {
+  setupScreen.style.display = "none";
+  waitingScreen.style.display = "block";
+  breakScreen.style.display = "none";
+}
+
+function showBreakScreen() {
+  setupScreen.style.display = "none";
+  waitingScreen.style.display = "none";
+  breakScreen.style.display = "block";
+}
+
+function resetApp() {
+  appState = {
+    mode: "setup",
+    startTime: null,
+    endTime: null
+  };
 
   startHour.value = "";
   startMinute.value = "";
@@ -125,26 +148,24 @@ function resetApp() {
   }
 
   updateFlipClock(0);
+  showSetupScreen();
 }
 
-function getTodayDateForTime(timeString) {
-  const [hours, minutes] = timeString.split(":").map(Number);
-  const date = new Date();
+function startPlan(startTime, endTime) {
+  const startDate = getTodayDateForTime(startTime);
+  const endDate = getTodayDateForTime(endTime);
 
-  date.setHours(hours);
-  date.setMinutes(minutes);
-  date.setSeconds(0);
-  date.setMilliseconds(0);
+  if (endDate <= startDate) {
+    alert("Die Endzeit muss nach der Startzeit liegen 💛");
+    resetApp();
+    return;
+  }
 
-  return date;
-}
-
-function startWaitingPhase(startTime, endTime) {
-  clearIntervals();
-
-  setupScreen.style.display = "none";
-  waitingScreen.style.display = "block";
-  breakScreen.style.display = "none";
+  appState = {
+    mode: "waiting",
+    startTime,
+    endTime
+  };
 
   if (stickyWaitingTime) {
     stickyWaitingTime.textContent = `${startTime} Uhr`;
@@ -154,87 +175,42 @@ function startWaitingPhase(startTime, endTime) {
     waitingText.textContent = `Deine nächste Pause ist um ${startTime}`;
   }
 
-  const startDate = getTodayDateForTime(startTime);
-  const endDate = getTodayDateForTime(endTime);
-  const now = new Date();
-
-  if (endDate <= startDate) {
-    alert("Die Endzeit muss nach der Startzeit liegen 💛");
-    resetApp();
-    return;
-  }
-
-  if (now >= startDate) {
-    playGong();
-    showNotification("Pause 💛", "Zeit für deine Pause 🌿");
-    startBreak(endTime);
-    return;
-  }
-
-  waitingInterval = setInterval(() => {
-    const currentNow = new Date();
-
-    if (currentNow >= startDate) {
-      clearInterval(waitingInterval);
-      waitingInterval = null;
-
-      playGong();
-      showNotification("Pause 💛", "Zeit für deine Pause 🌿");
-
-      startBreak(endTime);
-    }
-  }, 1000);
+  syncAppState(true);
 }
 
-function startBreak(endTime) {
-  clearIntervals();
+function syncAppState(playSoundOnTransitions = false) {
+  const { mode, startTime, endTime } = appState;
 
-  waitingScreen.style.display = "none";
-  breakScreen.style.display = "block";
-
-  const now = new Date();
-  const endDate = getTodayDateForTime(endTime);
-
-  let remainingSeconds = Math.floor((endDate - now) / 1000);
-  if (remainingSeconds < 0) {
-    remainingSeconds = 0;
-  }
-
-  updateFlipClock(remainingSeconds);
-
-  if (timer) {
-    const minutes = Math.floor(remainingSeconds / 60).toString().padStart(2, "0");
-    const seconds = (remainingSeconds % 60).toString().padStart(2, "0");
-    timer.textContent = `${minutes}:${seconds}`;
-  }
-
-  if (remainingSeconds === 0) {
-    playGong();
-    showNotification("Pause vorbei ✨", "Deine Pause ist jetzt vorbei.");
-    resetApp();
+  if (mode === "setup" || !startTime || !endTime) {
+    showSetupScreen();
     return;
   }
 
-  breakInterval = setInterval(() => {
-    remainingSeconds -= 1;
+  const now = new Date();
+  const startDate = getTodayDateForTime(startTime);
+  const endDate = getTodayDateForTime(endTime);
 
-    if (remainingSeconds <= 0) {
-      updateFlipClock(0);
+  if (now < startDate) {
+    appState.mode = "waiting";
+    showWaitingScreen();
 
-      if (timer) {
-        timer.textContent = "00:00";
-      }
-
-      clearInterval(breakInterval);
-      breakInterval = null;
-
-      playGong();
-      showNotification("Pause vorbei ✨", "Deine Pause ist jetzt vorbei.");
-
-      resetApp();
-      return;
+    if (stickyWaitingTime) {
+      stickyWaitingTime.textContent = `${startTime} Uhr`;
     }
 
+    return;
+  }
+
+  if (now >= startDate && now < endDate) {
+    const remainingSeconds = Math.max(0, Math.floor((endDate - now) / 1000));
+
+    if (appState.mode !== "break" && playSoundOnTransitions) {
+      playGong();
+      showNotification("Pause 💛", "Zeit für deine Pause 🌿");
+    }
+
+    appState.mode = "break";
+    showBreakScreen();
     updateFlipClock(remainingSeconds);
 
     if (timer) {
@@ -242,6 +218,27 @@ function startBreak(endTime) {
       const seconds = (remainingSeconds % 60).toString().padStart(2, "0");
       timer.textContent = `${minutes}:${seconds}`;
     }
+
+    return;
+  }
+
+  if (now >= endDate) {
+    if (appState.mode === "break" && playSoundOnTransitions) {
+      playGong();
+      showNotification("Pause vorbei ✨", "Deine Pause ist jetzt vorbei.");
+    }
+
+    resetApp();
+  }
+}
+
+function startHeartbeat() {
+  if (heartbeatInterval) {
+    clearInterval(heartbeatInterval);
+  }
+
+  heartbeatInterval = setInterval(() => {
+    syncAppState(false);
   }, 1000);
 }
 
@@ -257,8 +254,20 @@ startButton.addEventListener("click", async () => {
   const startTime = `${startHour.value}:${startMinute.value}`;
   const endTime = `${endHour.value}:${endMinute.value}`;
 
-  startWaitingPhase(startTime, endTime);
+  startPlan(startTime, endTime);
+});
+
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) {
+    syncAppState(false);
+  }
+});
+
+window.addEventListener("focus", () => {
+  syncAppState(false);
 });
 
 fillTimeOptions();
 updateFlipClock(0);
+startHeartbeat();
+showSetupScreen();
