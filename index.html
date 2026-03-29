@@ -10,9 +10,10 @@
 <body>
 
 <!-- STARTSCREEN -->
-<div id="setup-screen" class="start-screen">
+<div id="setup-screen">
+<div class="screen-center start-screen">
 <h1>Wann möchtest du heute Pause machen?</h1>
-<p>Lege Start und Ende fest.</p>  
+<p>Lege Start und Ende fest.</p>
 
 <div class="time-group">
 <label>Start</label>
@@ -40,9 +41,11 @@
 
 <button id="start-button">Pause planen</button>
 </div>
+</div>
 
 <!-- TRANSITION SCREEN -->
 <div id="waiting-screen" style="display:none;">
+<div class="screen-center">
 <h2 id="waiting-text">Deine nächste Pause ist um ...</h2>
 
 <div class="sticky-wrap">
@@ -57,9 +60,11 @@ Nächste Pause<br>
 </div>
 </div>
 </div>
+</div>
 
 <!-- BREAK SCREEN -->
 <div id="break-screen" style="display:none;">
+<div class="screen-center">
 <div class="flip-clock-wrap">
 <div class="flip-clock-panel">
 <div class="flip-label" id="flip-label">Break ends in</div>
@@ -84,6 +89,7 @@ Nächste Pause<br>
 </div>
 </div>
 </div>
+
 <h2>Take a break, cutie 🫶</h2>
 
 <div class="sticky-wrap">
@@ -97,7 +103,32 @@ Take a break
 </div>
 </div>
 </div>
+</div>
 
 <script src="script.js"></script>
 </body>
 </html>
+
+
+
+/* =========================
+SCREEN CENTERING SYSTEM
+========================= */
+
+.screen-center {
+min-height: 100vh;
+width: 100%;
+
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+
+padding: 40px 20px;
+box-sizing: border-box;
+}
+
+.screen-center > * {
+max-width: 100%;
+}
+
