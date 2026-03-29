@@ -59,52 +59,71 @@ function updateFlipClock(totalSeconds) {
 async function unlockSound() {
   if (soundUnlocked) return true;
 
+  try {
+    gongSound.muted = true;
+    gongSound.currentTime = 0;
+
+    const playPromise = gongSound.play();
+    if (playPromise !== undefined) {
+      await playPromise;
+    }
+
+    gongSound.pause();
+    gongSound.currentTime = 0;
+    gongSound.muted = false;
+    soundUnlocked = true;
+
+    console.log("Sound erfolgreich freigeschaltet.");
+    return true;
+  } catch (error) {
+    gongSound.muted = false;
+    console.log("Sound konnte nicht freigeschaltet werden:", error);
+    return false;
+  }
+}
+
 function playGong() {
   try {
     const gong = gongSound.cloneNode();
-
     gong.volume = 0;
     gong.currentTime = 0;
 
     const playPromise = gong.play();
 
     if (playPromise !== undefined) {
-      playPromise.then(() => {
+      playPromise
+        .then(() => {
+          let vol = 0;
+          const fadeIn = setInterval(() => {
+            vol += 0.04;
 
-        // 🌿 sanftes Fade-In
-        let vol = 0;
-        const fadeIn = setInterval(() => {
-          vol += 0.04;
-
-          if (vol >= 0.75) {
-            gong.volume = 0.75;
-            clearInterval(fadeIn);
-          } else {
-            gong.volume = vol;
-          }
-        }, 40);
-
-        // 🌙 sanftes Fade-Out (nach ~3 Sekunden)
-        setTimeout(() => {
-          let fadeVol = gong.volume;
-
-          const fadeOut = setInterval(() => {
-            fadeVol -= 0.02;
-
-            if (fadeVol <= 0) {
-              gong.volume = 0;
-              clearInterval(fadeOut);
+            if (vol >= 0.75) {
+              gong.volume = 0.75;
+              clearInterval(fadeIn);
             } else {
-              gong.volume = fadeVol;
+              gong.volume = vol;
             }
-          }, 60);
-        }, 3000);
+          }, 40);
 
-      }).catch((error) => {
-        console.log("Gong Fehler:", error);
-      });
+          setTimeout(() => {
+            let fadeVol = gong.volume;
+
+            const fadeOut = setInterval(() => {
+              fadeVol -= 0.02;
+
+              if (fadeVol <= 0) {
+                gong.volume = 0;
+                clearInterval(fadeOut);
+              } else {
+                gong.volume = fadeVol;
+              }
+            }, 60);
+          }, 3000);
+        })
+        .catch((error) => {
+          console.log("Gong Fehler:", error);
+        });
     }
-
   } catch (error) {
     console.log("Gong konnte nicht abgespielt werden:", error);
   }
@@ -127,23 +146,6 @@ function showNotification(title, body) {
     }
   } catch (error) {
     console.log("Notification konnte nicht angezeigt werden:", error);
-  }
-}
-
-function playGong() {
-  try {
-    const gongClone = gongSound.cloneNode();
-    gongClone.volume = 1;
-    gongClone.currentTime = 0;
-
-    const playPromise = gongClone.play();
-    if (playPromise !== undefined) {
-      playPromise.catch((error) => {
-        console.log("Gong konnte nicht abgespielt werden:", error);
-      });
-    }
-  } catch (error) {
-    console.log("Gong konnte nicht abgespielt werden:", error);
   }
 }
 
@@ -277,7 +279,6 @@ function startWaitingPhase(startTime, endTime) {
 
       playGong();
       showNotification("Pause 💛", "Zeit für deine Pause 🌿");
-
       startBreak(endTime, false);
     }
   }, 1000);
@@ -299,7 +300,7 @@ function startBreak(endTime, playStartSignal = false) {
 
   function renderRemainingTime() {
     const now = new Date();
-    let remainingSeconds = Math.floor((endDate - now) / 1000);
+    const remainingSeconds = Math.floor((endDate - now) / 1000);
 
     if (remainingSeconds <= 0) {
       updateFlipClock(0);
