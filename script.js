@@ -12,6 +12,12 @@ const endMinute = document.getElementById("end-minute");
 const waitingText = document.getElementById("waiting-text");
 const timer = document.getElementById("timer");
 
+const flipMinTens = document.getElementById("flip-min-tens");
+const flipMinOnes = document.getElementById("flip-min-ones");
+const flipSecTens = document.getElementById("flip-sec-tens");
+const flipSecOnes = document.getElementById("flip-sec-ones");
+
+
 const gongSound = new Audio("gong.mp3");
 const stickyWaitingTime = document.getElementById("sticky-waiting-time");
 
@@ -110,19 +116,50 @@ startBreak(endTime);
 }, 1000);
 }
 
+function updateFlipClock(totalSeconds) {
+const minutes = Math.floor(totalSeconds / 60);
+const seconds = totalSeconds % 60;
+
+const minString = minutes.toString().padStart(2, "0");
+const secString = seconds.toString().padStart(2, "0");
+
+flipMinTens.textContent = minString[0];
+flipMinOnes.textContent = minString[1];
+flipSecTens.textContent = secString[0];
+flipSecOnes.textContent = secString[1];
+}
+
 function startBreak(endTime) {
 waitingScreen.style.display = "none";
 breakScreen.style.display = "block";
 
-const interval = setInterval(() => {
 const now = new Date();
 
-const current =
-now.getHours().toString().padStart(2, "0") +
-":" +
-now.getMinutes().toString().padStart(2, "0");
+const [endHourValue, endMinuteValue] = endTime.split(":");
+const endDate = new Date();
 
-if (current === endTime) {
+endDate.setHours(parseInt(endHourValue, 10));
+endDate.setMinutes(parseInt(endMinuteValue, 10));
+endDate.setSeconds(0);
+endDate.setMilliseconds(0);
+
+let remainingSeconds = Math.floor((endDate - now) / 1000);
+
+if (remainingSeconds < 0) {
+remainingSeconds = 0;
+}
+
+updateFlipClock(remainingSeconds);
+timer.textContent = `${Math.floor(remainingSeconds / 60)
+.toString()
+.padStart(2, "0")}:${(remainingSeconds % 60)
+.toString()
+.padStart(2, "0")}`;
+
+const interval = setInterval(() => {
+remainingSeconds--;
+
+if (remainingSeconds < 0) {
 clearInterval(interval);
 
 playGong();
@@ -137,6 +174,30 @@ endHour.value = "";
 endMinute.value = "";
 
 timer.textContent = "00:00";
+updateFlipClock(0);
+return;
 }
+
+updateFlipClock(remainingSeconds);
+
+const minutes = Math.floor(remainingSeconds / 60)
+.toString()
+.padStart(2, "0");
+const seconds = (remainingSeconds % 60)
+.toString()
+.padStart(2, "0");
+
+timer.textContent = `${minutes}:${seconds}`;
+}, 1000);
+}
+
+
+
+const flipMinTens = document.getElementById("flip-min-tens");
+const flipMinOnes = document.getElementById("flip-min-ones");
+const flipSecTens = document.getElementById("flip-sec-tens");
+const flipSecOnes = document.getElementById("flip-sec-ones");
+
+timer.textContent = `${minutes}:${seconds}`;
 }, 1000);
 }
