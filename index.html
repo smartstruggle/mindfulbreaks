@@ -1,103 +1,124 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mindful Breaks</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mindful Breaks</title>
 
-<link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&display=swap" rel="stylesheet" />
 </head>
 <body>
 
-<!-- STARTSCREEN -->
-<div id="setup-screen" class="start-screen">
-<h1>Wann möchtest du heute Pause machen?</h1>
-<p>Lege Start und Ende fest.</p>  
+  <!-- STARTSCREEN -->
+  <div id="setup-screen">
+    <div class="screen-center">
+      <div class="start-screen">
+        <h1 class="title">Wann möchtest du heute Pause machen?</h1>
+        <p class="subtitle">Lege Start und Ende fest.</p>
 
-<div class="time-group">
-<label>Start</label>
-<div class="time-inputs">
-<select id="start-hour">
-<option value="">HH</option>
-</select>
-<select id="start-minute">
-<option value="">MM</option>
-</select>
-</div>
-</div>
+        <div class="time-row">
+          <div class="time-group">
+            <label for="start-hour">Start</label>
+            <div class="time-inputs">
+              <select id="start-hour">
+                <option value="">HH</option>
+              </select>
+              <span class="colon">:</span>
+              <select id="start-minute">
+                <option value="">MM</option>
+              </select>
+            </div>
+          </div>
 
-<div class="time-group">
-<label>Ende</label>
-<div class="time-inputs">
-<select id="end-hour">
-<option value="">HH</option>
-</select>
-<select id="end-minute">
-<option value="">MM</option>
-</select>
-</div>
-</div>
+          <div class="time-group">
+            <label for="end-hour">Ende</label>
+            <div class="time-inputs">
+              <select id="end-hour">
+                <option value="">HH</option>
+              </select>
+              <span class="colon">:</span>
+              <select id="end-minute">
+                <option value="">MM</option>
+              </select>
+            </div>
+          </div>
+        </div>
 
-<button id="start-button">Pause planen</button>
-</div>
+        <button id="start-button">Pause planen</button>
 
-<!-- TRANSITION SCREEN -->
-<div id="waiting-screen" style="display:none;">
-<h2 id="waiting-text">Deine nächste Pause ist um ...</h2>
+        <p class="dedication">Für Joanna, Helen, Mirjam, Melanie &amp; Dilek</p>
+      </div>
+    </div>
+  </div>
 
-<div class="sticky-wrap">
-<div class="heart-pin pin-left"></div>
-<div class="heart-pin pin-right"></div>
+  <!-- TRANSITION SCREEN -->
+  <div id="waiting-screen" style="display: none;">
+    <div class="screen-center">
+      <h2 id="waiting-text">Deine nächste Pause ist um ...</h2>
 
-<div class="sticky-note">
-<div class="sticky-note-inner">
-Nächste Pause<br>
-<span id="sticky-waiting-time">--:-- Uhr</span>
-</div>
-</div>
-</div>
-</div>
+      <div class="sticky-wrap">
+        <div class="heart-pin pin-left"></div>
+        <div class="heart-pin pin-right"></div>
 
-<!-- BREAK SCREEN -->
-<div id="break-screen" style="display:none;">
-<div class="flip-clock-wrap">
-<div class="flip-clock-panel">
-<div class="flip-label" id="flip-label">Break ends in</div>
+        <div class="sticky-note">
+          <div class="sticky-note-inner">
+            Nächste Pause<br />
+            <span id="sticky-waiting-time">--:-- Uhr</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<div class="flip-display">
-<div class="flip-group">
-<div class="flip-card" id="flip-min-tens">0</div>
-<div class="flip-card" id="flip-min-ones">4</div>
-</div>
+  <!-- BREAK SCREEN -->
+  <div id="break-screen" style="display: none;">
+    <div class="screen-center">
+      <div class="flip-clock-wrap">
+        <div class="flip-clock-panel">
+          <div class="flip-label" id="flip-label">Break ends in</div>
 
-<div class="flip-middle-panel">
-<div class="flip-separator">
-<span></span>
-<span></span>
-</div>
-</div>
+          <div class="flip-display">
+            <div class="flip-group">
+              <div class="flip-card" id="flip-min-tens">0</div>
+              <div class="flip-card" id="flip-min-ones">0</div>
+            </div>
 
-<div class="flip-group">
-<div class="flip-card" id="flip-sec-tens">5</div>
-<div class="flip-card" id="flip-sec-ones">9</div>
-</div>
-</div>
-</div>
-</div>
-<h2>Take a break, cutie 🫶</h2>
+            <div class="flip-middle-panel">
+              <div class="flip-separator">
+                <span></span>
+                <span></span>
+              </div>
+            </div>
 
-<div class="sticky-wrap">
-<div class="heart-pin pin-left"></div>
-<div class="heart-pin pin-right"></div>
+            <div class="flip-group">
+              <div class="flip-card" id="flip-sec-tens">0</div>
+              <div class="flip-card" id="flip-sec-ones">0</div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-<div class="sticky-note break-note">
-<div class="sticky-note-inner">
-Take a break
-</div>
-</div>
-</div>
-</div>
+      <h2 class="break-headline">Take a break, cutie 🫶</h2>
 
-<script src="script.js"></script>
+      <div class="sticky-wrap">
+        <div class="heart-pin pin-left"></div>
+        <div class="heart-pin pin-right"></div>
+
+        <div class="sticky-note break-note">
+          <div class="sticky-note-inner">
+            Take a break
+          </div>
+        </div>
+      </div>
+
+      <!-- optional / hidden fallback timer -->
+      <div id="timer" aria-hidden="true">00:00</div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
