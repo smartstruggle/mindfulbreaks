@@ -8,170 +8,258 @@ height: 100vh;
 }
 
 /* =========================
-STARTSCREEN CLEAN RESET
+STARTSCREEN – COMPLETE
 ========================= */
 
-#setup-screen {
-display: block;
-}
+#setup-screen.start-screen {
+width: min(82vw, 980px);
+aspect-ratio: 210 / 297;
+margin: 50px auto;
+padding: 58px 56px 64px;
 
-.screen-center {
-min-height: 100vh;
-width: 100%;
 box-sizing: border-box;
-padding: 40px 20px;
 display: flex;
 flex-direction: column;
 align-items: center;
 justify-content: center;
-}
-
-#setup-screen .start-screen {
-width: min(92vw, 860px);
-aspect-ratio: 210 / 297;
-box-sizing: border-box;
+gap: 28px  
 
 background-color: #f8f7f3;
 background-image:
-linear-gradient(rgba(0,0,0,0.035) 1px, transparent 1px),
-linear-gradient(90deg, rgba(0,0,0,0.035) 1px, transparent 1px);
+linear-gradient(rgba(0, 0, 0, 0.035) 1px, transparent 1px),
+linear-gradient(90deg, rgba(0, 0, 0, 0.035) 1px, transparent 1px);
 background-size: 26px 26px;
 
-border-radius: 8px;
-box-shadow: 0 24px 50px rgba(0,0,0,0.08);
+border-radius: 6px;
 
-padding: 56px 48px 56px;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-gap: 24px;
-}
-
-.title {
-margin: 0;
-font-size: 28px;
-font-weight: 400;
-color: #2f3440;
-text-align: center;
-}
-
-.subtitle {
-margin: 0;
-font-size: 16px;
-color: #7f8794;
-text-align: center;
-}
-
-.time-row {
-width: 100%;
-display: flex;
-justify-content: center;
-gap: 24px;
-}
-
-.time-group {
-width: 100%;
-max-width: 300px;
-background: rgba(255,255,255,0.72);
-border-radius: 18px;
-padding: 22px 20px;
-box-sizing: border-box;
-box-shadow: 0 10px 24px rgba(0,0,0,0.05);
-}
-
-.time-group label {
-display: block;
-margin-bottom: 16px;
-font-size: 16px;
-color: #969eab;
-}
-
-.time-inputs {
-display: flex;
-justify-content: center;
-gap: 14px;
-}
-
-.time-inputs select {
-width: 112px;
-height: 64px;
-border: none;
-border-radius: 16px;
-background: #f3f3f3;
-color: #2f3440;
-font-size: 18px;
-text-align: center;
 box-shadow:
-inset 0 1px 2px rgba(0,0,0,0.06),
-0 4px 10px rgba(0,0,0,0.04);
+0 28px 55px rgba(0, 0, 0, 0.10),
+inset 0 0 50px rgba(0, 0, 0, 0.025);
 }
 
-#start-button {
-margin-top: 4px;
-padding: 16px 34px;
-min-width: 240px;
-border: none;
-border-radius: 999px;
-background: linear-gradient(180deg, #485068 0%, #31384a 100%);
-color: white;
-font-size: 16px;
-box-shadow: 0 10px 20px rgba(0,0,0,0.16);
+/* Überschrift */
+#setup-screen.start-screen h1 {
+margin: 0 0 20px;
+font-size: 26px;
+line-height: 1.2;
+font-weight: 400;
+color: #2e3138;
+text-align: center;
+letter-spacing: -0.01em;
+}
+
+/* Optionaler Subtext, falls du ein <p> einfügst */
+#setup-screen.start-screen p {
+margin: 0 0 34px;
+font-size: 17px;
+line-height: 1.4;
+color: #6f7682;
+text-align: center;
+}
+
+/* Falls du keinen <p> hast, etwas Abstand nach der H1 */
+#setup-screen.start-screen h1 + .time-group,
+#setup-screen.start-screen h1 + .time-row,
+#setup-screen.start-screen h1 + .subtitle-spacer {
+margin-top: 26px;
+}
+
+/* Row für Start / Ende nebeneinander
+Falls deine time-groups noch untereinander stehen, hilft das direkt */
+#setup-screen.start-screen {
+gap: 18px;
+}
+
+#setup-screen.start-screen .time-row {
+width: 100%;
+display: flex;
+justify-content: center;
+gap: 26px;
+margin-top: 10px;
+}
+
+/* Wenn du KEINE .time-row im HTML hast, werden die time-groups trotzdem hübsch */
+#setup-screen.start-screen .time-group {
+background: rgba(255, 255, 255, 0.72);
+backdrop-filter: blur(4px);
+
+width: 320px;
+min-height: 188px;
+padding: 26px 28px 24px;
+
+box-sizing: border-box;
+border-radius: 18px;
+text-align: left;
+
+box-shadow:
+0 12px 24px rgba(0, 0, 0, 0.06),
+inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+/* Wenn Start und Ende aktuell untereinander stehen:
+Mach sie nebeneinander, sobald zwei time-groups direkt in setup-screen liegen */
+#setup-screen.start-screen > .time-group {
+display: inline-block;
+vertical-align: top;
+margin: 0 10px;
+}
+
+/* Labels Start / Ende */
+#setup-screen.start-screen .time-group label {
+display: block;
+margin: 0 0 24px;
+font-size: 18px;
+line-height: 1.2;
+font-weight: 500;
+color: #9aa0aa;
+}
+
+/* Inputs HH / MM */
+#setup-screen.start-screen .time-inputs {
+display: flex;
+align-items: center;
+justify-content: flex-start;
+gap: 16px;
+}
+
+/* Doppelpunkt optisch größer */
+#setup-screen.start-screen .time-inputs::before,
+#setup-screen.start-screen .time-inputs::after {
+display: none;
+}
+
+#setup-screen.start-screen .time-inputs select {
+appearance: none;
+-webkit-appearance: none;
+-moz-appearance: none;
+
+min-width: 120px;
+height: 64px;
+padding: 0 16px;
+
+border: 1px solid rgba(80, 90, 110, 0.08);
+border-radius: 16px;
+outline: none;
+
+background: rgba(255, 255, 255, 0.88);
+color: #2f3440;
+font-size: 26px;
+font-weight: 500;
+text-align: center;
+
+box-shadow:
+0 6px 14px rgba(0, 0, 0, 0.06),
+inset 0 1px 0 rgba(255, 255, 255, 0.7);
+
 cursor: pointer;
 }
 
-.dedication {
-margin: 0;
-font-size: 11.5px;
-color: #aab1bc;
-opacity: 0.65;
-text-align: center;
+/* Wenn du den Doppelpunkt im HTML als Text hast, z. B. ":" */
+#setup-screen.start-screen .time-inputs span,
+#setup-screen.start-screen .time-inputs .colon {
+font-size: 38px;
+line-height: 1;
+color: #383d46;
+font-weight: 400;
+margin: 0 2px;
 }
 
-@media (max-width: 768px) {
-#setup-screen .start-screen {
-width: 94vw;
-aspect-ratio: auto;
-padding: 38px 20px 42px;
-gap: 20px;
+/* Button */
+#setup-screen.start-screen button,
+#setup-screen.start-screen #start-button {
+margin-top: 34px;
+padding: 18px 42px;
+min-width: 260px;
+
+border: none;
+border-radius: 999px;
+cursor: pointer;
+
+background: linear-gradient(
+180deg,
+#454b59 0%,
+#313746 100%
+);
+
+color: #ffffff;
+font-size: 20px;
+font-weight: 500;
+letter-spacing: -0.01em;
+
+box-shadow:
+0 12px 24px rgba(0, 0, 0, 0.18),
+inset 0 1px 0 rgba(255, 255, 255, 0.10);
+
+transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 
-.title {
-font-size: 24px;
+#setup-screen.start-screen button:hover,
+#setup-screen.start-screen #start-button:hover {
+transform: translateY(-1px);
+box-shadow:
+0 14px 28px rgba(0, 0, 0, 0.20),
+inset 0 1px 0 rgba(255, 255, 255, 0.10);
 }
-
-.subtitle {
-font-size: 15px;
-}
-
-.time-row {
-flex-direction: column;
-align-items: center;
-gap: 20px;
-}
-
-.time-group {
-max-width: 100%;
-}
-
-.time-inputs select {
-width: 96px;
-height: 58px;
-font-size: 16px;
-}
-
-#start-button {
-width: 100%;
-max-width: 320px;
-}
-}
-
 
 /* Responsive */
 @media (max-width: 900px) {
+#setup-screen.start-screen {
+width: 92vw;
+aspect-ratio: auto;
+min-height: auto;
+padding: 36px 24px 42px;
+}
 
+#setup-screen.start-screen h1 {
+font-size: 26px;
+}
 
+#setup-screen.start-screen p {
+font-size: 15px;
+margin-bottom: 28px;
+}
 
+#setup-screen.start-screen > .time-group {
+display: block;
+width: 100%;
+margin: 0 0 16px;
+}
+
+#setup-screen.start-screen .time-group {
+width: 100%;
+min-height: auto;
+padding: 28px 20px 20px;
+}
+
+#setup-screen.start-screen .time-group label {
+margin-bottom: 16px;
+font-size: 17px;
+}
+
+#setup-screen.start-screen .time-inputs {
+justify-content: center;
+gap: 10px;
+}
+
+#setup-screen.start-screen .time-inputs select {
+min-width: 120px;
+height: 64px;
+font-size: 20px;
+border-radius: 16px;
+}
+
+#setup-screen.start-screen .time-inputs span,
+#setup-screen.start-screen .time-inputs .colon {
+font-size: 30px;
+}
+
+#setup-screen.start-screen button,
+#setup-screen.start-screen #start-button {
+min-width: 220px;
+font-size: 18px;
+padding: 16px 32px;
+}
+}
 /* Waiting / Break Screen Wrapper */
 .waiting-note-wrap,
 .break-note-wrap {
@@ -795,174 +883,4 @@ linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
 
 background-size: 24px 24px;
 background-color: #f7f6f2;
-}
-
-
-
-/* =========================
-SCREEN CENTERING SYSTEM
-========================= */
-
-.screen-center {
-min-height: 100vh;
-width: 100%;
-
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-
-padding: 40px 20px;
-box-sizing: border-box;
-}
-
-.screen-center > * {
-max-width: 100%;
-}
-
-
-@media (max-width: 768px) {
-#break-screen .screen-center {
-padding: 28px 20px 36px;
-gap: 20px;
-justify-content: flex-start;
-}
-
-.flip-clock-wrap {
-width: 100%;
-max-width: 360px;
-padding: 8px !important;
-border-radius: 28px;
-}
-
-.flip-clock-panel {
-padding: 22px 18px 20px !important;
-border-radius: 24px;
-}
-
-.flip-label {
-font-size: 18px !important;
-margin-bottom: 16px !important;
-}
-
-.flip-display {
-gap: 8px !important;
-padding: 0 !important;
-}
-
-.flip-group {
-gap: 2px;
-}
-
-.flip-card {
-width: 68px !important;
-height: 96px !important;
-font-size: 58px !important;
-border-radius: 14px !important;
-}
-
-.flip-middle-panel {
-width: 44px !important;
-min-height: 96px !important;
-margin: 0 -4px !important;
-}
-
-.flip-middle-panel::before,
-.flip-middle-panel::after {
-width: 44px !important;
-height: 18px !important;
-}
-
-.flip-middle-panel::before {
-top: -8px;
-}
-
-.flip-middle-panel::after {
-bottom: -8px;
-}
-
-.flip-separator {
-gap: 10px !important;
-width: 12px !important;
-}
-
-.flip-separator span {
-width: 10px !important;
-height: 10px !important;
-}
-
-.flip-group::before,
-.flip-group::after {
-width: 5px !important;
-height: 18px !important;
-}
-
-.flip-group::before {
-left: -2px !important;
-}
-
-.flip-group::after {
-right: -2px !important;
-}
-
-#break-screen h2 {
-font-size: 22px;
-text-align: center;
-margin: 0;
-}
-
-.sticky-wrap {
-transform: scale(0.9);
-transform-origin: top center;
-}
-}
-
-
-
-@media (max-width: 768px) {
-#setup-screen .start-screen {
-width: 94vw;
-padding: 40px 22px 44px;
-gap: 22px;
-}
-
-.title {
-font-size: 24px;
-}
-
-.subtitle {
-font-size: 15px;
-}
-
-.time-group {
-max-width: 100%;
-}
-
-.time-inputs select {
-width: 90px;
-height: 50px;
-font-size: 16px;
-}
-
-#start-button {
-width: 100%;
-max-width: 320px;
-}
-  
-#waiting-screen .screen-center {
-padding: 36px 20px 40px;
-gap: 22px;
-justify-content: flex-start;
-}
-
-#waiting-screen h2 {
-font-size: 24px;
-text-align: center;
-margin: 0;
-}
-
-#waiting-screen .sticky-wrap {
-transform: scale(0.9);
-transform-origin: top center;
-}
 }
