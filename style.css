@@ -695,3 +695,12 @@ width: 64% !important;
 padding: 18px 12px 18px !important;
 gap: 4px !important;
 }
+.flip-display {
+padding: 12px 12px 12px !important;
+}
+
+
+.flip-middle-panel {
+width: 80px !important;
+height: 250px !important;
+}
