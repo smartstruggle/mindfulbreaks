@@ -59,28 +59,47 @@ function updateFlipClock(totalSeconds) {
 async function unlockSound() {
   if (soundUnlocked) return true;
 
- function playGong() {
+function playGong() {
   try {
-    const gongClone = gongSound.cloneNode();
+    const gong = gongSound.cloneNode();
 
-    gongClone.volume = 0; // startet leise
-    gongClone.currentTime = 0;
+    gong.volume = 0;
+    gong.currentTime = 0;
 
-    const playPromise = gongClone.play();
+    const playPromise = gong.play();
 
     if (playPromise !== undefined) {
       playPromise.then(() => {
-        // sanftes Fade-In
+
+        // 🌿 sanftes Fade-In
         let vol = 0;
-        const fade = setInterval(() => {
-          vol += 0.05;
-          if (vol >= 0.8) {
-            gongClone.volume = 0.8;
-            clearInterval(fade);
+        const fadeIn = setInterval(() => {
+          vol += 0.04;
+
+          if (vol >= 0.75) {
+            gong.volume = 0.75;
+            clearInterval(fadeIn);
           } else {
-            gongClone.volume = vol;
+            gong.volume = vol;
           }
         }, 40);
+
+        // 🌙 sanftes Fade-Out (nach ~3 Sekunden)
+        setTimeout(() => {
+          let fadeVol = gong.volume;
+
+          const fadeOut = setInterval(() => {
+            fadeVol -= 0.02;
+
+            if (fadeVol <= 0) {
+              gong.volume = 0;
+              clearInterval(fadeOut);
+            } else {
+              gong.volume = fadeVol;
+            }
+          }, 60);
+        }, 3000);
+
       }).catch((error) => {
         console.log("Gong Fehler:", error);
       });
