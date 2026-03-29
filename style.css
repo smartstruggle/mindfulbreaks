@@ -684,3 +684,14 @@ gap: 16px !important;
 width: 12px !important;
 height: 12px !important;
 }
+
+
+/* =========================
+TEST: INNER DISPLAY TIGHTER
+========================= */
+
+.flip-display {
+width: 64% !important;
+padding: 18px 12px 18px !important;
+gap: 4px !important;
+}
