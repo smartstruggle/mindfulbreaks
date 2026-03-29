@@ -263,7 +263,173 @@ display: none;
 }
 
 
+.flip-clock-wrap {
+display: flex;
+justify-content: center;
+align-items: center;
+width: 100%;
+}
 
+.flip-clock {
+width: 680px;
+max-width: 92vw;
+padding: 18px 22px 22px;
+border-radius: 34px;
+background: linear-gradient(
+180deg,
+#ffb14a 0%,
+#ff941e 48%,
+#ef7f00 100%
+);
+box-sizing: border-box;
+}
+
+.flip-label {
+text-align: center;
+font-size: 32px;
+font-weight: 700;
+letter-spacing: -0.02em;
+color: #f6dd9b;
+margin-bottom: 18px;
+font-family: Arial, sans-serif;
+}
+
+.flip-display {
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 18px;
+padding: 24px 26px;
+border-radius: 26px;
+background: linear-gradient(
+180deg,
+#4a443d 0%,
+#3e3832 48%,
+#332e29 100%
+);
+box-shadow:
+inset 0 2px 2px rgba(255,255,255,0.05),
+inset 0 -2px 4px rgba(0,0,0,0.18);
+}
+
+.flip-group {
+display: flex;
+gap: 0;
+}
+
+.flip-card {
+position: relative;
+width: 150px;
+height: 170px;
+display: flex;
+justify-content: center;
+align-items: center;
+background: linear-gradient(
+180deg,
+#3a3a38 0%,
+#2f2f2d 50%,
+#262624 100%
+);
+color: #f4f1e8;
+font-size: 122px;
+font-weight: 700;
+line-height: 1;
+font-family: Arial, sans-serif;
+border-radius: 12px;
+border: 2px solid #1c1c1b;
+box-sizing: border-box;
+box-shadow:
+inset 0 10px 18px rgba(255,255,255,0.03),
+inset 0 -12px 18px rgba(0,0,0,0.22),
+inset 10px 0 14px rgba(255,255,255,0.02),
+inset -10px 0 14px rgba(0,0,0,0.18);
+}
+
+.flip-card + .flip-card {
+margin-left: -2px;
+}
+
+.flip-card::before {
+content: "";
+position: absolute;
+left: 0;
+right: 0;
+top: 50%;
+height: 2px;
+background: rgba(0,0,0,0.65);
+transform: translateY(-50%);
+z-index: 2;
+}
+
+.flip-card::after {
+content: "";
+position: absolute;
+inset: 0;
+border-radius: 10px;
+background:
+linear-gradient(
+180deg,
+rgba(255,255,255,0.06) 0%,
+rgba(255,255,255,0.01) 22%,
+rgba(0,0,0,0.00) 48%,
+rgba(0,0,0,0.12) 100%
+);
+pointer-events: none;
+}
+
+.flip-separator {
+display: flex;
+flex-direction: column;
+justify-content: center;
+gap: 18px;
+align-items: center;
+width: 22px;
+}
+
+.flip-separator span {
+width: 12px;
+height: 12px;
+border-radius: 50%;
+background: #ece6d9;
+box-shadow:
+inset 0 1px 1px rgba(255,255,255,0.4),
+inset 0 -1px 1px rgba(0,0,0,0.22);
+}
+
+@media (max-width: 768px) {
+.flip-clock {
+padding: 14px 14px 16px;
+border-radius: 26px;
+}
+
+.flip-label {
+font-size: 24px;
+margin-bottom: 12px;
+}
+
+.flip-display {
+gap: 12px;
+padding: 14px 14px;
+border-radius: 20px;
+}
+
+.flip-card {
+width: 84px;
+height: 100px;
+font-size: 70px;
+border-radius: 10px;
+}
+
+.flip-separator {
+width: 14px;
+gap: 12px;
+}
+
+.flip-separator span {
+width: 8px;
+height: 8px;
+}
+}
 
 
 
