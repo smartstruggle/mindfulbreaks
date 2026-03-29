@@ -7,161 +7,131 @@ align-items: center;
 height: 100vh;
 }
 
+
 /* =========================
-STARTSCREEN – COMPLETE
+STARTSCREEN FINAL
 ========================= */
 
 #setup-screen .start-screen {
-width: min(82vw, 980px);
+width: min(92vw, 820px);
 aspect-ratio: 210 / 297;
-margin: 50px auto;
-padding: 58px 56px 64px;
 
+padding: 56px 48px 64px;
 box-sizing: border-box;
+
 display: flex;
 flex-direction: column;
 align-items: center;
 justify-content: center;
-gap: 28px  
+
+gap: 28px;
 
 background-color: #f8f7f3;
+
 background-image:
-linear-gradient(rgba(0, 0, 0, 0.035) 1px, transparent 1px),
-linear-gradient(90deg, rgba(0, 0, 0, 0.035) 1px, transparent 1px);
+linear-gradient(rgba(0,0,0,0.035) 1px, transparent 1px),
+linear-gradient(90deg, rgba(0,0,0,0.035) 1px, transparent 1px);
+
 background-size: 26px 26px;
 
-border-radius: 6px;
+border-radius: 8px;
 
 box-shadow:
-0 28px 55px rgba(0, 0, 0, 0.10),
-inset 0 0 50px rgba(0, 0, 0, 0.025);
+0 30px 60px rgba(0,0,0,0.08),
+0 10px 20px rgba(0,0,0,0.06);
 }
 
-/* Überschrift */
-#setup-screen .start-screen h1 {
-margin: 0 0 20px;
-font-size: 26px;
-line-height: 1.2;
-font-weight: 400;
-color: #2e3138;
+
+/* Titel */
+.title {
+font-size: 30px;
+font-weight: 500;
 text-align: center;
-letter-spacing: -0.01em;
+color: #2d3138;
+margin: 0;
 }
 
-/* Optionaler Subtext, falls du ein <p> einfügst */
-#setup-screen .start-screen p {
-margin: 0 0 34px;
-font-size: 17px;
-line-height: 1.4;
-color: #6f7682;
+
+/* Untertitel */
+.subtitle {
+font-size: 16px;
+color: #8c95a3;
+margin: 0 0 12px 0;
 text-align: center;
 }
 
-/* Falls du keinen <p> hast, etwas Abstand nach der H1 */
-#setup-screen .start-screen h1 + .time-group,
-#setup-screen .start-screen h1 + .time-row,
-#setup-screen .start-screen h1 + .subtitle-spacer {
-margin-top: 26px;
-}
 
-/* Row für Start / Ende nebeneinander
-Falls deine time-groups noch untereinander stehen, hilft das direkt */
-#setup-screen .start-screen {
-gap: 18px;
-}
-
-#setup-screen .start-screen .time-row {
+/* Input Karten */
+.time-group {
 width: 100%;
-display: flex;
-justify-content: center;
-gap: 26px;
-margin-top: 10px;
-}
+max-width: 420px;
 
-/* Wenn du KEINE .time-row im HTML hast, werden die time-groups trotzdem hübsch */
-#setup-screen .start-screen .time-group {
-background: rgba(255, 255, 255, 0.72);
-backdrop-filter: blur(4px);
-
-width: 320px;
-min-height: 188px;
-padding: 26px 28px 24px;
-
-box-sizing: border-box;
+background: #f3f3f3;
+padding: 18px 20px;
 border-radius: 18px;
-text-align: left;
 
-box-shadow:
-0 12px 24px rgba(0, 0, 0, 0.06),
-inset 0 1px 0 rgba(255, 255, 255, 0.65);
-}
-
-/* Wenn Start und Ende aktuell untereinander stehen:
-Mach sie nebeneinander, sobald zwei time-groups direkt in setup-screen liegen */
-#setup-screen .start-screen > .time-group {
-display: inline-block;
-vertical-align: top;
-margin: 0 10px;
-}
-
-/* Labels Start / Ende */
-#setup-screen .start-screen .time-group label {
-display: block;
-margin: 0 0 24px;
-font-size: 18px;
-line-height: 1.2;
-font-weight: 500;
-color: #9aa0aa;
-}
-
-/* Inputs HH / MM */
-#setup-screen .start-screen .time-inputs {
 display: flex;
-align-items: center;
-justify-content: flex-start;
-gap: 16px;
+flex-direction: column;
+gap: 12px;
 }
 
-/* Doppelpunkt optisch größer */
-#setup-screen .start-screen .time-inputs::before,
-#setup-screen.start-screen .time-inputs::after {
-display: none;
+.time-group label {
+font-size: 14px;
+color: #8c95a3;
 }
 
-#setup-screen .start-screen .time-inputs select {
-appearance: none;
--webkit-appearance: none;
--moz-appearance: none;
 
-min-width: 120px;
-height: 64px;
-padding: 0 16px;
+/* Inputs */
+.time-inputs {
+display: flex;
+gap: 14px;
+justify-content: center;
+}
 
-border: 1px solid rgba(80, 90, 110, 0.08);
-border-radius: 16px;
-outline: none;
+.time-inputs select {
+width: 110px;
+height: 56px;
 
-background: rgba(255, 255, 255, 0.88);
-color: #2f3440;
-font-size: 26px;
-font-weight: 500;
+border-radius: 14px;
+border: none;
+
+background: #ececec;
+
+font-size: 18px;
 text-align: center;
 
 box-shadow:
-0 6px 14px rgba(0, 0, 0, 0.06),
-inset 0 1px 0 rgba(255, 255, 255, 0.7);
+inset 0 1px 2px rgba(0,0,0,0.08),
+inset 0 -1px 2px rgba(255,255,255,0.8);
+}
+
+
+/* Button */
+#start-button {
+margin-top: 10px;
+
+padding: 16px 34px;
+border-radius: 28px;
+border: none;
+
+background: linear-gradient(180deg, #444b5c, #2e3443);
+
+color: white;
+font-size: 16px;
+
+box-shadow: 0 8px 18px rgba(0,0,0,0.18);
 
 cursor: pointer;
 }
 
-/* Wenn du den Doppelpunkt im HTML als Text hast, z. B. ":" */
-#setup-screen .start-screen .time-inputs span,
-#setup-screen .start-screen .time-inputs .colon {
-font-size: 38px;
-line-height: 1;
-color: #383d46;
-font-weight: 400;
-margin: 0 2px;
+
+/* Dedication */
+.dedication {
+margin-top: 12px;
+font-size: 13px;
+color: #9aa3af;
+text-align: center;
+opacity: 0.8;
 }
 
 /* Button */
@@ -1008,6 +978,35 @@ transform-origin: top center;
 
 
 @media (max-width: 768px) {
+#setup-screen .start-screen {
+width: 94vw;
+padding: 40px 22px 44px;
+gap: 22px;
+}
+
+.title {
+font-size: 24px;
+}
+
+.subtitle {
+font-size: 15px;
+}
+
+.time-group {
+max-width: 100%;
+}
+
+.time-inputs select {
+width: 90px;
+height: 50px;
+font-size: 16px;
+}
+
+#start-button {
+width: 100%;
+max-width: 320px;
+}
+  
 #waiting-screen .screen-center {
 padding: 36px 20px 40px;
 gap: 22px;
