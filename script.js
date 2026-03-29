@@ -20,14 +20,13 @@ const flipSecOnes = document.getElementById("flip-sec-ones");
 const stickyWaitingTime = document.getElementById("sticky-waiting-time");
 
 const gongSound = new Audio("gong.mp3");
+gongSound.preload = "auto";
 
-let appState = {
-  mode: "setup", // setup | waiting | break
-  startTime: null,
-  endTime: null
-};
-
-let heartbeatInterval = null;
+let waitingInterval = null;
+let breakInterval = null;
+let activeStartTime = null;
+let activeEndTime = null;
+let soundUnlocked = false;
 
 function fillTimeOptions() {
   for (let i = 0; i < 24; i++) {
@@ -45,7 +44,6 @@ function fillTimeOptions() {
 
 function updateFlipClock(totalSeconds) {
   const safeSeconds = Math.max(0, totalSeconds);
-
   const minutes = Math.floor(safeSeconds / 60);
   const seconds = safeSeconds % 60;
 
@@ -59,12 +57,28 @@ function updateFlipClock(totalSeconds) {
 }
 
 async function unlockSound() {
+  if (soundUnlocked) return true;
+
   try {
-    await gongSound.play();
+    gongSound.muted = true;
+    gongSound.currentTime = 0;
+
+    const playPromise = gongSound.play();
+    if (playPromise !== undefined) {
+      await playPromise;
+    }
+
     gongSound.pause();
     gongSound.currentTime = 0;
+    gongSound.muted = false;
+    soundUnlocked = true;
+
+    console.log("Sound erfolgreich freigeschaltet.");
+    return true;
   } catch (error) {
+    gongSound.muted = false;
     console.log("Sound konnte nicht freigeschaltet werden:", error);
+    return false;
   }
 }
 
@@ -90,49 +104,42 @@ function showNotification(title, body) {
 
 function playGong() {
   try {
-    gongSound.currentTime = 0;
-    gongSound.play();
+    const gongClone = gongSound.cloneNode();
+    gongClone.volume = 1;
+    gongClone.currentTime = 0;
+
+    const playPromise = gongClone.play();
+    if (playPromise !== undefined) {
+      playPromise.catch((error) => {
+        console.log("Gong konnte nicht abgespielt werden:", error);
+      });
+    }
   } catch (error) {
     console.log("Gong konnte nicht abgespielt werden:", error);
   }
 }
 
-function getTodayDateForTime(timeString) {
-  const [hours, minutes] = timeString.split(":").map(Number);
-  const date = new Date();
+function clearIntervals() {
+  if (waitingInterval) {
+    clearInterval(waitingInterval);
+    waitingInterval = null;
+  }
 
-  date.setHours(hours);
-  date.setMinutes(minutes);
-  date.setSeconds(0);
-  date.setMilliseconds(0);
-
-  return date;
-}
-
-function showSetupScreen() {
-  setupScreen.style.display = "block";
-  waitingScreen.style.display = "none";
-  breakScreen.style.display = "none";
-}
-
-function showWaitingScreen() {
-  setupScreen.style.display = "none";
-  waitingScreen.style.display = "block";
-  breakScreen.style.display = "none";
-}
-
-function showBreakScreen() {
-  setupScreen.style.display = "none";
-  waitingScreen.style.display = "none";
-  breakScreen.style.display = "block";
+  if (breakInterval) {
+    clearInterval(breakInterval);
+    breakInterval = null;
+  }
 }
 
 function resetApp() {
-  appState = {
-    mode: "setup",
-    startTime: null,
-    endTime: null
-  };
+  clearIntervals();
+
+  activeStartTime = null;
+  activeEndTime = null;
+
+  setupScreen.style.display = "block";
+  waitingScreen.style.display = "none";
+  breakScreen.style.display = "none";
 
   startHour.value = "";
   startMinute.value = "";
@@ -148,24 +155,59 @@ function resetApp() {
   }
 
   updateFlipClock(0);
-  showSetupScreen();
 }
 
-function startPlan(startTime, endTime) {
+function getTodayDateForTime(timeString) {
+  const [hours, minutes] = timeString.split(":").map(Number);
+  const date = new Date();
+
+  date.setHours(hours);
+  date.setMinutes(minutes);
+  date.setSeconds(0);
+  date.setMilliseconds(0);
+
+  return date;
+}
+
+function validateTimes(startTime, endTime) {
   const startDate = getTodayDateForTime(startTime);
   const endDate = getTodayDateForTime(endTime);
+  return endDate > startDate;
+}
 
-  if (endDate <= startDate) {
-    alert("Die Endzeit muss nach der Startzeit liegen 💛");
-    resetApp();
+function syncAppState() {
+  if (!activeStartTime || !activeEndTime) return;
+
+  const now = new Date();
+  const startDate = getTodayDateForTime(activeStartTime);
+  const endDate = getTodayDateForTime(activeEndTime);
+
+  if (now < startDate) {
+    setupScreen.style.display = "none";
+    waitingScreen.style.display = "block";
+    breakScreen.style.display = "none";
     return;
   }
 
-  appState = {
-    mode: "waiting",
-    startTime,
-    endTime
-  };
+  if (now >= startDate && now < endDate) {
+    startBreak(activeEndTime, false);
+    return;
+  }
+
+  if (now >= endDate) {
+    resetApp();
+  }
+}
+
+function startWaitingPhase(startTime, endTime) {
+  clearIntervals();
+
+  activeStartTime = startTime;
+  activeEndTime = endTime;
+
+  setupScreen.style.display = "none";
+  waitingScreen.style.display = "block";
+  breakScreen.style.display = "none";
 
   if (stickyWaitingTime) {
     stickyWaitingTime.textContent = `${startTime} Uhr`;
@@ -175,42 +217,76 @@ function startPlan(startTime, endTime) {
     waitingText.textContent = `Deine nächste Pause ist um ${startTime}`;
   }
 
-  syncAppState(true);
-}
-
-function syncAppState(playSoundOnTransitions = false) {
-  const { mode, startTime, endTime } = appState;
-
-  if (mode === "setup" || !startTime || !endTime) {
-    showSetupScreen();
-    return;
-  }
-
-  const now = new Date();
   const startDate = getTodayDateForTime(startTime);
   const endDate = getTodayDateForTime(endTime);
+  const now = new Date();
 
-  if (now < startDate) {
-    appState.mode = "waiting";
-    showWaitingScreen();
-
-    if (stickyWaitingTime) {
-      stickyWaitingTime.textContent = `${startTime} Uhr`;
-    }
-
+  if (endDate <= startDate) {
+    alert("Die Endzeit muss nach der Startzeit liegen 💛");
+    resetApp();
     return;
   }
 
-  if (now >= startDate && now < endDate) {
-    const remainingSeconds = Math.max(0, Math.floor((endDate - now) / 1000));
+  if (now >= endDate) {
+    alert("Diese Zeitspanne ist heute schon vorbei 💛");
+    resetApp();
+    return;
+  }
 
-    if (appState.mode !== "break" && playSoundOnTransitions) {
+  if (now >= startDate) {
+    playGong();
+    showNotification("Pause 💛", "Zeit für deine Pause 🌿");
+    startBreak(endTime, false);
+    return;
+  }
+
+  waitingInterval = setInterval(() => {
+    const currentNow = new Date();
+
+    if (currentNow >= startDate) {
+      clearInterval(waitingInterval);
+      waitingInterval = null;
+
       playGong();
       showNotification("Pause 💛", "Zeit für deine Pause 🌿");
+
+      startBreak(endTime, false);
+    }
+  }, 1000);
+}
+
+function startBreak(endTime, playStartSignal = false) {
+  clearIntervals();
+
+  waitingScreen.style.display = "none";
+  breakScreen.style.display = "block";
+  setupScreen.style.display = "none";
+
+  if (playStartSignal) {
+    playGong();
+    showNotification("Pause 💛", "Zeit für deine Pause 🌿");
+  }
+
+  const endDate = getTodayDateForTime(endTime);
+
+  function renderRemainingTime() {
+    const now = new Date();
+    let remainingSeconds = Math.floor((endDate - now) / 1000);
+
+    if (remainingSeconds <= 0) {
+      updateFlipClock(0);
+
+      if (timer) {
+        timer.textContent = "00:00";
+      }
+
+      clearIntervals();
+      playGong();
+      showNotification("Pause vorbei ✨", "Deine Pause ist jetzt vorbei.");
+      resetApp();
+      return;
     }
 
-    appState.mode = "break";
-    showBreakScreen();
     updateFlipClock(remainingSeconds);
 
     if (timer) {
@@ -218,33 +294,19 @@ function syncAppState(playSoundOnTransitions = false) {
       const seconds = (remainingSeconds % 60).toString().padStart(2, "0");
       timer.textContent = `${minutes}:${seconds}`;
     }
-
-    return;
   }
 
-  if (now >= endDate) {
-    if (appState.mode === "break" && playSoundOnTransitions) {
-      playGong();
-      showNotification("Pause vorbei ✨", "Deine Pause ist jetzt vorbei.");
-    }
-
-    resetApp();
-  }
-}
-
-function startHeartbeat() {
-  if (heartbeatInterval) {
-    clearInterval(heartbeatInterval);
-  }
-
-  heartbeatInterval = setInterval(() => {
-    syncAppState(false);
-  }, 1000);
+  renderRemainingTime();
+  breakInterval = setInterval(renderRemainingTime, 1000);
 }
 
 startButton.addEventListener("click", async () => {
-  await unlockSound();
+  const unlocked = await unlockSound();
   await requestNotificationPermission();
+
+  if (!unlocked) {
+    console.log("Hinweis: Sound ist noch nicht freigeschaltet oder Datei fehlt.");
+  }
 
   if (!startHour.value || !startMinute.value || !endHour.value || !endMinute.value) {
     alert("Bitte beide Zeiten vollständig eingeben 🥺");
@@ -254,20 +316,27 @@ startButton.addEventListener("click", async () => {
   const startTime = `${startHour.value}:${startMinute.value}`;
   const endTime = `${endHour.value}:${endMinute.value}`;
 
-  startPlan(startTime, endTime);
+  if (!validateTimes(startTime, endTime)) {
+    alert("Die Endzeit muss nach der Startzeit liegen 💛");
+    return;
+  }
+
+  startWaitingPhase(startTime, endTime);
 });
 
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) {
-    syncAppState(false);
+    syncAppState();
   }
 });
 
 window.addEventListener("focus", () => {
-  syncAppState(false);
+  syncAppState();
+});
+
+gongSound.addEventListener("error", () => {
+  console.log("Fehler beim Laden von gong.mp3. Prüfe Dateiname und Speicherort.");
 });
 
 fillTimeOptions();
 updateFlipClock(0);
-startHeartbeat();
-showSetupScreen();
