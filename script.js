@@ -9,6 +9,10 @@ const startMinute = document.getElementById("start-minute");
 const endHour = document.getElementById("end-hour");
 const endMinute = document.getElementById("end-minute");
 
+const prepOverlay = document.getElementById("prep-overlay");
+const prepNote = document.getElementById("prep-note");
+const prepConfirmButton = document.getElementById("prep-confirm-button");
+
 const waitingText = document.getElementById("waiting-text");
 const timer = document.getElementById("timer");
 
@@ -205,6 +209,42 @@ function validateTimes(startTime, endTime) {
   return endDate > startDate;
 }
 
+
+function showPrepNote() {
+if (!prepOverlay || !prepNote) return;
+
+prepOverlay.style.display = "flex";
+prepNote.classList.remove("is-taking-away");
+prepNote.classList.remove("is-placing");
+
+// reflow, damit Animation sicher neu startet
+void prepNote.offsetWidth;
+
+prepNote.classList.add("is-placing");
+}
+
+function hidePrepNoteAndContinue() {
+if (!prepOverlay || !prepNote) {
+if (activeStartTime && activeEndTime) {
+startWaitingPhase(activeStartTime, activeEndTime);
+}
+return;
+}
+
+prepNote.classList.remove("is-placing");
+prepNote.classList.add("is-taking-away");
+
+setTimeout(() => {
+prepOverlay.style.display = "none";
+prepNote.classList.remove("is-taking-away");
+
+if (activeStartTime && activeEndTime) {
+startWaitingPhase(activeStartTime, activeEndTime);
+}
+}, 260);
+}
+
+
 function syncAppState() {
   if (!activeStartTime || !activeEndTime) return;
 
@@ -350,8 +390,17 @@ startButton.addEventListener("click", async () => {
     return;
   }
 
-  startWaitingPhase(startTime, endTime);
+  activeStartTime = startTime;
+  activeEndTime = endTime;
+
+  showPrepNote();
 });
+
+if (prepConfirmButton) {
+  prepConfirmButton.addEventListener("click", () => {
+    hidePrepNoteAndContinue();
+  });
+}
 
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) {
