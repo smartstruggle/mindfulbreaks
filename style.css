@@ -824,3 +824,147 @@ body {
     transform-origin: top center;
   }
 }
+
+
+/* =========================
+PREP NOTE / LAID-DOWN SHEET
+========================= */
+
+.prep-overlay {
+position: fixed;
+inset: 0;
+z-index: 999;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.prep-backdrop {
+position: absolute;
+inset: 0;
+background: rgba(28, 30, 36, 0.16);
+backdrop-filter: blur(3px);
+}
+
+.prep-note-sheet {
+position: relative;
+z-index: 2;
+width: 320px;
+min-height: 300px;
+padding: 26px 22px 22px;
+box-sizing: border-box;
+border-radius: 4px;
+
+background:
+radial-gradient(circle at 20% 18%, rgba(255, 255, 255, 0.18) 0%, transparent 32%),
+radial-gradient(circle at 78% 74%, rgba(255, 255, 255, 0.08) 0%, transparent 30%),
+linear-gradient(180deg, #f7de74 0%, #f2d05c 48%, #e5bb3e 100%);
+
+border: 1px solid rgba(164, 120, 24, 0.18);
+
+box-shadow:
+0 2px 3px rgba(0, 0, 0, 0.10),
+0 18px 28px rgba(0, 0, 0, 0.18),
+0 34px 42px rgba(0, 0, 0, 0.12),
+inset 0 1px 0 rgba(255, 255, 255, 0.28);
+
+transform: translateY(-42px) scale(0.92) rotate(-7deg);
+opacity: 0;
+}
+
+.prep-note-sheet::before {
+content: "";
+position: absolute;
+inset: 0;
+border-radius: 4px;
+pointer-events: none;
+opacity: 0.22;
+background-image:
+radial-gradient(rgba(120, 84, 16, 0.22) 0.5px, transparent 0.7px);
+background-size: 6px 6px;
+mix-blend-mode: multiply;
+}
+
+.prep-note-inner {
+position: relative;
+z-index: 2;
+min-height: 252px;
+display: flex;
+align-items: flex-end;
+justify-content: center;
+}
+
+/* hineingelegt */
+.prep-note-sheet.is-placing {
+animation: placeNote 480ms cubic-bezier(0.2, 0.9, 0.22, 1) forwards;
+}
+
+/* wieder weg */
+.prep-note-sheet.is-taking-away {
+animation: takeNoteAway 260ms ease forwards;
+}
+
+@keyframes placeNote {
+0% {
+opacity: 0;
+transform: translateY(-42px) scale(0.92) rotate(-7deg);
+}
+65% {
+opacity: 1;
+transform: translateY(6px) scale(1.01) rotate(-2deg);
+}
+100% {
+opacity: 1;
+transform: translateY(0) scale(1) rotate(-3deg);
+}
+}
+
+@keyframes takeNoteAway {
+0% {
+opacity: 1;
+transform: translateY(0) scale(1) rotate(-3deg);
+}
+100% {
+opacity: 0;
+transform: translateY(-18px) scale(0.96) rotate(-1deg);
+}
+}
+
+.prep-confirm-button {
+border: none;
+border-radius: 999px;
+padding: 16px 26px;
+min-width: 190px;
+cursor: pointer;
+
+background: linear-gradient(180deg, #454b59 0%, #313746 100%);
+color: #fff;
+font-size: 17px;
+font-weight: 500;
+
+box-shadow:
+0 10px 20px rgba(0, 0, 0, 0.16),
+inset 0 1px 0 rgba(255, 255, 255, 0.10);
+}
+
+.prep-confirm-button:hover {
+transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+.prep-note-sheet {
+width: 270px;
+min-height: 255px;
+padding: 20px 16px 16px;
+}
+
+.prep-note-inner {
+min-height: 215px;
+}
+
+.prep-confirm-button {
+min-width: 170px;
+padding: 14px 22px;
+font-size: 16px;
+}
+}
