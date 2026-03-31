@@ -12,6 +12,7 @@ const endMinute = document.getElementById("end-minute");
 const prepOverlay = document.getElementById("prep-overlay");
 const prepNote = document.getElementById("prep-note");
 const prepConfirmButton = document.getElementById("prep-confirm-button");
+const prepNoteContent = document.getElementById("prep-note-content");
 
 const waitingText = document.getElementById("waiting-text");
 const timer = document.getElementById("timer");
@@ -24,12 +25,9 @@ const flipSecOnes = document.getElementById("flip-sec-ones");
 const gongSound = new Audio("gong.mp3");
 gongSound.preload = "auto";
 
-const waitingStickyInner = document.querySelector("#waiting-screen .sticky-note-inner");
-const breakStickyInner = document.querySelector("#break-screen .sticky-note-inner");
-const breakStickyNote = document.querySelector("#break-screen .sticky-note");
-
 let waitingInterval = null;
 let breakInterval = null;
+let reminderTimeout = null;
 
 let activeStartTime = null;
 let activeEndTime = null;
@@ -83,6 +81,11 @@ function clearIntervals() {
   if (breakInterval) {
     clearInterval(breakInterval);
     breakInterval = null;
+  }
+
+  if (reminderTimeout) {
+    clearTimeout(reminderTimeout);
+    reminderTimeout = null;
   }
 }
 
@@ -201,7 +204,7 @@ function showNotification(title, body) {
 }
 
 /* =========================
-   SCREEN / NOTE HELPERS
+   SCREEN HELPERS
 ========================= */
 
 function showSetupScreen() {
@@ -222,21 +225,16 @@ function showBreakScreen() {
   breakScreen.style.display = "block";
 }
 
-function setWaitingStickyMessage(startTime) {
-  if (!waitingStickyInner) return;
-  waitingStickyInner.innerHTML = `Deine Pause beginnt<br><span id="sticky-waiting-time">${startTime} Uhr</span>`;
+/* =========================
+   NOTE CONTENT HELPERS
+========================= */
+
+function resetTypingToken() {
+  typingToken += 1;
 }
 
-function setBreakStickyMessage(text) {
-  if (!breakStickyInner) return;
-  breakStickyInner.textContent = text;
-}
-
-function resetBreakStickyAppearance() {
-  if (!breakStickyNote) return;
-  breakStickyNote.style.transition = "";
-  breakStickyNote.style.opacity = "";
-  breakStickyNote.style.transform = "";
+function wait(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function showPrepNote() {
@@ -244,6 +242,8 @@ function showPrepNote() {
 
   appState = "prep";
   prepOverlay.style.display = "flex";
+  prepOverlay.classList.remove("prep-overlay-persistent");
+
   prepNote.classList.remove("is-taking-away");
   prepNote.classList.remove("is-placing");
 
@@ -251,28 +251,134 @@ function showPrepNote() {
   prepNote.classList.add("is-placing");
 }
 
-function hidePrepNote() {
-  if (!prepOverlay || !prepNote) return Promise.resolve();
+function showConfirmButton() {
+  if (!prepConfirmButton) return;
+  prepConfirmButton.style.opacity = "1";
+  prepConfirmButton.style.pointerEvents = "auto";
+  prepConfirmButton.style.display = "inline-flex";
+}
 
+function hideConfirmButton() {
+  if (!prepConfirmButton) return;
+  prepConfirmButton.style.opacity = "0";
+  prepConfirmButton.style.pointerEvents = "none";
+}
+
+function resetPrepNoteVisualState() {
+  if (!prepOverlay || !prepNote) return;
+
+  prepOverlay.style.display = "none";
+  prepOverlay.classList.remove("prep-overlay-persistent");
+  prepNote.classList.remove("is-taking-away");
   prepNote.classList.remove("is-placing");
-  prepNote.classList.add("is-taking-away");
+}
 
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      prepOverlay.style.display = "none";
-      prepNote.classList.remove("is-taking-away");
-      resolve();
-    }, 320);
-  });
+function renderPrepIntroNote() {
+  if (!prepNoteContent) return;
+
+  prepNoteContent.innerHTML = `
+    <div class="note-copy note-copy-intro">
+      <div class="note-main-text">
+        Schön, dass du dir eine Pause eingeplant hast,<br>
+        damit sie auch wirklich bei dir ankommt.
+      </div>
+
+      <div class="note-checklist">
+        <div class="note-check-item">✓ Sound ist an, der Gong begleitet Beginn und Ende deiner Pause.</div>
+        <div class="note-check-item">✓ Benachrichtigungen sind erlaubt, so wirst du auch außerhalb des Tabs erinnert.</div>
+        <div class="note-check-item">✓ Deine Pause startet im Pausentab, sobald du erinnert wirst.</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderWaitingNote(startTime) {
+  if (!prepNoteContent) return;
+
+  prepNoteContent.innerHTML = `
+    <div class="note-copy note-copy-waiting">
+      <div id="note-handwriting-line-1" class="note-handwriting-line"></div>
+    </div>
+  `;
+
+  const line1 = document.getElementById("note-handwriting-line-1");
+  return typeText(line1, `Deine nächste Pause ist um ${startTime}.`, 34);
+}
+
+function renderBreakNote() {
+  if (!prepNoteContent) return;
+
+  prepNoteContent.innerHTML = `
+    <div class="note-copy note-copy-break">
+      <div id="note-handwriting-line-1" class="note-handwriting-line"></div>
+    </div>
+  `;
+
+  const line1 = document.getElementById("note-handwriting-line-1");
+  return typeText(line1, "Schöne Pause", 34);
+}
+
+async function appendBreakClosingNote() {
+  if (!prepNoteContent) return;
+
+  let wrap = prepNoteContent.querySelector(".note-copy-break");
+  if (!wrap) {
+    wrap = document.createElement("div");
+    wrap.className = "note-copy note-copy-break";
+    prepNoteContent.innerHTML = "";
+    prepNoteContent.appendChild(wrap);
+  }
+
+  let line2 = document.getElementById("note-handwriting-line-2");
+  if (!line2) {
+    line2 = document.createElement("div");
+    line2.id = "note-handwriting-line-2";
+    line2.className = "note-handwriting-line note-handwriting-line-secondary";
+    wrap.appendChild(line2);
+  }
+
+  await typeText(line2, "Danke, dass du dir heute Zeit für dich genommen hast.", 30);
+}
+
+async function fadeNoteContentOut(duration = 380) {
+  if (!prepNoteContent) return;
+
+  prepNoteContent.style.transition = `opacity ${duration}ms ease`;
+  prepNoteContent.style.opacity = "0";
+  await wait(duration);
+}
+
+async function fadeNoteContentIn(duration = 420) {
+  if (!prepNoteContent) return;
+
+  prepNoteContent.style.transition = "none";
+  prepNoteContent.style.opacity = "0";
+  void prepNoteContent.offsetWidth;
+
+  prepNoteContent.style.transition = `opacity ${duration}ms ease`;
+  prepNoteContent.style.opacity = "1";
+
+  await wait(duration);
+}
+
+async function swapNoteContent(renderFn) {
+  if (!prepNoteContent) return;
+
+  await fadeNoteContentOut(320);
+  resetTypingToken();
+  prepNoteContent.innerHTML = "";
+  prepNoteContent.style.transition = "none";
+  prepNoteContent.style.opacity = "1";
+
+  const maybePromise = renderFn();
+  if (maybePromise instanceof Promise) {
+    await maybePromise;
+  }
 }
 
 /* =========================
    TYPING EFFECT
 ========================= */
-
-function wait(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 async function typeText(element, text, speed = 42) {
   if (!element) return;
@@ -295,13 +401,13 @@ async function typeText(element, text, speed = 42) {
 
 function resetApp() {
   clearIntervals();
+  resetTypingToken();
 
   appState = "idle";
   prepConfirmed = false;
   startGongPlayed = false;
   endGongPlayed = false;
   endingSequenceRunning = false;
-  typingToken += 1;
 
   activeStartTime = null;
   activeEndTime = null;
@@ -317,39 +423,24 @@ function resetApp() {
     timer.textContent = "00:00";
   }
 
-if (prepOverlay) {
-prepOverlay.style.display = "none";
-prepOverlay.classList.remove("prep-overlay-persistent");
-}
-
-if (prepConfirmButton) {
-prepConfirmButton.style.opacity = "";
-prepConfirmButton.style.pointerEvents = "";
-}
-
-   
   updateFlipClock(0);
+  resetPrepNoteVisualState();
 
-  if (waitingStickyInner) {
-    waitingStickyInner.innerHTML = `Nächste Pause<br><span id="sticky-waiting-time">--:-- Uhr</span>`;
+  if (prepNoteContent) {
+    prepNoteContent.innerHTML = "";
+    prepNoteContent.style.opacity = "1";
+    prepNoteContent.style.transition = "none";
   }
 
-  if (breakStickyInner) {
-    breakStickyInner.textContent = "Nimm dir Zeit für dich.";
-  }
-
- resetBreakStickyAppearance();
+  showConfirmButton();
 }
 
-function confirmPrepNoteAndContinue() {
+async function confirmPrepNoteAndContinue() {
   if (prepOverlay) {
     prepOverlay.classList.add("prep-overlay-persistent");
   }
 
-  if (prepConfirmButton) {
-    prepConfirmButton.style.opacity = "0";
-    prepConfirmButton.style.pointerEvents = "none";
-  }
+  hideConfirmButton();
 
   if (activeStartTime && activeEndTime) {
     const now = new Date();
@@ -363,27 +454,29 @@ function confirmPrepNoteAndContinue() {
     }
 
     if (now >= startDate && now < endDate) {
-      startBreakPhase(false);
+      await startBreakPhase(false);
       return;
     }
 
-    startWaitingPhase(activeStartTime, activeEndTime);
+    await startWaitingPhase(activeStartTime, activeEndTime);
   }
 }
 
-function startWaitingPhase(startTime, endTime) {
+async function startWaitingPhase(startTime, endTime) {
   clearIntervals();
+  resetTypingToken();
 
   appState = "waiting";
   activeStartTime = startTime;
   activeEndTime = endTime;
 
   showWaitingScreen();
-  setWaitingStickyMessage(startTime);
 
   if (waitingText) {
     waitingText.textContent = `Deine nächste Pause ist um ${startTime}`;
   }
+
+  await swapNoteContent(() => renderWaitingNote(startTime));
 
   const startDate = getTodayDateForTime(startTime);
   const endDate = getTodayDateForTime(endTime);
@@ -401,43 +494,46 @@ function startWaitingPhase(startTime, endTime) {
   }
 
   if (now >= startDate) {
-    triggerBreakStart(true);
+    await triggerBreakStart(true);
     return;
   }
 
-  waitingInterval = setInterval(() => {
+  waitingInterval = setInterval(async () => {
     if (appState !== "waiting") return;
 
     const currentNow = new Date();
 
     if (currentNow >= startDate) {
-      triggerBreakStart(true);
+      clearIntervals();
+      await triggerBreakStart(true);
     }
   }, 500);
 }
 
-function triggerBreakStart(playCue = true) {
+async function triggerBreakStart(playCue = true) {
   if (startGongPlayed === false && playCue) {
     playGong();
     showNotification("Pause 💛", "Zeit für deine Pause 🌿");
     startGongPlayed = true;
   }
 
-  startBreakPhase(false);
+  await startBreakPhase(false);
 }
 
-function startBreakPhase(playCue = false) {
+async function startBreakPhase(playCue = false) {
   clearIntervals();
+  resetTypingToken();
 
   appState = "break";
   showBreakScreen();
-  setBreakStickyMessage("Nimm dir Zeit für dich.");
 
   if (playCue && startGongPlayed === false) {
     playGong();
     showNotification("Pause 💛", "Zeit für deine Pause 🌿");
     startGongPlayed = true;
   }
+
+  await swapNoteContent(() => renderBreakNote());
 
   const endDate = getTodayDateForTime(activeEndTime);
 
@@ -482,23 +578,9 @@ async function triggerBreakEnd() {
     endGongPlayed = true;
   }
 
-  await wait(3400);
-
-  await typeText(
-    breakStickyInner,
-    "Schön, dass du dir heute Zeit für dich genommen hast.",
-    42
-  );
-
-  await wait(1200);
-
-  if (breakStickyNote) {
-    breakStickyNote.style.transition = "transform 420ms ease, opacity 420ms ease";
-    breakStickyNote.style.opacity = "0";
-    breakStickyNote.style.transform = "translateY(-18px) scale(0.97) rotate(-2deg)";
-  }
-
-  await wait(440);
+  await wait(2200);
+  await appendBreakClosingNote();
+  await wait(2200);
 
   resetApp();
 }
@@ -518,7 +600,6 @@ function syncAppState() {
     }
 
     if (now >= startDate && now < endDate) {
-      // kein nachträglicher Gong, wenn der Moment im Hintergrund verpasst wurde
       startGongPlayed = true;
       startBreakPhase(false);
     }
@@ -526,7 +607,6 @@ function syncAppState() {
 
   if (appState === "break") {
     if (now >= endDate) {
-      // wenn Ende verpasst wurde, kein nachträglicher Gong
       endGongPlayed = true;
       resetApp();
     }
@@ -565,15 +645,18 @@ startButton.addEventListener("click", async () => {
   startGongPlayed = false;
   endGongPlayed = false;
   endingSequenceRunning = false;
+  resetTypingToken();
 
+  renderPrepIntroNote();
+  showConfirmButton();
   showPrepNote();
 });
 
 if (prepConfirmButton) {
-prepConfirmButton.addEventListener("click", () => {
-prepConfirmed = true;
-confirmPrepNoteAndContinue();
-});
+  prepConfirmButton.addEventListener("click", async () => {
+    prepConfirmed = true;
+    await confirmPrepNoteAndContinue();
+  });
 }
 
 document.addEventListener("visibilitychange", () => {
@@ -596,4 +679,3 @@ gongSound.addEventListener("error", () => {
 
 fillTimeOptions();
 updateFlipClock(0);
-setBreakStickyMessage("Nimm dir Zeit für dich.");
