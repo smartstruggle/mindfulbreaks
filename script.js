@@ -208,21 +208,29 @@ function showNotification(title, body) {
 ========================= */
 
 function showSetupScreen() {
-  setupScreen.style.display = "block";
-  waitingScreen.style.display = "none";
-  breakScreen.style.display = "none";
+document.body.classList.remove("waiting-active", "break-active");
+
+setupScreen.style.display = "block";
+waitingScreen.style.display = "none";
+breakScreen.style.display = "none";
 }
 
 function showWaitingScreen() {
-  setupScreen.style.display = "none";
-  waitingScreen.style.display = "block";
-  breakScreen.style.display = "none";
+document.body.classList.add("waiting-active");
+document.body.classList.remove("break-active");
+
+setupScreen.style.display = "none";
+waitingScreen.style.display = "block";
+breakScreen.style.display = "none";
 }
 
 function showBreakScreen() {
-  setupScreen.style.display = "none";
-  waitingScreen.style.display = "none";
-  breakScreen.style.display = "block";
+document.body.classList.add("break-active");
+document.body.classList.remove("waiting-active");
+
+setupScreen.style.display = "none";
+waitingScreen.style.display = "none";
+breakScreen.style.display = "block";
 }
 
 /* =========================
