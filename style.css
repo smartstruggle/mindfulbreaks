@@ -827,8 +827,7 @@ body {
 
 
 /* =========================
-PREP NOTE / PLACED STICKY
-FOTOANALYSE V2
+PREP NOTE / RADIKAL NEU
 ========================= */
 
 .prep-overlay {
@@ -844,281 +843,407 @@ pointer-events: auto;
 .prep-backdrop {
 position: absolute;
 inset: 0;
-background: rgba(28, 30, 36, 0.03);
+background: rgba(28, 30, 36, 0.02);
+transition: opacity 0.45s ease;
 }
 
-/* =========================
-   PREP NOTE / PLACED STICKY
-   FOTOANALYSE V2 CLEAN
-========================= */
+.prep-overlay.prep-overlay-persistent {
+pointer-events: none;
+}
+
+.prep-overlay.prep-overlay-persistent .prep-backdrop {
+opacity: 0;
+}
 
 .prep-note-sheet {
-  position: relative;
-  z-index: 2;
-  width: 320px;
-  min-height: 300px;
-  padding: 26px 22px 22px;
-  box-sizing: border-box;
-  border-radius: 4px;
+position: relative;
+z-index: 2;
+width: 320px;
+min-height: 300px;
+padding: 26px 22px 22px;
+box-sizing: border-box;
+border-radius: 4px;
 
-  background:
-    radial-gradient(circle at 20% 18%, rgba(255,255,255,0.18) 0%, transparent 32%),
-    radial-gradient(circle at 78% 74%, rgba(255,255,255,0.08) 0%, transparent 30%),
-    linear-gradient(180deg, #f7de74 0%, #f2d05c 48%, #e5bb3e 100%);
+background:
+radial-gradient(circle at 20% 18%, rgba(255,255,255,0.16) 0%, transparent 32%),
+radial-gradient(circle at 78% 74%, rgba(255,255,255,0.08) 0%, transparent 30%),
+linear-gradient(180deg, #f7de74 0%, #f2d05c 48%, #e5bb3e 100%);
 
-  border: 1px solid rgba(164,120,24,0.20);
+border: 1px solid rgba(164,120,24,0.20);
 
-  /* START: fast komplett rechts außerhalb */
-  opacity: 1;
-  transform: translateX(520px) translateY(18px) rotate(7deg) scale(1.06);
-  transform-origin: top center;
-  will-change: transform, box-shadow;
+/* WIRKLICH weit rechts außen + riesig */
+opacity: 1;
+transform:
+translateX(1080px)
+translateY(-8px)
+rotate(2deg)
+skewX(-28deg)
+scaleX(3.1)
+scaleY(2.55);
 
-  box-shadow:
-    34px 24px 46px rgba(0,0,0,0.22),
-    58px 38px 78px rgba(0,0,0,0.12),
-    inset 0 1px 0 rgba(255,255,255,0.30);
+transform-origin: top right;
+will-change: transform, box-shadow, filter, clip-path;
+
+/* sehr sichtbarer Schatten */
+box-shadow:
+58px 26px 52px rgba(0,0,0,0.24),
+92px 44px 110px rgba(0,0,0,0.16),
+inset 0 1px 0 rgba(255,255,255,0.26);
+
+/* start als starkes Trapez */
+clip-path: polygon(26% 0%, 100% 0%, 84% 100%, 0% 100%);
 }
 
 /* feine Papierstruktur */
 .prep-note-sheet::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 4px;
-  pointer-events: none;
-  opacity: 0.20;
-  background-image:
-    radial-gradient(rgba(120,84,16,0.20) 0.5px, transparent 0.7px);
-  background-size: 6px 6px;
-  mix-blend-mode: multiply;
+content: "";
+position: absolute;
+inset: 0;
+border-radius: 4px;
+pointer-events: none;
+opacity: 0.18;
+background-image:
+radial-gradient(rgba(120,84,16,0.20) 0.5px, transparent 0.7px);
+background-size: 6px 6px;
+mix-blend-mode: multiply;
 }
 
-/* leichte "untere Kante steht noch ab" Illusion */
+/* Papierknick / Eigen-Schatten im unteren Bereich */
 .prep-note-sheet::after {
-  content: "";
-  position: absolute;
-  left: 8%;
-  right: 8%;
-  bottom: 6px;
-  height: 16px;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.10);
-  filter: blur(8px);
-  transform: scaleX(0.92);
-  opacity: 0.9;
-  pointer-events: none;
-  transition: opacity 180ms ease;
+content: "";
+position: absolute;
+left: 4%;
+right: 3%;
+bottom: 4px;
+height: 46%;
+pointer-events: none;
+border-radius: 0 0 10px 10px;
+
+background:
+linear-gradient(
+162deg,
+rgba(0,0,0,0.00) 0%,
+rgba(0,0,0,0.00) 30%,
+rgba(151, 102, 16, 0.10) 48%,
+rgba(105, 66, 8, 0.24) 68%,
+rgba(61, 38, 4, 0.30) 100%
+);
+
+opacity: 0.95;
+filter: blur(0.35px);
+transform: skewX(-10deg) scaleY(1.04);
+transform-origin: top;
+transition: opacity 0.22s ease;
 }
 
 .prep-note-inner {
-  position: relative;
-  z-index: 2;
-  min-height: 252px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
+position: relative;
+z-index: 2;
+min-height: 252px;
+display: flex;
+align-items: flex-end;
+justify-content: center;
 }
 
-/* =========================
-   REINLEGEN
-========================= */
-
-.prep-note-sheet.is-placing {
-  animation: placeStickyPhotoRealV2 1180ms cubic-bezier(0.2, 0.82, 0.26, 1) forwards;
-}
-
-/* Beim Prep bleibt der Sticky liegen */
-.prep-note-sheet.is-taking-away {
-  animation: none;
-}
-
-@keyframes placeStickyPhotoRealV2 {
-  0% {
-    opacity: 1;
-    transform: translateX(520px) translateY(18px) rotate(7deg) scale(1.06);
-    box-shadow:
-      34px 24px 46px rgba(0,0,0,0.22),
-      58px 38px 78px rgba(0,0,0,0.12),
-      inset 0 1px 0 rgba(255,255,255,0.30);
-  }
-
-  8% {
-    opacity: 1;
-    transform: translateX(455px) translateY(17px) rotate(6.8deg) scale(1.055);
-    box-shadow:
-      31px 22px 42px rgba(0,0,0,0.22),
-      52px 34px 70px rgba(0,0,0,0.12),
-      inset 0 1px 0 rgba(255,255,255,0.30);
-  }
-
-  20% {
-    opacity: 1;
-    transform: translateX(340px) translateY(16px) rotate(6deg) scale(1.045);
-    box-shadow:
-      26px 19px 36px rgba(0,0,0,0.22),
-      43px 29px 58px rgba(0,0,0,0.11),
-      inset 0 1px 0 rgba(255,255,255,0.30);
-  }
-
-  38% {
-    opacity: 1;
-    transform: translateX(220px) translateY(14px) rotate(4.2deg) scale(1.03);
-    box-shadow:
-      20px 15px 28px rgba(0,0,0,0.20),
-      31px 22px 42px rgba(0,0,0,0.10),
-      inset 0 1px 0 rgba(255,255,255,0.30);
-  }
-
-  58% {
-    opacity: 1;
-    transform: translateX(96px) translateY(10px) rotate(1.4deg) scale(1.015);
-    box-shadow:
-      12px 10px 18px rgba(0,0,0,0.18),
-      18px 14px 26px rgba(0,0,0,0.09),
-      inset 0 1px 0 rgba(255,255,255,0.30);
-  }
-
-  76% {
-    opacity: 1;
-    transform: translateX(18px) translateY(4px) rotate(-3.8deg) scale(1.004);
-    box-shadow:
-      6px 7px 12px rgba(0,0,0,0.14),
-      10px 10px 18px rgba(0,0,0,0.07),
-      inset 0 1px 0 rgba(255,255,255,0.30);
-  }
-
-  88% {
-    opacity: 1;
-    transform: translateX(-5px) translateY(1px) rotate(-2.6deg) scale(1.002);
-    box-shadow:
-      3px 5px 8px rgba(0,0,0,0.12),
-      6px 8px 12px rgba(0,0,0,0.06),
-      inset 0 1px 0 rgba(255,255,255,0.30);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateX(0) translateY(0) rotate(-3deg) scale(1);
-    box-shadow:
-      1px 3px 5px rgba(0,0,0,0.10),
-      3px 5px 9px rgba(0,0,0,0.05),
-      inset 0 1px 0 rgba(255,255,255,0.30);
-  }
-}
-
-/* =========================
-   BUTTON
-========================= */
-
+/* Button blendet später weg, Sticky bleibt */
 .prep-confirm-button {
-  border: none;
-  border-radius: 999px;
-  padding: 16px 26px;
-  min-width: 190px;
-  cursor: pointer;
+border: none;
+border-radius: 999px;
+padding: 16px 26px;
+min-width: 190px;
+cursor: pointer;
 
-  background: linear-gradient(180deg, #454b59 0%, #313746 100%);
-  color: #fff;
-  font-size: 17px;
-  font-weight: 500;
+background: linear-gradient(180deg, #454b59 0%, #313746 100%);
+color: #fff;
+font-size: 17px;
+font-weight: 500;
 
-  box-shadow:
-    0 10px 20px rgba(0, 0, 0, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+box-shadow:
+0 10px 20px rgba(0, 0, 0, 0.16),
+inset 0 1px 0 rgba(255, 255, 255, 0.10);
 
-  transition: transform 0.16s ease;
+transition:
+transform 0.16s ease,
+opacity 0.28s ease;
 }
 
 .prep-confirm-button:hover {
-  transform: translateY(-1px);
+transform: translateY(-1px);
+}
+
+.prep-overlay.prep-overlay-persistent .prep-confirm-button {
+opacity: 0;
+pointer-events: none;
 }
 
 /* =========================
-   MOBILE
+REINLEGEN
+========================= */
+
+.prep-note-sheet.is-placing {
+animation: placeStickyPhotoRealV4 2600ms cubic-bezier(0.18, 0.84, 0.22, 1) forwards;
+}
+
+.prep-note-sheet.is-taking-away {
+animation: none;
+}
+
+@keyframes placeStickyPhotoRealV4 {
+/* 1: Fast komplett außerhalb */
+0% {
+transform:
+translateX(1080px)
+translateY(-8px)
+rotate(2deg)
+skewX(-28deg)
+scaleX(3.1)
+scaleY(2.55);
+clip-path: polygon(26% 0%, 100% 0%, 84% 100%, 0% 100%);
+box-shadow:
+58px 26px 52px rgba(0,0,0,0.24),
+92px 44px 110px rgba(0,0,0,0.16),
+inset 0 1px 0 rgba(255,255,255,0.26);
+filter: brightness(1);
+}
+
+/* 2: Erste Kante tritt ein */
+8% {
+transform:
+translateX(890px)
+translateY(-6px)
+rotate(2.2deg)
+skewX(-26deg)
+scaleX(2.85)
+scaleY(2.34);
+clip-path: polygon(24% 0%, 100% 0%, 85% 100%, 0% 100%);
+box-shadow:
+52px 24px 48px rgba(0,0,0,0.24),
+84px 40px 102px rgba(0,0,0,0.15),
+inset 0 1px 0 rgba(255,255,255,0.26);
+}
+
+/* 3 */
+18% {
+transform:
+translateX(690px)
+translateY(-4px)
+rotate(2.8deg)
+skewX(-22deg)
+scaleX(2.45)
+scaleY(2.02);
+clip-path: polygon(22% 0%, 100% 0%, 86% 100%, 0% 100%);
+box-shadow:
+42px 22px 42px rgba(0,0,0,0.23),
+70px 34px 84px rgba(0,0,0,0.14),
+inset 0 1px 0 rgba(255,255,255,0.26);
+}
+
+/* 4 */
+32% {
+transform:
+translateX(470px)
+translateY(0px)
+rotate(3.4deg)
+skewX(-16deg)
+scaleX(1.95)
+scaleY(1.56);
+clip-path: polygon(18% 0%, 100% 0%, 88% 100%, 0% 100%);
+box-shadow:
+30px 18px 34px rgba(0,0,0,0.22),
+48px 24px 58px rgba(0,0,0,0.13),
+inset 0 1px 0 rgba(255,255,255,0.26);
+}
+
+/* 5 */
+48% {
+transform:
+translateX(265px)
+translateY(4px)
+rotate(2.6deg)
+skewX(-10deg)
+scaleX(1.48)
+scaleY(1.18);
+clip-path: polygon(12% 0%, 100% 0%, 92% 100%, 0% 100%);
+box-shadow:
+20px 14px 24px rgba(0,0,0,0.20),
+30px 18px 38px rgba(0,0,0,0.11),
+inset 0 1px 0 rgba(255,255,255,0.26);
+filter: brightness(0.99);
+}
+
+/* 6 */
+64% {
+transform:
+translateX(126px)
+translateY(7px)
+rotate(0.8deg)
+skewX(-5deg)
+scaleX(1.16)
+scaleY(1.03);
+clip-path: polygon(7% 0%, 100% 0%, 95% 100%, 0% 100%);
+box-shadow:
+12px 10px 18px rgba(0,0,0,0.17),
+18px 14px 24px rgba(0,0,0,0.09),
+inset 0 1px 0 rgba(255,255,255,0.26);
+filter: brightness(0.98);
+}
+
+/* 7: obere Kante sitzt fast, unten hängt noch */
+80% {
+transform:
+translateX(34px)
+translateY(5px)
+rotate(-2.8deg)
+skewX(-2deg)
+scaleX(1.04)
+scaleY(1.01);
+clip-path: polygon(3% 0%, 100% 0%, 98% 100%, 0% 100%);
+box-shadow:
+5px 7px 12px rgba(0,0,0,0.13),
+9px 10px 15px rgba(0,0,0,0.06),
+inset 0 1px 0 rgba(255,255,255,0.26);
+filter: brightness(0.98);
+}
+
+/* 8: kleine Beruhigung */
+90% {
+transform:
+translateX(-6px)
+translateY(1px)
+rotate(-2.2deg)
+skewX(-0.8deg)
+scaleX(1.01)
+scaleY(1.01);
+clip-path: polygon(1.5% 0%, 100% 0%, 99% 100%, 0% 100%);
+box-shadow:
+2px 4px 8px rgba(0,0,0,0.11),
+5px 7px 10px rgba(0,0,0,0.05),
+inset 0 1px 0 rgba(255,255,255,0.26);
+}
+
+/* final */
+100% {
+transform:
+translateX(0)
+translateY(0)
+rotate(-3deg)
+skewX(0deg)
+scaleX(1)
+scaleY(1);
+clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+box-shadow:
+1px 3px 5px rgba(0,0,0,0.09),
+3px 5px 8px rgba(0,0,0,0.04),
+inset 0 1px 0 rgba(255,255,255,0.26);
+filter: brightness(1);
+}
+}
+
+/* =========================
+MOBILE
 ========================= */
 
 @media (max-width: 768px) {
-  .prep-note-sheet {
-    width: 270px;
-    min-height: 255px;
-    padding: 20px 16px 16px;
+.prep-note-sheet {
+width: 270px;
+min-height: 255px;
+padding: 20px 16px 16px;
 
-    transform: translateX(300px) translateY(8px) rotate(6deg) scale(1.10);
+transform:
+translateX(640px)
+translateY(0px)
+rotate(2deg)
+skewX(-24deg)
+scaleX(2.6)
+scaleY(2.15);
 
-    box-shadow:
-      22px 18px 34px rgba(0,0,0,0.22),
-      36px 28px 52px rgba(0,0,0,0.11),
-      inset 0 1px 0 rgba(255,255,255,0.30);
-  }
+box-shadow:
+42px 22px 40px rgba(0,0,0,0.24),
+64px 30px 72px rgba(0,0,0,0.14),
+inset 0 1px 0 rgba(255,255,255,0.26);
 
-  .prep-note-inner {
-    min-height: 215px;
-  }
+clip-path: polygon(24% 0%, 100% 0%, 86% 100%, 0% 100%);
+}
 
-  .prep-confirm-button {
-    min-width: 170px;
-    padding: 14px 22px;
-    font-size: 16px;
-  }
+.prep-note-inner {
+min-height: 215px;
+}
 
-  .prep-note-sheet.is-placing {
-    animation: placeStickyPhotoRealMobileV2 1080ms cubic-bezier(0.2, 0.82, 0.26, 1) forwards;
-  }
+.prep-confirm-button {
+min-width: 170px;
+padding: 14px 22px;
+font-size: 16px;
+}
 
-  @keyframes placeStickyPhotoRealMobileV2 {
-    0% {
-      opacity: 1;
-      transform: translateX(300px) translateY(8px) rotate(6deg) scale(1.10);
-      box-shadow:
-        22px 18px 34px rgba(0,0,0,0.22),
-        36px 28px 52px rgba(0,0,0,0.11),
-        inset 0 1px 0 rgba(255,255,255,0.30);
-    }
+.prep-note-sheet.is-placing {
+animation: placeStickyPhotoRealMobileV4 2200ms cubic-bezier(0.18, 0.84, 0.22, 1) forwards;
+}
 
-    10% {
-      opacity: 1;
-      transform: translateX(248px) translateY(8px) rotate(5.7deg) scale(1.09);
-      box-shadow:
-        20px 16px 30px rgba(0,0,0,0.22),
-        32px 24px 46px rgba(0,0,0,0.11),
-        inset 0 1px 0 rgba(255,255,255,0.30);
-    }
+@keyframes placeStickyPhotoRealMobileV4 {
+0% {
+transform:
+translateX(640px)
+translateY(0px)
+rotate(2deg)
+skewX(-24deg)
+scaleX(2.6)
+scaleY(2.15);
+clip-path: polygon(24% 0%, 100% 0%, 86% 100%, 0% 100%);
+}
 
-    26% {
-      opacity: 1;
-      transform: translateX(180px) translateY(7px) rotate(4.8deg) scale(1.07);
-      box-shadow:
-        16px 13px 24px rgba(0,0,0,0.20),
-        24px 18px 34px rgba(0,0,0,0.10),
-        inset 0 1px 0 rgba(255,255,255,0.30);
-    }
+14% {
+transform:
+translateX(500px)
+translateY(0px)
+rotate(2.4deg)
+skewX(-21deg)
+scaleX(2.2)
+scaleY(1.84);
+clip-path: polygon(20% 0%, 100% 0%, 88% 100%, 0% 100%);
+}
 
-    48% {
-      opacity: 1;
-      transform: translateX(88px) translateY(5px) rotate(2deg) scale(1.03);
-      box-shadow:
-        10px 9px 16px rgba(0,0,0,0.16),
-        15px 12px 22px rgba(0,0,0,0.08),
-        inset 0 1px 0 rgba(255,255,255,0.30);
-    }
+30% {
+transform:
+translateX(335px)
+translateY(2px)
+rotate(2.8deg)
+skewX(-15deg)
+scaleX(1.75)
+scaleY(1.42);
+clip-path: polygon(14% 0%, 100% 0%, 91% 100%, 0% 100%);
+}
 
-    74% {
-      opacity: 1;
-      transform: translateX(12px) translateY(2px) rotate(-3.6deg) scale(1.005);
-      box-shadow:
-        4px 5px 8px rgba(0,0,0,0.13),
-        7px 8px 12px rgba(0,0,0,0.06),
-        inset 0 1px 0 rgba(255,255,255,0.30);
-    }
+52% {
+transform:
+translateX(170px)
+translateY(5px)
+rotate(1deg)
+skewX(-8deg)
+scaleX(1.28)
+scaleY(1.12);
+clip-path: polygon(8% 0%, 100% 0%, 95% 100%, 0% 100%);
+}
 
-    100% {
-      opacity: 1;
-      transform: translateX(0) translateY(0) rotate(-3deg) scale(1);
-      box-shadow:
-        1px 3px 5px rgba(0,0,0,0.10),
-        3px 5px 8px rgba(0,0,0,0.05),
-        inset 0 1px 0 rgba(255,255,255,0.30);
-    }
-  }
+78% {
+transform:
+translateX(38px)
+translateY(3px)
+rotate(-2.8deg)
+skewX(-2deg)
+scaleX(1.04)
+scaleY(1.01);
+clip-path: polygon(2% 0%, 100% 0%, 99% 100%, 0% 100%);
+}
+
+100% {
+transform:
+translateX(0)
+translateY(0)
+rotate(-3deg)
+skewX(0deg)
+scaleX(1)
+scaleY(1);
+clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+}
 }
