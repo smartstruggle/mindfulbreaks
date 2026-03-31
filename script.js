@@ -351,26 +351,27 @@ prepConfirmButton.style.opacity = "0";
 prepConfirmButton.style.pointerEvents = "none";
 }
 
-if (activeStartTime && activeEndTime) {
-const now = new Date();
-const startDate = getTodayDateForTime(activeStartTime);
-const endDate = getTodayDateForTime(activeEndTime);
-
-if (now >= endDate) {
-alert("Diese Zeitspanne ist heute schon vorbei 💛");
-resetApp();
-return;
 }
 
-if (now >= startDate && now < endDate) {
-startBreakPhase(false);
-return;
-}
+  if (activeStartTime && activeEndTime) {
+    const now = new Date();
+    const startDate = getTodayDateForTime(activeStartTime);
+    const endDate = getTodayDateForTime(activeEndTime);
 
-startWaitingPhase(activeStartTime, activeEndTime);
-}
-}
+    if (now >= endDate) {
+      alert("Diese Zeitspanne ist heute schon vorbei 💛");
+      resetApp();
+      return;
+    }
 
+    if (now >= startDate && now < endDate) {
+      startBreakPhase(false);
+      return;
+    }
+
+    startWaitingPhase(activeStartTime, activeEndTime);
+  }
+}
 
   startWaitingPhase(activeStartTime, activeEndTime);
 }
