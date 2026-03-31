@@ -827,7 +827,7 @@ body {
 
 
 /* =========================
-PREP NOTE / RADIKAL NEU
+PREP NOTE / FINAL CALMER VERSION
 ========================= */
 
 .prep-overlay {
@@ -855,6 +855,10 @@ pointer-events: none;
 opacity: 0;
 }
 
+/* =========================
+STICKY
+========================= */
+
 .prep-note-sheet {
 position: relative;
 z-index: 2;
@@ -872,23 +876,25 @@ linear-gradient(180deg, #f7de74 0%, #f2d05c 48%, #e5bb3e 100%);
 border: 1px solid rgba(164,120,24,0.20);
 
 opacity: 1;
+
+/* START: gerader, vertikaler, mehr von rechts-mittig */
 transform:
-translateX(1080px)
-translateY(-8px)
-rotate(2deg)
-skewX(-28deg)
-scaleX(3.1)
-scaleY(2.55);
+translateX(980px)
+translateY(-28px)
+rotate(0.6deg)
+skewX(-8deg)
+scaleX(2.95)
+scaleY(2.78);
 
 transform-origin: top right;
-will-change: transform, box-shadow, filter, clip-path;
+will-change: transform, box-shadow, clip-path;
 
 box-shadow:
-58px 26px 52px rgba(0,0,0,0.24),
-92px 44px 110px rgba(0,0,0,0.16),
+52px 24px 48px rgba(0,0,0,0.23),
+84px 40px 98px rgba(0,0,0,0.14),
 inset 0 1px 0 rgba(255,255,255,0.26);
 
-clip-path: polygon(26% 0%, 100% 0%, 84% 100%, 0% 100%);
+clip-path: polygon(14% 0%, 100% 0%, 92% 100%, 0% 100%);
 }
 
 /* feine Papierstruktur */
@@ -898,34 +904,34 @@ position: absolute;
 inset: 0;
 border-radius: 4px;
 pointer-events: none;
-opacity: 0.18;
+opacity: 0.16;
 background-image:
-radial-gradient(rgba(120,84,16,0.20) 0.5px, transparent 0.7px);
+radial-gradient(rgba(120,84,16,0.18) 0.5px, transparent 0.7px);
 background-size: 6px 6px;
 mix-blend-mode: multiply;
 }
 
-/* FIX 1: realistischer, viel weicherer Papierschatten */
+/* weicher Papierschatten */
 .prep-note-sheet::after {
 content: "";
 position: absolute;
 left: 10%;
 right: 10%;
 bottom: 10px;
-height: 26%;
+height: 24%;
 pointer-events: none;
 border-radius: 0 0 18px 18px;
 
 background:
 radial-gradient(
 ellipse at center,
-rgba(92, 58, 8, 0.16) 0%,
-rgba(92, 58, 8, 0.10) 38%,
-rgba(92, 58, 8, 0.04) 68%,
+rgba(92, 58, 8, 0.14) 0%,
+rgba(92, 58, 8, 0.08) 38%,
+rgba(92, 58, 8, 0.03) 68%,
 rgba(92, 58, 8, 0) 100%
 );
 
-opacity: 0.55;
+opacity: 0.52;
 filter: blur(4px);
 transform: translateY(2px) scaleX(0.92) scaleY(0.72);
 transform-origin: bottom center;
@@ -954,7 +960,6 @@ color: #fff;
 font-size: 17px;
 font-weight: 500;
 
-/* FIX 2: softerer Button-Schatten */
 box-shadow:
 0 6px 14px rgba(0, 0, 0, 0.12),
 inset 0 1px 0 rgba(255, 255, 255, 0.10);
@@ -978,109 +983,115 @@ REINLEGEN
 ========================= */
 
 .prep-note-sheet.is-placing {
-/* FIX 3: smoothere Dauer + easing */
-animation: placeStickyPhotoRealV4 2550ms cubic-bezier(0.2, 0.82, 0.24, 1) forwards;
+animation: placeStickyPhotoFinalCalm 2900ms cubic-bezier(0.22, 0.78, 0.20, 1) forwards;
 }
 
 .prep-note-sheet.is-taking-away {
 animation: none;
 }
 
-@keyframes placeStickyPhotoRealV4 {
+@keyframes placeStickyPhotoFinalCalm {
+/* 1: Start – gerader, vertikaler, mehr rechts-mittig */
 0% {
 transform:
-translateX(1080px)
-translateY(-8px)
-rotate(2deg)
-skewX(-28deg)
-scaleX(3.1)
-scaleY(2.55);
-clip-path: polygon(26% 0%, 100% 0%, 84% 100%, 0% 100%);
+translateX(980px)
+translateY(-28px)
+rotate(0.6deg)
+skewX(-8deg)
+scaleX(2.95)
+scaleY(2.78);
+clip-path: polygon(14% 0%, 100% 0%, 92% 100%, 0% 100%);
 box-shadow:
-58px 26px 52px rgba(0,0,0,0.24),
-92px 44px 110px rgba(0,0,0,0.16),
+52px 24px 48px rgba(0,0,0,0.23),
+84px 40px 98px rgba(0,0,0,0.14),
 inset 0 1px 0 rgba(255,255,255,0.26);
 }
 
-14% {
+/* 2: immer noch relativ gerade */
+18% {
 transform:
-translateX(860px)
-translateY(-7px)
-rotate(2.2deg)
-skewX(-24deg)
-scaleX(2.78)
-scaleY(2.28);
-clip-path: polygon(22% 0%, 100% 0%, 87% 100%, 0% 100%);
+translateX(760px)
+translateY(-24px)
+rotate(0.8deg)
+skewX(-10deg)
+scaleX(2.62)
+scaleY(2.46);
+clip-path: polygon(13% 0%, 100% 0%, 92% 100%, 0% 100%);
 box-shadow:
-50px 24px 46px rgba(0,0,0,0.22),
-78px 38px 92px rgba(0,0,0,0.14),
+44px 22px 42px rgba(0,0,0,0.21),
+70px 34px 82px rgba(0,0,0,0.13),
 inset 0 1px 0 rgba(255,255,255,0.26);
 }
 
-32% {
+/* 3: MITTELZUSTAND – viel stärkere Verjüngung */
+42% {
 transform:
-translateX(565px)
-translateY(-1px)
-rotate(2.7deg)
-skewX(-16deg)
-scaleX(2.02)
-scaleY(1.64);
-clip-path: polygon(14% 0%, 100% 0%, 91% 100%, 0% 100%);
-box-shadow:
-32px 18px 32px rgba(0,0,0,0.19),
-50px 24px 60px rgba(0,0,0,0.12),
-inset 0 1px 0 rgba(255,255,255,0.26);
-}
-
-52% {
-transform:
-translateX(255px)
-translateY(4px)
+translateX(480px)
+translateY(-10px)
 rotate(1.1deg)
-skewX(-7deg)
-scaleX(1.30)
-scaleY(1.10);
-clip-path: polygon(6% 0%, 100% 0%, 96% 100%, 0% 100%);
+skewX(-30deg)
+scaleX(1.95)
+scaleY(1.68);
+clip-path: polygon(28% 0%, 100% 0%, 82% 100%, 0% 100%);
 box-shadow:
-16px 11px 20px rgba(0,0,0,0.15),
-24px 16px 30px rgba(0,0,0,0.09),
+28px 16px 28px rgba(0,0,0,0.18),
+42px 22px 52px rgba(0,0,0,0.11),
 inset 0 1px 0 rgba(255,255,255,0.26);
 }
 
-72% {
+/* 4: löst die harte Perspektive ruhiger auf */
+60% {
 transform:
-translateX(64px)
-translateY(4px)
-rotate(-2.2deg)
-skewX(-1.5deg)
-scaleX(1.05)
+translateX(235px)
+translateY(10px)
+rotate(-0.3deg)
+skewX(-12deg)
+scaleX(1.28)
+scaleY(1.12);
+clip-path: polygon(10% 0%, 100% 0%, 94% 100%, 0% 100%);
+box-shadow:
+14px 10px 18px rgba(0,0,0,0.14),
+20px 14px 26px rgba(0,0,0,0.08),
+inset 0 1px 0 rgba(255,255,255,0.26);
+}
+
+/* 5: ruhig unter die Uhr setzen */
+80% {
+transform:
+translateX(56px)
+translateY(32px)
+rotate(-2.1deg)
+skewX(-2.2deg)
+scaleX(1.04)
 scaleY(1.01);
 clip-path: polygon(2% 0%, 100% 0%, 99% 100%, 0% 100%);
 box-shadow:
-7px 7px 12px rgba(0,0,0,0.11),
-10px 10px 16px rgba(0,0,0,0.05),
+5px 6px 10px rgba(0,0,0,0.10),
+8px 9px 14px rgba(0,0,0,0.05),
 inset 0 1px 0 rgba(255,255,255,0.26);
 }
 
-86% {
+/* 6: mini settle */
+90% {
 transform:
-translateX(-8px)
-translateY(1px)
-rotate(-3.25deg)
-skewX(-0.3deg)
+translateX(-4px)
+translateY(36px)
+rotate(-2.9deg)
+skewX(-0.6deg)
 scaleX(1.01)
 scaleY(1.01);
-clip-path: polygon(0.5% 0%, 100% 0%, 100% 100%, 0% 100%);
+clip-path: polygon(0.7% 0%, 100% 0%, 100% 100%, 0% 100%);
 box-shadow:
-3px 4px 8px rgba(0,0,0,0.09),
-5px 6px 10px rgba(0,0,0,0.04),
+2px 3px 6px rgba(0,0,0,0.08),
+4px 5px 8px rgba(0,0,0,0.035),
 inset 0 1px 0 rgba(255,255,255,0.26);
 }
 
+/* final – tiefer, ruhiger, unter der Uhr */
 100% {
 transform:
 translateX(0)
-translateY(0)
+translateY(38px)
 rotate(-3deg)
 skewX(0deg)
 scaleX(1)
@@ -1104,19 +1115,19 @@ min-height: 255px;
 padding: 20px 16px 16px;
 
 transform:
-translateX(640px)
-translateY(0px)
-rotate(2deg)
-skewX(-24deg)
-scaleX(2.6)
-scaleY(2.15);
+translateX(620px)
+translateY(-16px)
+rotate(0.6deg)
+skewX(-7deg)
+scaleX(2.55)
+scaleY(2.42);
 
 box-shadow:
-42px 22px 40px rgba(0,0,0,0.24),
-64px 30px 72px rgba(0,0,0,0.14),
+38px 20px 34px rgba(0,0,0,0.22),
+58px 28px 64px rgba(0,0,0,0.13),
 inset 0 1px 0 rgba(255,255,255,0.26);
 
-clip-path: polygon(24% 0%, 100% 0%, 86% 100%, 0% 100%);
+clip-path: polygon(13% 0%, 100% 0%, 92% 100%, 0% 100%);
 }
 
 .prep-note-inner {
@@ -1130,89 +1141,105 @@ font-size: 16px;
 }
 
 .prep-note-sheet.is-placing {
-animation: placeStickyPhotoRealMobileV4 2300ms cubic-bezier(0.2, 0.82, 0.24, 1) forwards;
+animation: placeStickyPhotoFinalCalmMobile 2700ms cubic-bezier(0.22, 0.78, 0.20, 1) forwards;
 }
 
-@keyframes placeStickyPhotoRealMobileV4 {
+@keyframes placeStickyPhotoFinalCalmMobile {
 0% {
 transform:
-translateX(640px)
-translateY(0px)
-rotate(2deg)
-skewX(-24deg)
-scaleX(2.6)
-scaleY(2.15);
-clip-path: polygon(24% 0%, 100% 0%, 86% 100%, 0% 100%);
+translateX(620px)
+translateY(-16px)
+rotate(0.6deg)
+skewX(-7deg)
+scaleX(2.55)
+scaleY(2.42);
+clip-path: polygon(13% 0%, 100% 0%, 92% 100%, 0% 100%);
 box-shadow:
-42px 22px 40px rgba(0,0,0,0.24),
-64px 30px 72px rgba(0,0,0,0.14),
+38px 20px 34px rgba(0,0,0,0.22),
+58px 28px 64px rgba(0,0,0,0.13),
 inset 0 1px 0 rgba(255,255,255,0.26);
 }
 
-14% {
+20% {
 transform:
 translateX(500px)
-translateY(0px)
-rotate(2.2deg)
-skewX(-20deg)
-scaleX(2.18)
-scaleY(1.82);
-clip-path: polygon(18% 0%, 100% 0%, 89% 100%, 0% 100%);
-box-shadow:
-34px 18px 32px rgba(0,0,0,0.21),
-52px 24px 58px rgba(0,0,0,0.12),
-inset 0 1px 0 rgba(255,255,255,0.26);
-}
-
-30% {
-transform:
-translateX(335px)
-translateY(2px)
-rotate(2.4deg)
-skewX(-13deg)
-scaleX(1.72)
-scaleY(1.40);
-clip-path: polygon(11% 0%, 100% 0%, 93% 100%, 0% 100%);
-box-shadow:
-22px 14px 22px rgba(0,0,0,0.17),
-32px 18px 36px rgba(0,0,0,0.10),
-inset 0 1px 0 rgba(255,255,255,0.26);
-}
-
-52% {
-transform:
-translateX(170px)
-translateY(5px)
+translateY(-14px)
 rotate(0.8deg)
-skewX(-6deg)
-scaleX(1.28)
-scaleY(1.12);
-clip-path: polygon(5% 0%, 100% 0%, 97% 100%, 0% 100%);
+skewX(-9deg)
+scaleX(2.26)
+scaleY(2.12);
+clip-path: polygon(12% 0%, 100% 0%, 92% 100%, 0% 100%);
 box-shadow:
-12px 10px 16px rgba(0,0,0,0.14),
-18px 14px 22px rgba(0,0,0,0.08),
+30px 16px 28px rgba(0,0,0,0.20),
+44px 22px 50px rgba(0,0,0,0.12),
 inset 0 1px 0 rgba(255,255,255,0.26);
 }
 
-78% {
+/* mittlerer Zustand – krasses Trapez */
+42% {
 transform:
-translateX(38px)
-translateY(3px)
-rotate(-2.7deg)
-skewX(-1.2deg)
+translateX(320px)
+translateY(-4px)
+rotate(1.1deg)
+skewX(-28deg)
+scaleX(1.72)
+scaleY(1.48);
+clip-path: polygon(26% 0%, 100% 0%, 83% 100%, 0% 100%);
+box-shadow:
+20px 12px 20px rgba(0,0,0,0.17),
+30px 16px 34px rgba(0,0,0,0.10),
+inset 0 1px 0 rgba(255,255,255,0.26);
+}
+
+62% {
+transform:
+translateX(155px)
+translateY(10px)
+rotate(-0.2deg)
+skewX(-10deg)
+scaleX(1.26)
+scaleY(1.12);
+clip-path: polygon(9% 0%, 100% 0%, 94% 100%, 0% 100%);
+box-shadow:
+10px 8px 14px rgba(0,0,0,0.13),
+16px 12px 20px rgba(0,0,0,0.075),
+inset 0 1px 0 rgba(255,255,255,0.26);
+}
+
+82% {
+transform:
+translateX(32px)
+translateY(30px)
+rotate(-2.1deg)
+skewX(-2deg)
 scaleX(1.04)
 scaleY(1.01);
-clip-path: polygon(1.5% 0%, 100% 0%, 99% 100%, 0% 100%);
+clip-path: polygon(2% 0%, 100% 0%, 99% 100%, 0% 100%);
 box-shadow:
-4px 6px 10px rgba(0,0,0,0.10),
-7px 9px 13px rgba(0,0,0,0.05),
+4px 5px 8px rgba(0,0,0,0.10),
+6px 7px 11px rgba(0,0,0,0.045),
+inset 0 1px 0 rgba(255,255,255,0.26);
+}
+
+92% {
+transform:
+translateX(-3px)
+translateY(34px)
+rotate(-2.9deg)
+skewX(-0.5deg)
+scaleX(1.01)
+scaleY(1.01);
+clip-path: polygon(0.7% 0%, 100% 0%, 100% 100%, 0% 100%);
+box-shadow:
+2px 3px 5px rgba(0,0,0,0.08),
+3px 4px 7px rgba(0,0,0,0.035),
 inset 0 1px 0 rgba(255,255,255,0.26);
 }
 
 100% {
 transform:
 translateX(0)
-translateY(0)
+translateY(36px)
 rotate(-3deg)
 skewX(0deg)
 scaleX(1)
