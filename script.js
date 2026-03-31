@@ -351,7 +351,6 @@ prepConfirmButton.style.opacity = "0";
 prepConfirmButton.style.pointerEvents = "none";
 }
 
-}
 
   if (activeStartTime && activeEndTime) {
     const now = new Date();
