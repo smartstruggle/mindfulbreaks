@@ -54,37 +54,26 @@
     </div>
   </div>
 
+  <!-- EIN EINZIGES STICKY / BLEIBT DURCH ALLE PHASEN -->
+  <div id="prep-overlay" class="prep-overlay" style="display: none;">
+    <div class="prep-backdrop"></div>
+    <div class="prep-flight-shadow"></div>
 
- <div id="prep-overlay" class="prep-overlay" style="display: none;">
-  <div class="prep-backdrop"></div>
+    <div id="prep-note" class="prep-note-sheet">
+      <div class="prep-note-inner">
+        <div id="prep-note-content" class="prep-note-content"></div>
 
-  <div id="prep-note" class="prep-note-sheet">
-    <div class="prep-note-inner">
-      <button id="prep-confirm-button" class="prep-confirm-button">
-        Ich bin bereit
-      </button>
+        <button id="prep-confirm-button" class="prep-confirm-button">
+          Ich bin bereit
+        </button>
+      </div>
     </div>
   </div>
 
-  <div class="prep-flight-shadow"></div>
-</div>
-  
   <!-- TRANSITION SCREEN -->
   <div id="waiting-screen" style="display: none;">
     <div class="screen-center">
       <h2 id="waiting-text">Deine nächste Pause ist um ...</h2>
-
-      <div class="sticky-wrap">
-        <div class="heart-pin pin-left"></div>
-        <div class="heart-pin pin-right"></div>
-
-        <div class="sticky-note">
-          <div class="sticky-note-inner">
-            Nächste Pause<br />
-            <span id="sticky-waiting-time">--:-- Uhr</span>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -112,17 +101,6 @@
               <div class="flip-card" id="flip-sec-tens">0</div>
               <div class="flip-card" id="flip-sec-ones">0</div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="sticky-wrap">
-        <div class="heart-pin pin-left"></div>
-        <div class="heart-pin pin-right"></div>
-
-        <div class="sticky-note break-note">
-          <div class="sticky-note-inner">
-            Take a break
           </div>
         </div>
       </div>
