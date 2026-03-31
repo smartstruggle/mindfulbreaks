@@ -827,28 +827,27 @@ body {
 
 
 /* =========================
-   PREP NOTE / LAID-DOWN SHEET
+PREP NOTE / PLACED STICKY
+FOTOANALYSE-BASIS
 ========================= */
 
 .prep-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+position: fixed;
+inset: 0;
+z-index: 999;
+display: flex;
+align-items: center;
+justify-content: center;
+pointer-events: auto;
 }
 
 .prep-backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(28, 30, 36, 0.04);
+position: absolute;
+inset: 0;
+background: rgba(28, 30, 36, 0.03);
 }
 
-/* =========================
-PREP NOTE / LAID-DOWN SHEET
-========================= */
-
+/* Sticky selbst */
 .prep-note-sheet {
 position: relative;
 z-index: 2;
@@ -863,24 +862,23 @@ radial-gradient(circle at 20% 18%, rgba(255,255,255,0.18) 0%, transparent 32%),
 radial-gradient(circle at 78% 74%, rgba(255,255,255,0.08) 0%, transparent 30%),
 linear-gradient(180deg, #f7de74 0%, #f2d05c 48%, #e5bb3e 100%);
 
-border: 1px solid rgba(164,120,24,0.18);
+border: 1px solid rgba(164,120,24,0.20);
 
-/* START POSITION (rechts außerhalb) */
+/* STARTPOSITION:
+rechts außerhalb, leicht unten, groß und nah */
 opacity: 0;
-transform: translateX(260px) translateY(60px) rotate(8deg) scale(1.08);
+transform: translateX(340px) translateY(130px) rotate(9deg) scale(1.28);
+transform-origin: center center;
+will-change: transform, opacity, box-shadow;
 
-transform-origin: center;
-will-change: transform, opacity;
-
-/* großer, weicher Schatten (in Bewegung) */
+/* starker Schatten am Anfang: nah an "Hand", fern von Fläche */
 box-shadow:
-0 30px 50px rgba(0,0,0,0.10),
-0 60px 80px rgba(0,0,0,0.05),
-inset 0 1px 0 rgba(255,255,255,0.28);
+28px 48px 70px rgba(0,0,0,0.18),
+46px 84px 120px rgba(0,0,0,0.10),
+inset 0 1px 0 rgba(255,255,255,0.30);
 }
 
-
-/* Papierstruktur */
+/* feine Papierstruktur */
 .prep-note-sheet::before {
 content: "";
 position: absolute;
@@ -903,119 +901,207 @@ align-items: flex-end;
 justify-content: center;
 }
 
-
 /* =========================
-REINLEGEN (von rechts)
+REINLEGEN
 ========================= */
 
 .prep-note-sheet.is-placing {
-animation: placeNoteRight 900ms cubic-bezier(0.22, 0.8, 0.3, 1) forwards;
+animation: placeStickyPhotoReal 1180ms cubic-bezier(0.2, 0.82, 0.26, 1) forwards;
 }
 
-@keyframes placeNoteRight {
+/* WICHTIG:
+Beim Prep bleibt der Sticky liegen.
+Deshalb hier bewusst KEINE aktive take-away Animation mehr. */
+.prep-note-sheet.is-taking-away {
+animation: none;
+}
 
+@keyframes placeStickyPhotoReal {
 0% {
 opacity: 0;
-transform: translateX(260px) translateY(60px) rotate(8deg) scale(1.08);
+transform: translateX(340px) translateY(130px) rotate(9deg) scale(1.28);
+box-shadow:
+28px 48px 70px rgba(0,0,0,0.18),
+46px 84px 120px rgba(0,0,0,0.10),
+inset 0 1px 0 rgba(255,255,255,0.30);
 }
 
-30% {
+12% {
+opacity: 0.16;
+transform: translateX(300px) translateY(112px) rotate(8.4deg) scale(1.24);
+box-shadow:
+24px 42px 64px rgba(0,0,0,0.18),
+40px 74px 108px rgba(0,0,0,0.10),
+inset 0 1px 0 rgba(255,255,255,0.30);
+}
+
+28% {
+opacity: 0.55;
+transform: translateX(225px) translateY(82px) rotate(6.5deg) scale(1.17);
+box-shadow:
+20px 34px 54px rgba(0,0,0,0.18),
+32px 60px 92px rgba(0,0,0,0.10),
+inset 0 1px 0 rgba(255,255,255,0.30);
+}
+
+46% {
+opacity: 0.88;
+transform: translateX(135px) translateY(42px) rotate(3.4deg) scale(1.10);
+box-shadow:
+15px 24px 40px rgba(0,0,0,0.18),
+22px 38px 58px rgba(0,0,0,0.10),
+inset 0 1px 0 rgba(255,255,255,0.30);
+}
+
+64% {
 opacity: 1;
-transform: translateX(90px) translateY(20px) rotate(4deg) scale(1.03);
+transform: translateX(52px) translateY(14px) rotate(-0.6deg) scale(1.04);
+box-shadow:
+9px 15px 24px rgba(0,0,0,0.18),
+13px 22px 32px rgba(0,0,0,0.10),
+inset 0 1px 0 rgba(255,255,255,0.30);
 }
 
-65% {
-transform: translateX(-6px) translateY(-2px) rotate(-3.5deg) scale(1);
+78% {
+opacity: 1;
+transform: translateX(8px) translateY(2px) rotate(-3.8deg) scale(1.01);
+box-shadow:
+5px 9px 14px rgba(0,0,0,0.17),
+8px 14px 20px rgba(0,0,0,0.09),
+inset 0 1px 0 rgba(255,255,255,0.30);
+}
+
+88% {
+opacity: 1;
+transform: translateX(-4px) translateY(-2px) rotate(-2.6deg) scale(1.003);
+box-shadow:
+3px 6px 9px rgba(0,0,0,0.15),
+5px 10px 14px rgba(0,0,0,0.08),
+inset 0 1px 0 rgba(255,255,255,0.30);
 }
 
 100% {
 opacity: 1;
 transform: translateX(0) translateY(0) rotate(-3deg) scale(1);
-
-/* finaler ruhiger Schatten */
 box-shadow:
-0 8px 14px rgba(0,0,0,0.16),
-0 14px 22px rgba(0,0,0,0.08),
-inset 0 1px 0 rgba(255,255,255,0.28);
+2px 4px 7px rgba(0,0,0,0.13),
+4px 8px 12px rgba(0,0,0,0.07),
+inset 0 1px 0 rgba(255,255,255,0.30);
 }
 }
-
 
 /* =========================
-WEGNEHMEN (nach rechts oben)
+BUTTON
 ========================= */
 
-.prep-note-sheet.is-taking-away {
-animation: takeNoteAwayUp 420ms cubic-bezier(0.4, 0.0, 0.6, 1) forwards;
-}
-
-@keyframes takeNoteAwayUp {
-
-0% {
-opacity: 1;
-transform: translateX(0) translateY(0) rotate(-3deg) scale(1);
-
-box-shadow:
-0 8px 14px rgba(0,0,0,0.16),
-0 14px 22px rgba(0,0,0,0.08),
-inset 0 1px 0 rgba(255,255,255,0.28);
-}
-
-40% {
-transform: translateX(60px) translateY(-40px) rotate(-1deg) scale(1.04);
-
-box-shadow:
-0 18px 28px rgba(0,0,0,0.12),
-0 32px 46px rgba(0,0,0,0.06);
-}
-
-100% {
-opacity: 0;
-transform: translateX(180px) translateY(-120px) rotate(4deg) scale(1.1);
-
-box-shadow:
-0 40px 60px rgba(0,0,0,0.08),
-0 70px 100px rgba(0,0,0,0.04);
-}
-}
-
 .prep-confirm-button {
-  border: none;
-  border-radius: 999px;
-  padding: 16px 26px;
-  min-width: 190px;
-  cursor: pointer;
+border: none;
+border-radius: 999px;
+padding: 16px 26px;
+min-width: 190px;
+cursor: pointer;
 
-  background: linear-gradient(180deg, #454b59 0%, #313746 100%);
-  color: #fff;
-  font-size: 17px;
-  font-weight: 500;
+background: linear-gradient(180deg, #454b59 0%, #313746 100%);
+color: #fff;
+font-size: 17px;
+font-weight: 500;
 
-  box-shadow:
-    0 10px 20px rgba(0, 0, 0, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+box-shadow:
+0 10px 20px rgba(0, 0, 0, 0.16),
+inset 0 1px 0 rgba(255, 255, 255, 0.10);
 
-  transition: transform 0.16s ease;
+transition: transform 0.16s ease;
 }
 
 .prep-confirm-button:hover {
-  transform: translateY(-1px);
+transform: translateY(-1px);
 }
 
+/* =========================
+MOBILE
+========================= */
+
 @media (max-width: 768px) {
-  .prep-note-sheet {
-    width: 270px;
-    min-height: 255px;
-    padding: 20px 16px 16px;
-  }
+.prep-note-sheet {
+width: 270px;
+min-height: 255px;
+padding: 20px 16px 16px;
 
-  .prep-note-inner {
-    min-height: 215px;
-  }
+transform: translateX(180px) translateY(100px) rotate(7deg) scale(1.32);
 
-  .prep-confirm-button {
-    min-width: 170px;
-    padding: 14px 22px;
-    font-size: 16px;
-  }
+box-shadow:
+20px 36px 56px rgba(0,0,0,0.20),
+34px 62px 90px rgba(0,0,0,0.10),
+inset 0 1px 0 rgba(255,255,255,0.30);
+}
+
+.prep-note-inner {
+min-height: 215px;
+}
+
+.prep-confirm-button {
+min-width: 170px;
+padding: 14px 22px;
+font-size: 16px;
+}
+
+.prep-note-sheet.is-placing {
+animation: placeStickyPhotoRealMobile 1120ms cubic-bezier(0.2, 0.82, 0.26, 1) forwards;
+}
+
+@keyframes placeStickyPhotoRealMobile {
+0% {
+opacity: 0;
+transform: translateX(180px) translateY(100px) rotate(7deg) scale(1.32);
+box-shadow:
+20px 36px 56px rgba(0,0,0,0.20),
+34px 62px 90px rgba(0,0,0,0.10),
+inset 0 1px 0 rgba(255,255,255,0.30);
+}
+
+18% {
+opacity: 0.22;
+transform: translateX(150px) translateY(84px) rotate(6.5deg) scale(1.26);
+box-shadow:
+18px 31px 48px rgba(0,0,0,0.20),
+28px 52px 76px rgba(0,0,0,0.10),
+inset 0 1px 0 rgba(255,255,255,0.30);
+}
+
+40% {
+opacity: 0.68;
+transform: translateX(95px) translateY(50px) rotate(4deg) scale(1.16);
+box-shadow:
+13px 22px 34px rgba(0,0,0,0.20),
+20px 34px 50px rgba(0,0,0,0.10),
+inset 0 1px 0 rgba(255,255,255,0.30);
+}
+
+66% {
+opacity: 1;
+transform: translateX(26px) translateY(12px) rotate(-1.2deg) scale(1.04);
+box-shadow:
+7px 12px 18px rgba(0,0,0,0.18),
+10px 18px 24px rgba(0,0,0,0.09),
+inset 0 1px 0 rgba(255,255,255,0.30);
+}
+
+82% {
+opacity: 1;
+transform: translateX(2px) translateY(0) rotate(-3.2deg) scale(1.008);
+box-shadow:
+3px 6px 9px rgba(0,0,0,0.15),
+5px 10px 14px rgba(0,0,0,0.08),
+inset 0 1px 0 rgba(255,255,255,0.30);
+}
+
+100% {
+opacity: 1;
+transform: translateX(0) translateY(0) rotate(-3deg) scale(1);
+box-shadow:
+2px 4px 6px rgba(0,0,0,0.13),
+4px 8px 12px rgba(0,0,0,0.07),
+inset 0 1px 0 rgba(255,255,255,0.30);
+}
+}
 }
