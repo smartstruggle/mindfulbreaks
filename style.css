@@ -201,116 +201,6 @@ body {
   text-align: center;
 }
 
-/* =========================
-   WAITING / BREAK NOTES
-========================= */
-
-.waiting-note-wrap,
-.break-note-wrap {
-  position: relative;
-  display: inline-block;
-  margin-top: 46px;
-  transform: rotate(-1.5deg);
-}
-
-.sticky-wrap {
-  position: relative;
-  display: inline-block;
-  margin-top: 34px;
-  overflow: visible;
-  transform: rotate(-2deg);
-}
-
-.break-sticky {
-  margin-top: -10px;
-  transform: rotate(-3deg);
-}
-
-.sticky-note {
-  position: relative;
-  width: 300px;
-  min-height: 300px;
-  padding: 28px 24px 26px;
-  box-sizing: border-box;
-  border-radius: 3px;
-  overflow: visible;
-
-  background:
-    radial-gradient(circle at 20% 18%, rgba(255, 255, 255, 0.18) 0%, transparent 32%),
-    radial-gradient(circle at 78% 74%, rgba(255, 255, 255, 0.08) 0%, transparent 30%),
-    linear-gradient(180deg, #f7de74 0%, #f2d05c 48%, #e5bb3e 100%);
-
-  box-shadow:
-    0 2px 3px rgba(0, 0, 0, 0.10),
-    0 14px 22px rgba(0, 0, 0, 0.18),
-    0 30px 38px rgba(0, 0, 0, 0.10),
-    inset 0 1px 0 rgba(255, 255, 255, 0.28);
-
-  border: 1px solid rgba(164, 120, 24, 0.18);
-}
-
-.sticky-note::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 3px;
-  pointer-events: none;
-  opacity: 0.22;
-  background-image:
-    radial-gradient(rgba(120, 84, 16, 0.22) 0.5px, transparent 0.7px);
-  background-size: 6px 6px;
-  mix-blend-mode: multiply;
-}
-
-.sticky-note::after {
-  content: "";
-  position: absolute;
-  right: -1px;
-  bottom: -1px;
-  width: 78px;
-  height: 78px;
-  background:
-    linear-gradient(135deg, #f8e48b 0%, #e1b42a 58%, #b97d08 100%);
-  clip-path: polygon(100% 0, 0 100%, 100% 100%);
-  border-bottom-right-radius: 4px;
-  box-shadow:
-    -4px -4px 10px rgba(0, 0, 0, 0.10) inset,
-    -1px -1px 0 rgba(255, 255, 255, 0.28) inset;
-}
-
-.sticky-note-inner {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-  color: #6f3d0d;
-  font-family: "Caveat", cursive;
-  font-weight: 500;
-  font-size: 44px;
-  line-height: 0.95;
-  letter-spacing: 0.01em;
-  padding-top: 22px;
-}
-
-.break-note .sticky-note-inner {
-  font-size: 46px;
-  line-height: 0.95;
-  padding-top: 34px;
-}
-
-#sticky-waiting-time {
-  display: block;
-  margin-top: 20px;
-  font-family: "Caveat", cursive;
-  font-size: 42px;
-  font-weight: 500;
-  color: #77420f;
-  line-height: 1;
-}
-
-.pin-left,
-.pin-right {
-  display: none !important;
-}
 
 /* =========================
    FLIP CLOCK
@@ -971,25 +861,104 @@ transform-origin: top right;
 will-change: transform, opacity, filter;
 }
 
-.prep-note-sheet.is-placing + .prep-flight-shadow,
-.prep-overlay .prep-flight-shadow.is-placing {
-animation: prepFlightShadowMove 1650ms cubic-bezier(0.24, 0.72, 0.22, 1) forwards;
+.prep-note-sheet.is-placing + .prep-flight-shadow {
+  animation: prepFlightShadowMove 1650ms cubic-bezier(0.24, 0.72, 0.22, 1) forwards;
 }
 
-/* Falls du keinen separaten Shadow-Div im HTML hast, ignoriert der Browser das einfach.
-Dann bleibt nur der normale Sheet-Schatten aktiv. */
+
 
 /* =========================
 INNER
 ========================= */
 
 .prep-note-inner {
-position: relative;
-z-index: 2;
-min-height: 252px;
-display: flex;
-align-items: flex-end;
-justify-content: center;
+  position: relative;
+  z-index: 2;
+  min-height: 252px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+}
+
+/* =========================
+   PREP NOTE CONTENT
+========================= */
+
+.prep-note-content {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  text-align: center;
+  opacity: 1;
+}
+
+.note-copy {
+  width: 100%;
+  color: rgba(46, 34, 16, 0.92);
+  font-family: "Caveat", cursive;
+}
+
+.note-copy-intro {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 14px;
+  padding-top: 8px;
+}
+
+.note-main-text {
+  font-size: 25px;
+  line-height: 1.06;
+  text-align: center;
+  letter-spacing: 0.1px;
+}
+
+.note-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.note-check-item {
+  font-size: 18px;
+  line-height: 1.12;
+  text-align: left;
+}
+
+.note-copy-waiting,
+.note-copy-break {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  padding-top: 14px;
+}
+
+.note-handwriting-line {
+  font-family: "Caveat", cursive;
+  font-size: 30px;
+  line-height: 1.08;
+  color: rgba(46, 34, 16, 0.95);
+  text-align: center;
+  white-space: pre-wrap;
+}
+
+.note-handwriting-line-secondary {
+  margin-top: 14px;
+  font-size: 24px;
+  line-height: 1.08;
+}
+
+/* Button sitzt sauber unten */
+.prep-confirm-button {
+  align-self: center;
+  margin-top: auto;
 }
 
 /* =========================
@@ -1251,9 +1220,33 @@ clip-path: polygon(8% 0%, 100% 0%, 96% 100%, 0% 100%);
 }
 
 .prep-note-inner {
-min-height: 215px;
+  min-height: 215px;
+  gap: 10px;
+}
+.note-copy-intro {
+  gap: 10px;
+  padding-top: 4px;
 }
 
+.note-main-text {
+  font-size: 21px;
+  line-height: 1.04;
+}
+
+.note-check-item {
+  font-size: 16px;
+  line-height: 1.08;
+}
+
+.note-handwriting-line {
+  font-size: 26px;
+  line-height: 1.05;
+}
+
+.note-handwriting-line-secondary {
+  margin-top: 10px;
+  font-size: 21px;
+}
 .prep-confirm-button {
 min-width: 170px;
 padding: 14px 22px;
@@ -1275,9 +1268,8 @@ scaleY(3.45);
 animation: placeStickyTakeoverMobile 1550ms cubic-bezier(0.24, 0.72, 0.22, 1) forwards;
 }
 
-.prep-note-sheet.is-placing + .prep-flight-shadow,
-.prep-overlay .prep-flight-shadow.is-placing {
-animation: prepFlightShadowMoveMobile 1550ms cubic-bezier(0.24, 0.72, 0.22, 1) forwards;
+.prep-note-sheet.is-placing + .prep-flight-shadow {
+  animation: prepFlightShadowMove 1650ms cubic-bezier(0.24, 0.72, 0.22, 1) forwards;
 }
 
 @keyframes placeStickyTakeoverMobile {
