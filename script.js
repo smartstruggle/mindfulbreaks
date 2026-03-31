@@ -338,19 +338,18 @@ prepConfirmButton.style.pointerEvents = "";
     breakStickyInner.textContent = "Nimm dir Zeit für dich.";
   }
 
-  resetBreakStickyAppearance();
+ resetBreakStickyAppearance();
 }
 
 function confirmPrepNoteAndContinue() {
-if (prepOverlay) {
-prepOverlay.classList.add("prep-overlay-persistent");
-}
+  if (prepOverlay) {
+    prepOverlay.classList.add("prep-overlay-persistent");
+  }
 
-if (prepConfirmButton) {
-prepConfirmButton.style.opacity = "0";
-prepConfirmButton.style.pointerEvents = "none";
-}
-
+  if (prepConfirmButton) {
+    prepConfirmButton.style.opacity = "0";
+    prepConfirmButton.style.pointerEvents = "none";
+  }
 
   if (activeStartTime && activeEndTime) {
     const now = new Date();
@@ -370,9 +369,6 @@ prepConfirmButton.style.pointerEvents = "none";
 
     startWaitingPhase(activeStartTime, activeEndTime);
   }
-}
-
-  startWaitingPhase(activeStartTime, activeEndTime);
 }
 
 function startWaitingPhase(startTime, endTime) {
