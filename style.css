@@ -1441,12 +1441,11 @@ filter: blur(7px);
 }
 
 body.break-active .prep-note-sheet {
-transform:
-translateX(0)
-translateY(140px)
-rotate(-3deg)
-skewX(0deg)
-scaleX(1)
-scaleY(1) !important;
-}
+transform: none !important;
 
+position: absolute;
+left: 50%;
+transform: translateX(-50%) rotate(-3deg);
+
+top: calc(50% + 140px); /* ← das ist der wichtige Teil */
+}
