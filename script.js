@@ -306,10 +306,6 @@ function resetApp() {
   activeStartTime = null;
   activeEndTime = null;
 
-  if (prepOverlay) {
-    prepOverlay.style.display = "none";
-  }
-
   showSetupScreen();
 
   startHour.value = "";
@@ -321,6 +317,17 @@ function resetApp() {
     timer.textContent = "00:00";
   }
 
+if (prepOverlay) {
+prepOverlay.style.display = "none";
+prepOverlay.classList.remove("prep-overlay-persistent");
+}
+
+if (prepConfirmButton) {
+prepConfirmButton.style.opacity = "";
+prepConfirmButton.style.pointerEvents = "";
+}
+
+   
   updateFlipClock(0);
 
   if (waitingStickyInner) {
@@ -334,25 +341,36 @@ function resetApp() {
   resetBreakStickyAppearance();
 }
 
-async function routeAfterPrepConfirmation() {
-  if (!activeStartTime || !activeEndTime) return;
+function confirmPrepNoteAndContinue() {
+if (prepOverlay) {
+prepOverlay.classList.add("prep-overlay-persistent");
+}
 
-  const now = new Date();
-  const startDate = getTodayDateForTime(activeStartTime);
-  const endDate = getTodayDateForTime(activeEndTime);
+if (prepConfirmButton) {
+prepConfirmButton.style.opacity = "0";
+prepConfirmButton.style.pointerEvents = "none";
+}
 
-  await hidePrepNote();
+if (activeStartTime && activeEndTime) {
+const now = new Date();
+const startDate = getTodayDateForTime(activeStartTime);
+const endDate = getTodayDateForTime(activeEndTime);
 
-  if (now >= endDate) {
-    alert("Diese Zeitspanne ist heute schon vorbei 💛");
-    resetApp();
-    return;
-  }
+if (now >= endDate) {
+alert("Diese Zeitspanne ist heute schon vorbei 💛");
+resetApp();
+return;
+}
 
-  if (now >= startDate && now < endDate) {
-    startBreakPhase(false);
-    return;
-  }
+if (now >= startDate && now < endDate) {
+startBreakPhase(false);
+return;
+}
+
+startWaitingPhase(activeStartTime, activeEndTime);
+}
+}
+
 
   startWaitingPhase(activeStartTime, activeEndTime);
 }
@@ -556,10 +574,10 @@ startButton.addEventListener("click", async () => {
 });
 
 if (prepConfirmButton) {
-  prepConfirmButton.addEventListener("click", async () => {
-    prepConfirmed = true;
-    await routeAfterPrepConfirmation();
-  });
+prepConfirmButton.addEventListener("click", () => {
+prepConfirmed = true;
+confirmPrepNoteAndContinue();
+});
 }
 
 document.addEventListener("visibilitychange", () => {
