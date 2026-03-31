@@ -827,7 +827,7 @@ body {
 
 
 /* =========================
-PREP NOTE / FINAL CALMER VERSION
+PREP NOTE / FULL REBUILD
 ========================= */
 
 .prep-overlay {
@@ -838,13 +838,14 @@ display: flex;
 align-items: center;
 justify-content: center;
 pointer-events: auto;
+overflow: hidden;
 }
 
 .prep-backdrop {
 position: absolute;
 inset: 0;
-background: rgba(28, 30, 36, 0.02);
-transition: opacity 0.45s ease;
+background: rgba(28, 30, 36, 0.015);
+transition: opacity 0.35s ease;
 }
 
 .prep-overlay.prep-overlay-persistent {
@@ -856,7 +857,7 @@ opacity: 0;
 }
 
 /* =========================
-STICKY
+STICKY SHEET
 ========================= */
 
 .prep-note-sheet {
@@ -866,35 +867,34 @@ width: 320px;
 min-height: 300px;
 padding: 26px 22px 22px;
 box-sizing: border-box;
-border-radius: 4px;
+border-radius: 3px;
+overflow: visible;
 
 background:
-radial-gradient(circle at 20% 18%, rgba(255,255,255,0.16) 0%, transparent 32%),
-radial-gradient(circle at 78% 74%, rgba(255,255,255,0.08) 0%, transparent 30%),
-linear-gradient(180deg, #f7de74 0%, #f2d05c 48%, #e5bb3e 100%);
+radial-gradient(circle at 22% 18%, rgba(255,255,255,0.15) 0%, transparent 30%),
+radial-gradient(circle at 76% 72%, rgba(255,255,255,0.07) 0%, transparent 28%),
+linear-gradient(180deg, #f7df70 0%, #f1cf54 52%, #e1b939 100%);
 
-border: 1px solid rgba(164,120,24,0.20);
+border: 1px solid rgba(156, 114, 20, 0.18);
 
-opacity: 1;
-
-/* START: gerader, vertikaler, mehr von rechts-mittig */
+/* START: fast vertikal, extrem hoch, sehr groß */
 transform:
-translateX(980px)
-translateY(-28px)
-rotate(0.6deg)
-skewX(-8deg)
-scaleX(2.95)
-scaleY(2.78);
+translateX(640px)
+translateY(-34px)
+rotate(0.3deg)
+skewX(-4deg)
+scaleX(1.95)
+scaleY(4.15);
 
 transform-origin: top right;
-will-change: transform, box-shadow, clip-path;
+will-change: transform, box-shadow, clip-path, opacity;
 
 box-shadow:
-52px 24px 48px rgba(0,0,0,0.23),
-84px 40px 98px rgba(0,0,0,0.14),
-inset 0 1px 0 rgba(255,255,255,0.26);
+70px 24px 72px rgba(0, 0, 0, 0.20),
+120px 38px 150px rgba(0, 0, 0, 0.10),
+inset 0 1px 0 rgba(255,255,255,0.24);
 
-clip-path: polygon(14% 0%, 100% 0%, 92% 100%, 0% 100%);
+clip-path: polygon(8% 0%, 100% 0%, 96% 100%, 0% 100%);
 }
 
 /* feine Papierstruktur */
@@ -902,41 +902,86 @@ clip-path: polygon(14% 0%, 100% 0%, 92% 100%, 0% 100%);
 content: "";
 position: absolute;
 inset: 0;
-border-radius: 4px;
+border-radius: 3px;
 pointer-events: none;
-opacity: 0.16;
+opacity: 0.14;
 background-image:
 radial-gradient(rgba(120,84,16,0.18) 0.5px, transparent 0.7px);
 background-size: 6px 6px;
 mix-blend-mode: multiply;
 }
 
-/* weicher Papierschatten */
+/* Eigen-Schatten am unteren Rand */
 .prep-note-sheet::after {
 content: "";
 position: absolute;
-left: 10%;
-right: 10%;
-bottom: 10px;
-height: 24%;
+left: 8%;
+right: 8%;
+bottom: 8px;
+height: 23%;
 pointer-events: none;
-border-radius: 0 0 18px 18px;
+border-radius: 0 0 14px 14px;
 
 background:
 radial-gradient(
 ellipse at center,
-rgba(92, 58, 8, 0.14) 0%,
-rgba(92, 58, 8, 0.08) 38%,
-rgba(92, 58, 8, 0.03) 68%,
-rgba(92, 58, 8, 0) 100%
+rgba(86, 56, 8, 0.18) 0%,
+rgba(86, 56, 8, 0.10) 42%,
+rgba(86, 56, 8, 0.04) 72%,
+rgba(86, 56, 8, 0) 100%
 );
 
-opacity: 0.52;
+opacity: 0.48;
 filter: blur(4px);
-transform: translateY(2px) scaleX(0.92) scaleY(0.72);
+transform: translateY(2px) scaleX(0.94) scaleY(0.72);
 transform-origin: bottom center;
-transition: opacity 0.22s ease;
 }
+
+/* =========================
+FLIGHT SHADOW
+========================= */
+
+.prep-flight-shadow {
+position: absolute;
+z-index: 1;
+width: 330px;
+height: 300px;
+pointer-events: none;
+border-radius: 4px;
+opacity: 0;
+
+background:
+linear-gradient(
+90deg,
+rgba(0,0,0,0.00) 0%,
+rgba(0,0,0,0.10) 45%,
+rgba(0,0,0,0.24) 100%
+);
+
+filter: blur(18px);
+
+transform:
+translateX(640px)
+translateY(8px)
+skewX(-16deg)
+scaleX(1.8)
+scaleY(3.7);
+
+transform-origin: top right;
+will-change: transform, opacity, filter;
+}
+
+.prep-note-sheet.is-placing + .prep-flight-shadow,
+.prep-overlay .prep-flight-shadow.is-placing {
+animation: prepFlightShadowMove 1650ms cubic-bezier(0.24, 0.72, 0.22, 1) forwards;
+}
+
+/* Falls du keinen separaten Shadow-Div im HTML hast, ignoriert der Browser das einfach.
+Dann bleibt nur der normale Sheet-Schatten aktiv. */
+
+/* =========================
+INNER
+========================= */
 
 .prep-note-inner {
 position: relative;
@@ -947,7 +992,10 @@ align-items: flex-end;
 justify-content: center;
 }
 
-/* Button blendet später weg, Sticky bleibt */
+/* =========================
+BUTTON
+========================= */
+
 .prep-confirm-button {
 border: none;
 border-radius: 999px;
@@ -979,128 +1027,200 @@ pointer-events: none;
 }
 
 /* =========================
-REINLEGEN
+MAIN ANIMATION
 ========================= */
 
 .prep-note-sheet.is-placing {
-animation: placeStickyPhotoFinalCalm 2900ms cubic-bezier(0.22, 0.78, 0.20, 1) forwards;
+animation: placeStickyTakeover 1650ms cubic-bezier(0.24, 0.72, 0.22, 1) forwards;
 }
 
 .prep-note-sheet.is-taking-away {
 animation: none;
 }
 
-@keyframes placeStickyPhotoFinalCalm {
-/* 1: Start – gerader, vertikaler, mehr rechts-mittig */
+@keyframes placeStickyTakeover {
+/* Start: fast vertikaler Streifen, fast Screen-Höhe */
 0% {
 transform:
-translateX(980px)
-translateY(-28px)
-rotate(0.6deg)
-skewX(-8deg)
-scaleX(2.95)
-scaleY(2.78);
-clip-path: polygon(14% 0%, 100% 0%, 92% 100%, 0% 100%);
-box-shadow:
-52px 24px 48px rgba(0,0,0,0.23),
-84px 40px 98px rgba(0,0,0,0.14),
-inset 0 1px 0 rgba(255,255,255,0.26);
-}
-
-/* 2: immer noch relativ gerade */
-18% {
-transform:
-translateX(760px)
-translateY(-24px)
-rotate(0.8deg)
-skewX(-10deg)
-scaleX(2.62)
-scaleY(2.46);
-clip-path: polygon(13% 0%, 100% 0%, 92% 100%, 0% 100%);
-box-shadow:
-44px 22px 42px rgba(0,0,0,0.21),
-70px 34px 82px rgba(0,0,0,0.13),
-inset 0 1px 0 rgba(255,255,255,0.26);
-}
-
-/* 3: MITTELZUSTAND – viel stärkere Verjüngung */
-42% {
-transform:
-translateX(480px)
-translateY(-10px)
-rotate(1.1deg)
-skewX(-30deg)
+translateX(640px)
+translateY(-34px)
+rotate(0.3deg)
+skewX(-4deg)
 scaleX(1.95)
-scaleY(1.68);
-clip-path: polygon(28% 0%, 100% 0%, 82% 100%, 0% 100%);
+scaleY(4.15);
+clip-path: polygon(8% 0%, 100% 0%, 96% 100%, 0% 100%);
 box-shadow:
-28px 16px 28px rgba(0,0,0,0.18),
-42px 22px 52px rgba(0,0,0,0.11),
-inset 0 1px 0 rgba(255,255,255,0.26);
+70px 24px 72px rgba(0, 0, 0, 0.20),
+120px 38px 150px rgba(0, 0, 0, 0.10),
+inset 0 1px 0 rgba(255,255,255,0.24);
 }
 
-/* 4: löst die harte Perspektive ruhiger auf */
-60% {
+/* immer noch sehr vertikal */
+12% {
 transform:
-translateX(235px)
-translateY(10px)
-rotate(-0.3deg)
-skewX(-12deg)
-scaleX(1.28)
-scaleY(1.12);
+translateX(585px)
+translateY(-30px)
+rotate(0.35deg)
+skewX(-5deg)
+scaleX(1.92)
+scaleY(3.65);
+clip-path: polygon(8% 0%, 100% 0%, 95% 100%, 0% 100%);
+box-shadow:
+60px 22px 62px rgba(0, 0, 0, 0.19),
+104px 34px 128px rgba(0, 0, 0, 0.095),
+inset 0 1px 0 rgba(255,255,255,0.24);
+}
+
+/* Übergang in Richtung Fläche */
+28% {
+transform:
+translateX(505px)
+translateY(-18px)
+rotate(0.6deg)
+skewX(-9deg)
+scaleX(1.84)
+scaleY(2.55);
 clip-path: polygon(10% 0%, 100% 0%, 94% 100%, 0% 100%);
 box-shadow:
-14px 10px 18px rgba(0,0,0,0.14),
-20px 14px 26px rgba(0,0,0,0.08),
-inset 0 1px 0 rgba(255,255,255,0.26);
+46px 18px 46px rgba(0, 0, 0, 0.17),
+76px 26px 92px rgba(0, 0, 0, 0.085),
+inset 0 1px 0 rgba(255,255,255,0.24);
 }
 
-/* 5: ruhig unter die Uhr setzen */
-80% {
+/* MITTE: jetzt wirklich starkes Trapez */
+46% {
 transform:
-translateX(56px)
-translateY(32px)
-rotate(-2.1deg)
+translateX(362px)
+translateY(-3px)
+rotate(0.9deg)
+skewX(-34deg)
+scaleX(1.78)
+scaleY(1.56);
+clip-path: polygon(31% 0%, 100% 0%, 80% 100%, 0% 100%);
+box-shadow:
+26px 14px 28px rgba(0, 0, 0, 0.15),
+42px 20px 48px rgba(0, 0, 0, 0.075),
+inset 0 1px 0 rgba(255,255,255,0.24);
+}
+
+/* Perspektive langsam auflösen */
+64% {
+transform:
+translateX(178px)
+translateY(18px)
+rotate(-0.4deg)
+skewX(-13deg)
+scaleX(1.22)
+scaleY(1.10);
+clip-path: polygon(11% 0%, 100% 0%, 93% 100%, 0% 100%);
+box-shadow:
+12px 9px 16px rgba(0, 0, 0, 0.12),
+18px 12px 22px rgba(0, 0, 0, 0.06),
+inset 0 1px 0 rgba(255,255,255,0.24);
+}
+
+/* unter die Uhr sinken */
+82% {
+transform:
+translateX(36px)
+translateY(62px)
+rotate(-2.3deg)
 skewX(-2.2deg)
-scaleX(1.04)
+scaleX(1.03)
 scaleY(1.01);
 clip-path: polygon(2% 0%, 100% 0%, 99% 100%, 0% 100%);
 box-shadow:
-5px 6px 10px rgba(0,0,0,0.10),
-8px 9px 14px rgba(0,0,0,0.05),
-inset 0 1px 0 rgba(255,255,255,0.26);
+4px 5px 9px rgba(0, 0, 0, 0.09),
+7px 8px 12px rgba(0, 0, 0, 0.04),
+inset 0 1px 0 rgba(255,255,255,0.24);
 }
 
-/* 6: mini settle */
-90% {
+92% {
 transform:
-translateX(-4px)
-translateY(36px)
+translateX(-3px)
+translateY(70px)
 rotate(-2.9deg)
-skewX(-0.6deg)
+skewX(-0.5deg)
 scaleX(1.01)
 scaleY(1.01);
 clip-path: polygon(0.7% 0%, 100% 0%, 100% 100%, 0% 100%);
 box-shadow:
-2px 3px 6px rgba(0,0,0,0.08),
-4px 5px 8px rgba(0,0,0,0.035),
-inset 0 1px 0 rgba(255,255,255,0.26);
+2px 3px 6px rgba(0, 0, 0, 0.075),
+4px 4px 8px rgba(0, 0, 0, 0.03),
+inset 0 1px 0 rgba(255,255,255,0.24);
 }
 
-/* final – tiefer, ruhiger, unter der Uhr */
+/* final: tiefer unter der Uhr */
 100% {
 transform:
 translateX(0)
-translateY(38px)
+translateY(74px)
 rotate(-3deg)
 skewX(0deg)
 scaleX(1)
 scaleY(1);
 clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
 box-shadow:
-1px 2px 4px rgba(0,0,0,0.07),
-2px 4px 7px rgba(0,0,0,0.03),
-inset 0 1px 0 rgba(255,255,255,0.26);
+1px 2px 4px rgba(0, 0, 0, 0.07),
+2px 4px 7px rgba(0, 0, 0, 0.03),
+inset 0 1px 0 rgba(255,255,255,0.24);
+}
+}
+
+@keyframes prepFlightShadowMove {
+0% {
+opacity: 0.42;
+transform:
+translateX(640px)
+translateY(12px)
+skewX(-18deg)
+scaleX(1.85)
+scaleY(3.85);
+filter: blur(22px);
+}
+
+24% {
+opacity: 0.30;
+transform:
+translateX(520px)
+translateY(16px)
+skewX(-22deg)
+scaleX(1.72)
+scaleY(2.85);
+filter: blur(18px);
+}
+
+46% {
+opacity: 0.20;
+transform:
+translateX(360px)
+translateY(22px)
+skewX(-28deg)
+scaleX(1.55)
+scaleY(1.75);
+filter: blur(14px);
+}
+
+74% {
+opacity: 0.10;
+transform:
+translateX(110px)
+translateY(72px)
+skewX(-8deg)
+scaleX(1.14)
+scaleY(0.92);
+filter: blur(9px);
+}
+
+100% {
+opacity: 0;
+transform:
+translateX(0)
+translateY(80px)
+skewX(0deg)
+scaleX(1)
+scaleY(0.74);
+filter: blur(7px);
 }
 }
 
@@ -1115,19 +1235,19 @@ min-height: 255px;
 padding: 20px 16px 16px;
 
 transform:
-translateX(620px)
-translateY(-16px)
-rotate(0.6deg)
-skewX(-7deg)
-scaleX(2.55)
-scaleY(2.42);
+translateX(505px)
+translateY(-24px)
+rotate(0.3deg)
+skewX(-4deg)
+scaleX(1.82)
+scaleY(3.75);
 
 box-shadow:
-38px 20px 34px rgba(0,0,0,0.22),
-58px 28px 64px rgba(0,0,0,0.13),
-inset 0 1px 0 rgba(255,255,255,0.26);
+52px 18px 48px rgba(0, 0, 0, 0.19),
+86px 28px 104px rgba(0, 0, 0, 0.095),
+inset 0 1px 0 rgba(255,255,255,0.24);
 
-clip-path: polygon(13% 0%, 100% 0%, 92% 100%, 0% 100%);
+clip-path: polygon(8% 0%, 100% 0%, 96% 100%, 0% 100%);
 }
 
 .prep-note-inner {
@@ -1140,115 +1260,190 @@ padding: 14px 22px;
 font-size: 16px;
 }
 
-.prep-note-sheet.is-placing {
-animation: placeStickyPhotoFinalCalmMobile 2700ms cubic-bezier(0.22, 0.78, 0.20, 1) forwards;
+.prep-flight-shadow {
+width: 280px;
+height: 255px;
+transform:
+translateX(505px)
+translateY(8px)
+skewX(-16deg)
+scaleX(1.72)
+scaleY(3.45);
 }
 
-@keyframes placeStickyPhotoFinalCalmMobile {
+.prep-note-sheet.is-placing {
+animation: placeStickyTakeoverMobile 1550ms cubic-bezier(0.24, 0.72, 0.22, 1) forwards;
+}
+
+.prep-note-sheet.is-placing + .prep-flight-shadow,
+.prep-overlay .prep-flight-shadow.is-placing {
+animation: prepFlightShadowMoveMobile 1550ms cubic-bezier(0.24, 0.72, 0.22, 1) forwards;
+}
+
+@keyframes placeStickyTakeoverMobile {
 0% {
 transform:
-translateX(620px)
-translateY(-16px)
-rotate(0.6deg)
-skewX(-7deg)
-scaleX(2.55)
-scaleY(2.42);
-clip-path: polygon(13% 0%, 100% 0%, 92% 100%, 0% 100%);
+translateX(505px)
+translateY(-24px)
+rotate(0.3deg)
+skewX(-4deg)
+scaleX(1.82)
+scaleY(3.75);
+clip-path: polygon(8% 0%, 100% 0%, 96% 100%, 0% 100%);
 box-shadow:
-38px 20px 34px rgba(0,0,0,0.22),
-58px 28px 64px rgba(0,0,0,0.13),
-inset 0 1px 0 rgba(255,255,255,0.26);
+52px 18px 48px rgba(0, 0, 0, 0.19),
+86px 28px 104px rgba(0, 0, 0, 0.095),
+inset 0 1px 0 rgba(255,255,255,0.24);
 }
 
-20% {
+12% {
 transform:
-translateX(500px)
-translateY(-14px)
-rotate(0.8deg)
-skewX(-9deg)
-scaleX(2.26)
-scaleY(2.12);
-clip-path: polygon(12% 0%, 100% 0%, 92% 100%, 0% 100%);
-box-shadow:
-30px 16px 28px rgba(0,0,0,0.20),
-44px 22px 50px rgba(0,0,0,0.12),
-inset 0 1px 0 rgba(255,255,255,0.26);
+translateX(468px)
+translateY(-21px)
+rotate(0.35deg)
+skewX(-5deg)
+scaleX(1.80)
+scaleY(3.25);
+clip-path: polygon(8% 0%, 100% 0%, 95% 100%, 0% 100%);
 }
 
-/* mittlerer Zustand – krasses Trapez */
-42% {
+28% {
 transform:
-translateX(320px)
-translateY(-4px)
-rotate(1.1deg)
-skewX(-28deg)
-scaleX(1.72)
-scaleY(1.48);
-clip-path: polygon(26% 0%, 100% 0%, 83% 100%, 0% 100%);
-box-shadow:
-20px 12px 20px rgba(0,0,0,0.17),
-30px 16px 34px rgba(0,0,0,0.10),
-inset 0 1px 0 rgba(255,255,255,0.26);
+translateX(408px)
+translateY(-12px)
+rotate(0.55deg)
+skewX(-8deg)
+scaleX(1.73)
+scaleY(2.32);
+clip-path: polygon(10% 0%, 100% 0%, 94% 100%, 0% 100%);
 }
 
-62% {
+46% {
 transform:
-translateX(155px)
-translateY(10px)
-rotate(-0.2deg)
-skewX(-10deg)
-scaleX(1.26)
-scaleY(1.12);
-clip-path: polygon(9% 0%, 100% 0%, 94% 100%, 0% 100%);
+translateX(282px)
+translateY(0px)
+rotate(0.9deg)
+skewX(-33deg)
+scaleX(1.60)
+scaleY(1.46);
+clip-path: polygon(30% 0%, 100% 0%, 80% 100%, 0% 100%);
 box-shadow:
-10px 8px 14px rgba(0,0,0,0.13),
-16px 12px 20px rgba(0,0,0,0.075),
-inset 0 1px 0 rgba(255,255,255,0.26);
+18px 10px 18px rgba(0, 0, 0, 0.14),
+28px 14px 30px rgba(0, 0, 0, 0.07),
+inset 0 1px 0 rgba(255,255,255,0.24);
 }
 
-82% {
+66% {
 transform:
-translateX(32px)
-translateY(30px)
-rotate(-2.1deg)
+translateX(138px)
+translateY(18px)
+rotate(-0.4deg)
+skewX(-12deg)
+scaleX(1.20)
+scaleY(1.10);
+clip-path: polygon(10% 0%, 100% 0%, 93% 100%, 0% 100%);
+box-shadow:
+9px 7px 12px rgba(0, 0, 0, 0.11),
+14px 10px 16px rgba(0, 0, 0, 0.055),
+inset 0 1px 0 rgba(255,255,255,0.24);
+}
+
+84% {
+transform:
+translateX(28px)
+translateY(56px)
+rotate(-2.25deg)
 skewX(-2deg)
-scaleX(1.04)
+scaleX(1.03)
 scaleY(1.01);
 clip-path: polygon(2% 0%, 100% 0%, 99% 100%, 0% 100%);
 box-shadow:
-4px 5px 8px rgba(0,0,0,0.10),
-6px 7px 11px rgba(0,0,0,0.045),
-inset 0 1px 0 rgba(255,255,255,0.26);
+3px 4px 7px rgba(0, 0, 0, 0.085),
+5px 6px 10px rgba(0, 0, 0, 0.04),
+inset 0 1px 0 rgba(255,255,255,0.24);
 }
 
 92% {
 transform:
 translateX(-3px)
-translateY(34px)
+translateY(63px)
 rotate(-2.9deg)
 skewX(-0.5deg)
 scaleX(1.01)
 scaleY(1.01);
 clip-path: polygon(0.7% 0%, 100% 0%, 100% 100%, 0% 100%);
-box-shadow:
-2px 3px 5px rgba(0,0,0,0.08),
-3px 4px 7px rgba(0,0,0,0.035),
-inset 0 1px 0 rgba(255,255,255,0.26);
 }
 
 100% {
 transform:
 translateX(0)
-translateY(36px)
+translateY(66px)
 rotate(-3deg)
 skewX(0deg)
 scaleX(1)
 scaleY(1);
 clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
 box-shadow:
-1px 2px 4px rgba(0,0,0,0.07),
-2px 4px 7px rgba(0,0,0,0.03),
-inset 0 1px 0 rgba(255,255,255,0.26);
+1px 2px 4px rgba(0, 0, 0, 0.07),
+2px 4px 7px rgba(0, 0, 0, 0.03),
+inset 0 1px 0 rgba(255,255,255,0.24);
+}
+}
+
+@keyframes prepFlightShadowMoveMobile {
+0% {
+opacity: 0.40;
+transform:
+translateX(505px)
+translateY(10px)
+skewX(-16deg)
+scaleX(1.72)
+scaleY(3.45);
+filter: blur(20px);
+}
+
+24% {
+opacity: 0.28;
+transform:
+translateX(410px)
+translateY(15px)
+skewX(-21deg)
+scaleX(1.56)
+scaleY(2.48);
+filter: blur(16px);
+}
+
+46% {
+opacity: 0.18;
+transform:
+translateX(282px)
+translateY(22px)
+skewX(-27deg)
+scaleX(1.42)
+scaleY(1.62);
+filter: blur(12px);
+}
+
+76% {
+opacity: 0.09;
+transform:
+translateX(80px)
+translateY(64px)
+skewX(-7deg)
+scaleX(1.10)
+scaleY(0.86);
+filter: blur(8px);
+}
+
+100% {
+opacity: 0;
+transform:
+translateX(0)
+translateY(72px)
+skewX(0deg)
+scaleX(1)
+scaleY(0.72);
+filter: blur(7px);
 }
 }
 }
