@@ -274,22 +274,21 @@ function resetPrepNoteVisualState() {
 }
 
 function renderPrepIntroNote() {
-  if (!prepNoteContent) return;
+if (!prepNoteContent) return;
 
-  prepNoteContent.innerHTML = `
-    <div class="note-copy note-copy-intro">
-      <div class="note-main-text">
-        Schön, dass du dir eine Pause eingeplant hast,<br>
-        damit sie auch wirklich bei dir ankommt.
-      </div>
+prepNoteContent.innerHTML = `
+<div class="note-copy note-copy-intro">
+<div class="note-main-text">
+Deine Pause ist<br>
+eingeplant 🌿🍵
+</div>
 
-      <div class="note-checklist">
-        <div class="note-check-item">✓ Sound ist an, der Gong begleitet Beginn und Ende deiner Pause.</div>
-        <div class="note-check-item">✓ Benachrichtigungen sind erlaubt, so wirst du auch außerhalb des Tabs erinnert.</div>
-        <div class="note-check-item">✓ Deine Pause startet im Pausentab, sobald du erinnert wirst.</div>
-      </div>
-    </div>
-  `;
+<div class="note-checklist">
+<div class="note-check-item">✓ Erinnerung aktiv</div>
+<div class="note-check-item">✓ Gong ist an</div>
+</div>
+</div>
+`;
 }
 
 function renderWaitingNote(startTime) {
