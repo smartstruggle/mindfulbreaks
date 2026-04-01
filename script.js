@@ -208,29 +208,29 @@ function showNotification(title, body) {
 ========================= */
 
 function showSetupScreen() {
-document.body.classList.remove("waiting-active", "break-active");
+  document.body.classList.remove("waiting-active", "break-active");
 
-setupScreen.style.display = "block";
-waitingScreen.style.display = "none";
-breakScreen.style.display = "none";
+  setupScreen.style.display = "block";
+  waitingScreen.style.display = "none";
+  breakScreen.style.display = "none";
 }
 
 function showWaitingScreen() {
-document.body.classList.add("waiting-active");
-document.body.classList.remove("break-active");
+  document.body.classList.add("waiting-active");
+  document.body.classList.remove("break-active");
 
-setupScreen.style.display = "none";
-waitingScreen.style.display = "block";
-breakScreen.style.display = "none";
+  setupScreen.style.display = "none";
+  waitingScreen.style.display = "block";
+  breakScreen.style.display = "none";
 }
 
 function showBreakScreen() {
-document.body.classList.add("break-active");
-document.body.classList.remove("waiting-active");
+  document.body.classList.add("break-active");
+  document.body.classList.remove("waiting-active");
 
-setupScreen.style.display = "none";
-waitingScreen.style.display = "none";
-breakScreen.style.display = "block";
+  setupScreen.style.display = "none";
+  waitingScreen.style.display = "none";
+  breakScreen.style.display = "block";
 }
 
 /* =========================
@@ -243,6 +243,12 @@ function resetTypingToken() {
 
 function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function blurSetupScreenBeforePrep() {
+  if (!setupScreen) return;
+  setupScreen.classList.add("is-blurring");
+  await wait(180);
 }
 
 function showPrepNote() {
@@ -282,21 +288,21 @@ function resetPrepNoteVisualState() {
 }
 
 function renderPrepIntroNote() {
-if (!prepNoteContent) return;
+  if (!prepNoteContent) return;
 
-prepNoteContent.innerHTML = `
-<div class="note-copy note-copy-intro">
-<div class="note-main-text">
-Deine Pause ist<br>
-eingeplant 🌿🍵
-</div>
+  prepNoteContent.innerHTML = `
+    <div class="note-copy note-copy-intro">
+      <div class="note-main-text">
+        Deine Pause ist<br>
+        eingeplant 🌿🍵
+      </div>
 
-<div class="note-checklist">
-<div class="note-check-item">✓ Erinnerung aktiv</div>
-<div class="note-check-item">✓ Gong ist an</div>
-</div>
-</div>
-`;
+      <div class="note-checklist">
+        <div class="note-check-item">✓ Erinnerung aktiv</div>
+        <div class="note-check-item">✓ Gong ist an</div>
+      </div>
+    </div>
+  `;
 }
 
 function renderWaitingNote(startTime) {
@@ -309,7 +315,7 @@ function renderWaitingNote(startTime) {
   `;
 
   const line1 = document.getElementById("note-handwriting-line-1");
-  return typeText(line1, `Deine nächste Pause ist um ${startTime}.`, 34);
+  return typeText(line1, `Deine nächste Pause ist um ${startTime}.`, 52);
 }
 
 function renderBreakNote() {
@@ -322,7 +328,7 @@ function renderBreakNote() {
   `;
 
   const line1 = document.getElementById("note-handwriting-line-1");
-  return typeText(line1, "Schöne Pause", 34);
+  return typeText(line1, "Schöne Pause", 48);
 }
 
 async function appendBreakClosingNote() {
@@ -344,7 +350,7 @@ async function appendBreakClosingNote() {
     wrap.appendChild(line2);
   }
 
-  await typeText(line2, "Danke, dass du dir heute Zeit für dich genommen hast.", 30);
+  await typeText(line2, "Danke, dass du dir heute Zeit für dich genommen hast.", 38);
 }
 
 async function fadeNoteContentOut(duration = 380) {
@@ -352,19 +358,6 @@ async function fadeNoteContentOut(duration = 380) {
 
   prepNoteContent.style.transition = `opacity ${duration}ms ease`;
   prepNoteContent.style.opacity = "0";
-  await wait(duration);
-}
-
-async function fadeNoteContentIn(duration = 420) {
-  if (!prepNoteContent) return;
-
-  prepNoteContent.style.transition = "none";
-  prepNoteContent.style.opacity = "0";
-  void prepNoteContent.offsetWidth;
-
-  prepNoteContent.style.transition = `opacity ${duration}ms ease`;
-  prepNoteContent.style.opacity = "1";
-
   await wait(duration);
 }
 
@@ -420,6 +413,10 @@ function resetApp() {
   activeEndTime = null;
 
   showSetupScreen();
+
+  if (setupScreen) {
+    setupScreen.classList.remove("is-blurring");
+  }
 
   startHour.value = "";
   startMinute.value = "";
@@ -656,6 +653,8 @@ startButton.addEventListener("click", async () => {
 
   renderPrepIntroNote();
   showConfirmButton();
+
+  await blurSetupScreenBeforePrep();
   showPrepNote();
 });
 
