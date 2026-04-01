@@ -720,6 +720,14 @@ body {
     margin-top: 14px;
   }
 
+#waiting-screen .screen-center {
+  padding: 28px 18px 32px;
+}
+
+#waiting-screen::before {
+  top: 14px;
+}
+  
   .flip-clock-wrap {
     width: 100%;
     max-width: 360px;
