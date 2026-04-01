@@ -1,18 +1,26 @@
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  min-height: 100vh;
+margin: 0;
+font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+min-height: 100vh;
 
-  background:
-    radial-gradient(circle at 22% 18%, rgba(255,255,255,0.55), transparent 40%),
-    radial-gradient(circle at 78% 72%, rgba(255,255,255,0.22), transparent 48%),
-    linear-gradient(
-      160deg,
-      #eef3f1 0%,
-      #e2ebe6 28%,
-      #d4e0d9 62%,
-      #c7d6ce 100%
-    );
+background:
+/* ganz softes Licht oben links */
+radial-gradient(circle at 18% 20%, rgba(255,255,255,0.55), transparent 42%),
+
+/* leichte Aufhellung Mitte */
+radial-gradient(circle at 50% 40%, rgba(255,255,255,0.25), transparent 55%),
+
+/* dunklere Tiefe unten rechts */
+radial-gradient(circle at 82% 78%, rgba(120,140,130,0.18), transparent 50%),
+
+/* Hauptverlauf */
+linear-gradient(
+155deg,
+#eef3f1 0%,
+#e3ebe7 25%,
+#d5e1da 55%,
+#c6d5cc 100%
+);
 }
 
 body::after {
