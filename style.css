@@ -24,8 +24,7 @@ body {
   max-width: 100%;
 }
 
-/* Extra für den Startscreen auf Desktop:
-   etwas höher platzieren */
+/* Startscreen etwas höher */
 .setup-center {
   justify-content: flex-start;
   padding-top: 28px;
@@ -217,6 +216,10 @@ body {
   text-align: center;
 }
 
+/* =========================
+   WAITING SCREEN
+========================= */
+
 #waiting-screen {
   min-height: 100vh;
   width: 100%;
@@ -225,7 +228,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 28px 20px 28px;
+  padding: 28px 20px;
   box-sizing: border-box;
 }
 
@@ -268,6 +271,36 @@ body {
   justify-content: center;
 }
 
+#waiting-text {
+  display: none;
+}
+
+/* =========================
+   BREAK SCREEN
+========================= */
+
+#break-screen {
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+#break-screen .screen-center {
+  min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 48px 20px 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+#timer {
+  display: none;
+}
+
 /* =========================
    FLIP CLOCK
 ========================= */
@@ -278,7 +311,8 @@ body {
   align-items: center;
   width: 820px;
   max-width: 92vw;
-  margin-bottom: 22px;
+  margin-top: 10px;
+  margin-bottom: 34px;
   padding: 12px;
   border-radius: 40px;
   box-sizing: border-box;
@@ -351,9 +385,6 @@ body {
   justify-content: center;
   align-items: center;
   gap: 10px;
-
-  padding-top: 0;
-  padding-bottom: 0;
 
   border-radius: 22px;
   background: linear-gradient(
@@ -545,40 +576,453 @@ body {
     inset 0 -1px 1px rgba(0, 0, 0, 0.35);
 }
 
-#timer {
-  display: none;
+/* =========================
+   PREP OVERLAY
+========================= */
+
+.prep-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  overflow: hidden;
 }
 
-#waiting-text {
-  display: none;
+.prep-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: rgba(28, 30, 36, 0.015);
+  transition: opacity 0.35s ease;
+}
+
+.prep-overlay.prep-overlay-persistent {
+  pointer-events: none;
+}
+
+.prep-overlay.prep-overlay-persistent .prep-backdrop {
+  opacity: 0;
 }
 
 /* =========================
-   BREAK SCREEN LAYOUT FIX
+   STICKY SHEET
 ========================= */
 
-#break-screen {
-  min-height: 100vh;
-  width: 100%;
+.prep-note-sheet {
   position: relative;
-  z-index: 1;
+  z-index: 2;
+  width: 320px;
+  min-height: 300px;
+  padding: 26px 22px 22px;
+  box-sizing: border-box;
+  border-radius: 3px;
+  overflow: visible;
+
+  background:
+    radial-gradient(circle at 22% 18%, rgba(255,255,255,0.15) 0%, transparent 30%),
+    radial-gradient(circle at 76% 72%, rgba(255,255,255,0.07) 0%, transparent 28%),
+    linear-gradient(180deg, #f7df70 0%, #f1cf54 52%, #e1b939 100%);
+
+  border: 1px solid rgba(156, 114, 20, 0.18);
+
+  transform:
+    translateX(640px)
+    translateY(-34px)
+    rotate(0.3deg)
+    skewX(-4deg)
+    scaleX(1.95)
+    scaleY(4.15);
+
+  transform-origin: top right;
+  will-change: transform, box-shadow, clip-path, opacity;
+
+  box-shadow:
+    70px 24px 72px rgba(0, 0, 0, 0.20),
+    120px 38px 150px rgba(0, 0, 0, 0.10),
+    inset 0 1px 0 rgba(255,255,255,0.24);
+
+  clip-path: polygon(8% 0%, 100% 0%, 96% 100%, 0% 100%);
 }
 
-#break-screen .screen-center {
-  min-height: 100vh;
-  width: 100%;
-  box-sizing: border-box;
-  padding: 48px 20px 36px;
+.prep-note-sheet::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 3px;
+  pointer-events: none;
+  opacity: 0.14;
+  background-image:
+    radial-gradient(rgba(120,84,16,0.18) 0.5px, transparent 0.7px);
+  background-size: 6px 6px;
+  mix-blend-mode: multiply;
+}
+
+.prep-note-sheet::after {
+  content: "";
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: 8px;
+  height: 23%;
+  pointer-events: none;
+  border-radius: 0 0 14px 14px;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(86, 56, 8, 0.18) 0%,
+      rgba(86, 56, 8, 0.10) 42%,
+      rgba(86, 56, 8, 0.04) 72%,
+      rgba(86, 56, 8, 0) 100%
+    );
+
+  opacity: 0.48;
+  filter: blur(4px);
+  transform: translateY(2px) scaleX(0.94) scaleY(0.72);
+  transform-origin: bottom center;
+}
+
+/* =========================
+   FLIGHT SHADOW
+========================= */
+
+.prep-flight-shadow {
+  position: absolute;
+  z-index: 1;
+  width: 330px;
+  height: 300px;
+  pointer-events: none;
+  border-radius: 4px;
+  opacity: 0;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0,0,0,0.00) 0%,
+      rgba(0,0,0,0.10) 45%,
+      rgba(0,0,0,0.24) 100%
+    );
+
+  filter: blur(18px);
+
+  transform:
+    translateX(640px)
+    translateY(8px)
+    skewX(-16deg)
+    scaleX(1.8)
+    scaleY(3.7);
+
+  transform-origin: top right;
+  will-change: transform, opacity, filter;
+}
+
+.prep-note-sheet.is-placing + .prep-flight-shadow {
+  animation: prepFlightShadowMove 1320ms cubic-bezier(0.22, 0.78, 0.22, 1) forwards;
+}
+
+/* =========================
+   PREP NOTE CONTENT
+========================= */
+
+.prep-note-inner {
+  position: relative;
+  z-index: 2;
+  min-height: 252px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: flex-end;
+  gap: 14px;
 }
 
-.flip-clock-wrap {
-  margin-top: 10px;
-  margin-bottom: 34px;
+.prep-note-content {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  text-align: center;
+  opacity: 1;
 }
+
+.note-copy {
+  width: 100%;
+  color: rgba(46, 34, 16, 0.92);
+  font-family: "Caveat", cursive;
+}
+
+.note-copy-intro {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 14px;
+  padding-top: 8px;
+}
+
+.note-main-text {
+  font-size: 25px;
+  line-height: 1.06;
+  text-align: center;
+  letter-spacing: 0.1px;
+}
+
+.note-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.note-check-item {
+  font-size: 18px;
+  line-height: 1.12;
+  text-align: left;
+}
+
+.note-copy-waiting,
+.note-copy-break {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  padding-top: 14px;
+}
+
+.note-handwriting-line {
+  font-family: "Caveat", cursive;
+  font-size: 30px;
+  line-height: 1.08;
+  color: rgba(46, 34, 16, 0.95);
+  text-align: center;
+  white-space: pre-wrap;
+}
+
+.note-handwriting-line-secondary {
+  margin-top: 14px;
+  font-size: 24px;
+  line-height: 1.08;
+}
+
+/* =========================
+   BUTTON
+========================= */
+
+.prep-confirm-button {
+  align-self: center;
+  margin-top: auto;
+
+  border: none;
+  border-radius: 999px;
+  padding: 16px 26px;
+  min-width: 190px;
+  cursor: pointer;
+
+  background: linear-gradient(180deg, #454b59 0%, #313746 100%);
+  color: #fff;
+  font-size: 17px;
+  font-weight: 500;
+
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+
+  transition:
+    transform 0.16s ease,
+    opacity 0.28s ease;
+}
+
+.prep-confirm-button:hover {
+  transform: translateY(-1px);
+}
+
+.prep-overlay.prep-overlay-persistent .prep-confirm-button {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* =========================
+   STICKY ANIMATION
+========================= */
+
+.prep-note-sheet.is-placing {
+  animation: placeStickyTakeover 1320ms cubic-bezier(0.22, 0.78, 0.22, 1) forwards;
+}
+
+.prep-note-sheet.is-taking-away {
+  animation: none;
+}
+
+@keyframes placeStickyTakeover {
+  0% {
+    transform:
+      translateX(640px)
+      translateY(-34px)
+      rotate(0.3deg)
+      skewX(-4deg)
+      scaleX(1.95)
+      scaleY(4.15);
+    clip-path: polygon(8% 0%, 100% 0%, 96% 100%, 0% 100%);
+    box-shadow:
+      70px 24px 72px rgba(0, 0, 0, 0.20),
+      120px 38px 150px rgba(0, 0, 0, 0.10),
+      inset 0 1px 0 rgba(255,255,255,0.24);
+  }
+
+  14% {
+    transform:
+      translateX(585px)
+      translateY(-30px)
+      rotate(0.35deg)
+      skewX(-5deg)
+      scaleX(1.92)
+      scaleY(3.55);
+    clip-path: polygon(8% 0%, 100% 0%, 95% 100%, 0% 100%);
+    box-shadow:
+      60px 22px 62px rgba(0, 0, 0, 0.19),
+      104px 34px 128px rgba(0, 0, 0, 0.095),
+      inset 0 1px 0 rgba(255,255,255,0.24);
+  }
+
+  30% {
+    transform:
+      translateX(505px)
+      translateY(-18px)
+      rotate(0.6deg)
+      skewX(-9deg)
+      scaleX(1.84)
+      scaleY(2.45);
+    clip-path: polygon(10% 0%, 100% 0%, 94% 100%, 0% 100%);
+    box-shadow:
+      46px 18px 46px rgba(0, 0, 0, 0.17),
+      76px 26px 92px rgba(0, 0, 0, 0.085),
+      inset 0 1px 0 rgba(255,255,255,0.24);
+  }
+
+  48% {
+    transform:
+      translateX(362px)
+      translateY(-3px)
+      rotate(0.9deg)
+      skewX(-24deg)
+      scaleX(1.68)
+      scaleY(1.48);
+    clip-path: polygon(22% 0%, 100% 0%, 87% 100%, 0% 100%);
+    box-shadow:
+      26px 14px 28px rgba(0, 0, 0, 0.15),
+      42px 20px 48px rgba(0, 0, 0, 0.075),
+      inset 0 1px 0 rgba(255,255,255,0.24);
+  }
+
+  68% {
+    transform:
+      translateX(178px)
+      translateY(18px)
+      rotate(-0.4deg)
+      skewX(-13deg)
+      scaleX(1.22)
+      scaleY(1.10);
+    clip-path: polygon(11% 0%, 100% 0%, 93% 100%, 0% 100%);
+    box-shadow:
+      12px 9px 16px rgba(0, 0, 0, 0.12),
+      18px 12px 22px rgba(0, 0, 0, 0.06),
+      inset 0 1px 0 rgba(255,255,255,0.24);
+  }
+
+  86% {
+    transform:
+      translateX(36px)
+      translateY(70px)
+      rotate(-2.3deg)
+      skewX(-1.8deg)
+      scaleX(1.03)
+      scaleY(1.01);
+    clip-path: polygon(2% 0%, 100% 0%, 99% 100%, 0% 100%);
+    box-shadow:
+      4px 5px 9px rgba(0, 0, 0, 0.09),
+      7px 8px 12px rgba(0, 0, 0, 0.04),
+      inset 0 1px 0 rgba(255,255,255,0.24);
+  }
+
+  100% {
+    transform:
+      translateX(0)
+      translateY(82px)
+      rotate(-3deg)
+      skewX(0deg)
+      scaleX(1)
+      scaleY(1);
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+    box-shadow:
+      1px 2px 4px rgba(0, 0, 0, 0.07),
+      2px 4px 7px rgba(0, 0, 0, 0.03),
+      inset 0 1px 0 rgba(255,255,255,0.24);
+  }
+}
+
+@keyframes prepFlightShadowMove {
+  0% {
+    opacity: 0.42;
+    transform:
+      translateX(640px)
+      translateY(12px)
+      skewX(-18deg)
+      scaleX(1.85)
+      scaleY(3.85);
+    filter: blur(22px);
+  }
+
+  24% {
+    opacity: 0.30;
+    transform:
+      translateX(520px)
+      translateY(16px)
+      skewX(-22deg)
+      scaleX(1.72)
+      scaleY(2.85);
+    filter: blur(18px);
+  }
+
+  46% {
+    opacity: 0.20;
+    transform:
+      translateX(360px)
+      translateY(22px)
+      skewX(-28deg)
+      scaleX(1.55)
+      scaleY(1.75);
+    filter: blur(14px);
+  }
+
+  74% {
+    opacity: 0.10;
+    transform:
+      translateX(110px)
+      translateY(72px)
+      skewX(-8deg)
+      scaleX(1.14)
+      scaleY(0.92);
+    filter: blur(9px);
+  }
+
+  100% {
+    opacity: 0;
+    transform:
+      translateX(0)
+      translateY(80px)
+      skewX(0deg)
+      scaleX(1)
+      scaleY(0.74);
+    filter: blur(7px);
+  }
+}
+
+/* =========================
+   PERSISTENT STICKY POSITION
+========================= */
 
 .prep-overlay.prep-overlay-persistent .prep-note-sheet {
   transform:
@@ -600,9 +1044,9 @@ body {
     scaleY(0.72);
 }
 
-#timer {
-  display: none;
-}
+/* =========================
+   RESPONSIVE 900
+========================= */
 
 @media (max-width: 900px) {
   .setup-center {
@@ -668,7 +1112,6 @@ body {
     padding: 16px 32px;
   }
 
-  /* Waiting Screen Blatt */
   #waiting-screen {
     padding: 20px;
     align-items: center;
@@ -688,7 +1131,6 @@ body {
     padding: 34px 20px 38px;
   }
 
-  /* Break Screen */
   #break-screen .screen-center {
     padding: 28px 16px 28px;
     justify-content: flex-start;
@@ -722,6 +1164,10 @@ body {
   }
 }
 
+/* =========================
+   RESPONSIVE 768
+========================= */
+
 @media (max-width: 768px) {
   .screen-center {
     padding: 28px 20px 36px;
@@ -735,6 +1181,9 @@ body {
   }
 
   .start-screen {
+    width: 92vw;
+    aspect-ratio: auto;
+    min-height: auto;
     padding: 34px 20px 38px;
     gap: 20px;
   }
@@ -779,28 +1228,31 @@ body {
     margin: 0;
   }
 
-  /* Waiting Screen Blatt */
   #waiting-screen .screen-center {
     padding: 28px 18px 32px;
   }
 
   #waiting-screen::before {
     top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 92vw;
+    aspect-ratio: auto;
+    min-height: auto;
   }
 
-  /* Prep Note mobil */
   .prep-note-sheet {
     width: 270px;
     min-height: 255px;
     padding: 20px 16px 16px;
 
     transform:
-      translateX(505px)
+      translateX(360px)
       translateY(-24px)
       rotate(0.3deg)
       skewX(-4deg)
-      scaleX(1.82)
-      scaleY(3.75);
+      scaleX(1.56)
+      scaleY(3.10);
 
     box-shadow:
       52px 18px 48px rgba(0, 0, 0, 0.19),
@@ -850,22 +1302,21 @@ body {
     width: 280px;
     height: 255px;
     transform:
-      translateX(505px)
+      translateX(360px)
       translateY(8px)
       skewX(-16deg)
-      scaleX(1.72)
-      scaleY(3.45);
+      scaleX(1.50)
+      scaleY(2.90);
   }
 
   .prep-note-sheet.is-placing {
-    animation: placeStickyTakeoverMobile 1550ms cubic-bezier(0.24, 0.72, 0.22, 1) forwards;
+    animation: placeStickyTakeoverMobile 1280ms cubic-bezier(0.22, 0.78, 0.22, 1) forwards;
   }
 
   .prep-note-sheet.is-placing + .prep-flight-shadow {
-    animation: prepFlightShadowMoveMobile 1550ms cubic-bezier(0.24, 0.72, 0.22, 1) forwards;
+    animation: prepFlightShadowMoveMobile 1280ms cubic-bezier(0.22, 0.78, 0.22, 1) forwards;
   }
 
-  /* Break Screen */
   #break-screen .screen-center {
     padding: 18px 14px 24px;
   }
@@ -951,7 +1402,7 @@ body {
     min-height: 255px;
     transform:
       translateX(0)
-      translateY(72px)
+      translateY(54px)
       rotate(-3deg)
       skewX(0deg)
       scaleX(1)
@@ -964,747 +1415,165 @@ body {
     opacity: 0;
     transform:
       translateX(0)
-      translateY(78px)
+      translateY(60px)
       skewX(0deg)
       scaleX(1)
       scaleY(0.72);
   }
 }
 
-/* =========================
-PREP NOTE / FULL REBUILD
-========================= */
-
-.prep-overlay {
-position: fixed;
-inset: 0;
-z-index: 999;
-display: flex;
-align-items: center;
-justify-content: center;
-pointer-events: auto;
-overflow: hidden;
-}
-
-.prep-backdrop {
-position: absolute;
-inset: 0;
-background: rgba(28, 30, 36, 0.015);
-transition: opacity 0.35s ease;
-}
-
-.prep-overlay.prep-overlay-persistent {
-pointer-events: none;
-}
-
-.prep-overlay.prep-overlay-persistent .prep-backdrop {
-opacity: 0;
-}
-
-/* =========================
-STICKY SHEET
-========================= */
-
-.prep-note-sheet {
-position: relative;
-z-index: 2;
-width: 320px;
-min-height: 300px;
-padding: 26px 22px 22px;
-box-sizing: border-box;
-border-radius: 3px;
-overflow: visible;
-
-background:
-radial-gradient(circle at 22% 18%, rgba(255,255,255,0.15) 0%, transparent 30%),
-radial-gradient(circle at 76% 72%, rgba(255,255,255,0.07) 0%, transparent 28%),
-linear-gradient(180deg, #f7df70 0%, #f1cf54 52%, #e1b939 100%);
-
-border: 1px solid rgba(156, 114, 20, 0.18);
-
-/* START: fast vertikal, extrem hoch, sehr groß */
-transform:
-translateX(640px)
-translateY(-34px)
-rotate(0.3deg)
-skewX(-4deg)
-scaleX(1.95)
-scaleY(4.15);
-
-transform-origin: top right;
-will-change: transform, box-shadow, clip-path, opacity;
-
-box-shadow:
-70px 24px 72px rgba(0, 0, 0, 0.20),
-120px 38px 150px rgba(0, 0, 0, 0.10),
-inset 0 1px 0 rgba(255,255,255,0.24);
-
-clip-path: polygon(8% 0%, 100% 0%, 96% 100%, 0% 100%);
-}
-
-/* feine Papierstruktur */
-.prep-note-sheet::before {
-content: "";
-position: absolute;
-inset: 0;
-border-radius: 3px;
-pointer-events: none;
-opacity: 0.14;
-background-image:
-radial-gradient(rgba(120,84,16,0.18) 0.5px, transparent 0.7px);
-background-size: 6px 6px;
-mix-blend-mode: multiply;
-}
-
-/* Eigen-Schatten am unteren Rand */
-.prep-note-sheet::after {
-content: "";
-position: absolute;
-left: 8%;
-right: 8%;
-bottom: 8px;
-height: 23%;
-pointer-events: none;
-border-radius: 0 0 14px 14px;
-
-background:
-radial-gradient(
-ellipse at center,
-rgba(86, 56, 8, 0.18) 0%,
-rgba(86, 56, 8, 0.10) 42%,
-rgba(86, 56, 8, 0.04) 72%,
-rgba(86, 56, 8, 0) 100%
-);
-
-opacity: 0.48;
-filter: blur(4px);
-transform: translateY(2px) scaleX(0.94) scaleY(0.72);
-transform-origin: bottom center;
-}
-
-/* =========================
-FLIGHT SHADOW
-========================= */
-
-.prep-flight-shadow {
-position: absolute;
-z-index: 1;
-width: 330px;
-height: 300px;
-pointer-events: none;
-border-radius: 4px;
-opacity: 0;
-
-background:
-linear-gradient(
-90deg,
-rgba(0,0,0,0.00) 0%,
-rgba(0,0,0,0.10) 45%,
-rgba(0,0,0,0.24) 100%
-);
-
-filter: blur(18px);
-
-transform:
-translateX(640px)
-translateY(8px)
-skewX(-16deg)
-scaleX(1.8)
-scaleY(3.7);
-
-transform-origin: top right;
-will-change: transform, opacity, filter;
-}
-
-.prep-note-sheet.is-placing + .prep-flight-shadow {
-  animation: prepFlightShadowMove 1650ms cubic-bezier(0.24, 0.72, 0.22, 1) forwards;
-}
-
-
-
-/* =========================
-INNER
-========================= */
-
-.prep-note-inner {
-  position: relative;
-  z-index: 2;
-  min-height: 252px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 14px;
-}
-
-/* =========================
-   PREP NOTE CONTENT
-========================= */
-
-.prep-note-content {
-  width: 100%;
-  flex: 1;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  text-align: center;
-  opacity: 1;
-}
-
-.note-copy {
-  width: 100%;
-  color: rgba(46, 34, 16, 0.92);
-  font-family: "Caveat", cursive;
-}
-
-.note-copy-intro {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  gap: 14px;
-  padding-top: 8px;
-}
-
-.note-main-text {
-  font-size: 25px;
-  line-height: 1.06;
-  text-align: center;
-  letter-spacing: 0.1px;
-}
-
-.note-checklist {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 2px;
-}
-
-.note-check-item {
-  font-size: 18px;
-  line-height: 1.12;
-  text-align: left;
-}
-
-.note-copy-waiting,
-.note-copy-break {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100%;
-  padding-top: 14px;
-}
-
-.note-handwriting-line {
-  font-family: "Caveat", cursive;
-  font-size: 30px;
-  line-height: 1.08;
-  color: rgba(46, 34, 16, 0.95);
-  text-align: center;
-  white-space: pre-wrap;
-}
-
-.note-handwriting-line-secondary {
-  margin-top: 14px;
-  font-size: 24px;
-  line-height: 1.08;
-}
-
-/* Button sitzt sauber unten */
-.prep-confirm-button {
-  align-self: center;
-  margin-top: auto;
-}
-
-/* =========================
-BUTTON
-========================= */
-
-.prep-confirm-button {
-border: none;
-border-radius: 999px;
-padding: 16px 26px;
-min-width: 190px;
-cursor: pointer;
-
-background: linear-gradient(180deg, #454b59 0%, #313746 100%);
-color: #fff;
-font-size: 17px;
-font-weight: 500;
-
-box-shadow:
-0 6px 14px rgba(0, 0, 0, 0.12),
-inset 0 1px 0 rgba(255, 255, 255, 0.10);
-
-transition:
-transform 0.16s ease,
-opacity 0.28s ease;
-}
-
-.prep-confirm-button:hover {
-transform: translateY(-1px);
-}
-
-.prep-overlay.prep-overlay-persistent .prep-confirm-button {
-opacity: 0;
-pointer-events: none;
-}
-
-/* =========================
-MAIN ANIMATION
-========================= */
-
-.prep-note-sheet.is-placing {
-animation: placeStickyTakeover 1650ms cubic-bezier(0.24, 0.72, 0.22, 1) forwards;
-}
-
-.prep-note-sheet.is-taking-away {
-animation: none;
-}
-
-@keyframes placeStickyTakeover {
-/* Start: fast vertikaler Streifen, fast Screen-Höhe */
-0% {
-transform:
-translateX(640px)
-translateY(-34px)
-rotate(0.3deg)
-skewX(-4deg)
-scaleX(1.95)
-scaleY(4.15);
-clip-path: polygon(8% 0%, 100% 0%, 96% 100%, 0% 100%);
-box-shadow:
-70px 24px 72px rgba(0, 0, 0, 0.20),
-120px 38px 150px rgba(0, 0, 0, 0.10),
-inset 0 1px 0 rgba(255,255,255,0.24);
-}
-
-/* immer noch sehr vertikal */
-12% {
-transform:
-translateX(585px)
-translateY(-30px)
-rotate(0.35deg)
-skewX(-5deg)
-scaleX(1.92)
-scaleY(3.65);
-clip-path: polygon(8% 0%, 100% 0%, 95% 100%, 0% 100%);
-box-shadow:
-60px 22px 62px rgba(0, 0, 0, 0.19),
-104px 34px 128px rgba(0, 0, 0, 0.095),
-inset 0 1px 0 rgba(255,255,255,0.24);
-}
-
-/* Übergang in Richtung Fläche */
-28% {
-transform:
-translateX(505px)
-translateY(-18px)
-rotate(0.6deg)
-skewX(-9deg)
-scaleX(1.84)
-scaleY(2.55);
-clip-path: polygon(10% 0%, 100% 0%, 94% 100%, 0% 100%);
-box-shadow:
-46px 18px 46px rgba(0, 0, 0, 0.17),
-76px 26px 92px rgba(0, 0, 0, 0.085),
-inset 0 1px 0 rgba(255,255,255,0.24);
-}
-
-/* MITTE: jetzt wirklich starkes Trapez */
-46% {
-transform:
-translateX(362px)
-translateY(-3px)
-rotate(0.9deg)
-skewX(-34deg)
-scaleX(1.78)
-scaleY(1.56);
-clip-path: polygon(31% 0%, 100% 0%, 80% 100%, 0% 100%);
-box-shadow:
-26px 14px 28px rgba(0, 0, 0, 0.15),
-42px 20px 48px rgba(0, 0, 0, 0.075),
-inset 0 1px 0 rgba(255,255,255,0.24);
-}
-
-/* Perspektive langsam auflösen */
-64% {
-transform:
-translateX(178px)
-translateY(18px)
-rotate(-0.4deg)
-skewX(-13deg)
-scaleX(1.22)
-scaleY(1.10);
-clip-path: polygon(11% 0%, 100% 0%, 93% 100%, 0% 100%);
-box-shadow:
-12px 9px 16px rgba(0, 0, 0, 0.12),
-18px 12px 22px rgba(0, 0, 0, 0.06),
-inset 0 1px 0 rgba(255,255,255,0.24);
-}
-
-/* unter die Uhr sinken */
-82% {
-transform:
-translateX(36px)
-translateY(62px)
-rotate(-2.3deg)
-skewX(-2.2deg)
-scaleX(1.03)
-scaleY(1.01);
-clip-path: polygon(2% 0%, 100% 0%, 99% 100%, 0% 100%);
-box-shadow:
-4px 5px 9px rgba(0, 0, 0, 0.09),
-7px 8px 12px rgba(0, 0, 0, 0.04),
-inset 0 1px 0 rgba(255,255,255,0.24);
-}
-
-92% {
-transform:
-translateX(-3px)
-translateY(70px)
-rotate(-2.9deg)
-skewX(-0.5deg)
-scaleX(1.01)
-scaleY(1.01);
-clip-path: polygon(0.7% 0%, 100% 0%, 100% 100%, 0% 100%);
-box-shadow:
-2px 3px 6px rgba(0, 0, 0, 0.075),
-4px 4px 8px rgba(0, 0, 0, 0.03),
-inset 0 1px 0 rgba(255,255,255,0.24);
-}
-
-/* final: tiefer unter der Uhr */
-100% {
-transform:
-translateX(0)
-translateY(96px)
-rotate(-3deg)
-skewX(0deg)
-scaleX(1)
-scaleY(1);
-clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
-box-shadow:
-1px 2px 4px rgba(0, 0, 0, 0.07),
-2px 4px 7px rgba(0, 0, 0, 0.03),
-inset 0 1px 0 rgba(255,255,255,0.24);
-}
-}
-
-@keyframes prepFlightShadowMove {
-0% {
-opacity: 0.42;
-transform:
-translateX(640px)
-translateY(12px)
-skewX(-18deg)
-scaleX(1.85)
-scaleY(3.85);
-filter: blur(22px);
-}
-
-24% {
-opacity: 0.30;
-transform:
-translateX(520px)
-translateY(16px)
-skewX(-22deg)
-scaleX(1.72)
-scaleY(2.85);
-filter: blur(18px);
-}
-
-46% {
-opacity: 0.20;
-transform:
-translateX(360px)
-translateY(22px)
-skewX(-28deg)
-scaleX(1.55)
-scaleY(1.75);
-filter: blur(14px);
-}
-
-74% {
-opacity: 0.10;
-transform:
-translateX(110px)
-translateY(72px)
-skewX(-8deg)
-scaleX(1.14)
-scaleY(0.92);
-filter: blur(9px);
-}
-
-100% {
-opacity: 0;
-transform:
-translateX(0)
-translateY(80px)
-skewX(0deg)
-scaleX(1)
-scaleY(0.74);
-filter: blur(7px);
-}
-}
-
-/* =========================
-MOBILE
-========================= */
-
-@media (max-width: 768px) {
-.prep-note-sheet {
-width: 270px;
-min-height: 255px;
-padding: 20px 16px 16px;
-
-transform:
-translateX(505px)
-translateY(-24px)
-rotate(0.3deg)
-skewX(-4deg)
-scaleX(1.82)
-scaleY(3.75);
-
-box-shadow:
-52px 18px 48px rgba(0, 0, 0, 0.19),
-86px 28px 104px rgba(0, 0, 0, 0.095),
-inset 0 1px 0 rgba(255,255,255,0.24);
-
-clip-path: polygon(8% 0%, 100% 0%, 96% 100%, 0% 100%);
-}
-
-.prep-note-inner {
-  min-height: 215px;
-  gap: 10px;
-}
-.note-copy-intro {
-  gap: 10px;
-  padding-top: 4px;
-}
-
-.note-main-text {
-  font-size: 21px;
-  line-height: 1.04;
-}
-
-.note-check-item {
-  font-size: 16px;
-  line-height: 1.08;
-}
-
-.note-handwriting-line {
-  font-size: 26px;
-  line-height: 1.05;
-}
-
-.note-handwriting-line-secondary {
-  margin-top: 10px;
-  font-size: 21px;
-}
-.prep-confirm-button {
-min-width: 170px;
-padding: 14px 22px;
-font-size: 16px;
-}
-
-.prep-flight-shadow {
-width: 280px;
-height: 255px;
-transform:
-translateX(505px)
-translateY(8px)
-skewX(-16deg)
-scaleX(1.72)
-scaleY(3.45);
-}
-
-.prep-note-sheet.is-placing {
-animation: placeStickyTakeoverMobile 1550ms cubic-bezier(0.24, 0.72, 0.22, 1) forwards;
-}
-
-.prep-note-sheet.is-placing + .prep-flight-shadow {
-  animation: prepFlightShadowMove 1650ms cubic-bezier(0.24, 0.72, 0.22, 1) forwards;
-}
-
 @keyframes placeStickyTakeoverMobile {
-0% {
-transform:
-translateX(505px)
-translateY(-24px)
-rotate(0.3deg)
-skewX(-4deg)
-scaleX(1.82)
-scaleY(3.75);
-clip-path: polygon(8% 0%, 100% 0%, 96% 100%, 0% 100%);
-box-shadow:
-52px 18px 48px rgba(0, 0, 0, 0.19),
-86px 28px 104px rgba(0, 0, 0, 0.095),
-inset 0 1px 0 rgba(255,255,255,0.24);
+  0% {
+    transform:
+      translateX(360px)
+      translateY(-24px)
+      rotate(0.3deg)
+      skewX(-4deg)
+      scaleX(1.56)
+      scaleY(3.10);
+    clip-path: polygon(8% 0%, 100% 0%, 96% 100%, 0% 100%);
+    box-shadow:
+      52px 18px 48px rgba(0, 0, 0, 0.19),
+      86px 28px 104px rgba(0, 0, 0, 0.095),
+      inset 0 1px 0 rgba(255,255,255,0.24);
+  }
+
+  14% {
+    transform:
+      translateX(320px)
+      translateY(-20px)
+      rotate(0.35deg)
+      skewX(-5deg)
+      scaleX(1.52)
+      scaleY(2.70);
+    clip-path: polygon(8% 0%, 100% 0%, 95% 100%, 0% 100%);
+  }
+
+  30% {
+    transform:
+      translateX(255px)
+      translateY(-12px)
+      rotate(0.55deg)
+      skewX(-8deg)
+      scaleX(1.42)
+      scaleY(2.05);
+    clip-path: polygon(10% 0%, 100% 0%, 94% 100%, 0% 100%);
+  }
+
+  48% {
+    transform:
+      translateX(170px)
+      translateY(2px)
+      rotate(0.9deg)
+      skewX(-22deg)
+      scaleX(1.34)
+      scaleY(1.38);
+    clip-path: polygon(22% 0%, 100% 0%, 87% 100%, 0% 100%);
+    box-shadow:
+      18px 10px 18px rgba(0, 0, 0, 0.14),
+      28px 14px 30px rgba(0, 0, 0, 0.07),
+      inset 0 1px 0 rgba(255,255,255,0.24);
+  }
+
+  68% {
+    transform:
+      translateX(78px)
+      translateY(18px)
+      rotate(-0.4deg)
+      skewX(-12deg)
+      scaleX(1.16)
+      scaleY(1.08);
+    clip-path: polygon(10% 0%, 100% 0%, 93% 100%, 0% 100%);
+    box-shadow:
+      9px 7px 12px rgba(0, 0, 0, 0.11),
+      14px 10px 16px rgba(0, 0, 0, 0.055),
+      inset 0 1px 0 rgba(255,255,255,0.24);
+  }
+
+  86% {
+    transform:
+      translateX(18px)
+      translateY(48px)
+      rotate(-2.25deg)
+      skewX(-1.6deg)
+      scaleX(1.03)
+      scaleY(1.01);
+    clip-path: polygon(2% 0%, 100% 0%, 99% 100%, 0% 100%);
+      box-shadow:
+      3px 4px 7px rgba(0, 0, 0, 0.085),
+      5px 6px 10px rgba(0, 0, 0, 0.04),
+      inset 0 1px 0 rgba(255,255,255,0.24);
+  }
+
+  100% {
+    transform:
+      translateX(0)
+      translateY(54px)
+      rotate(-3deg)
+      skewX(0deg)
+      scaleX(1)
+      scaleY(1);
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+    box-shadow:
+      1px 2px 4px rgba(0, 0, 0, 0.07),
+      2px 4px 7px rgba(0, 0, 0, 0.03),
+      inset 0 1px 0 rgba(255,255,255,0.24);
+  }
 }
 
-12% {
-transform:
-translateX(468px)
-translateY(-21px)
-rotate(0.35deg)
-skewX(-5deg)
-scaleX(1.80)
-scaleY(3.25);
-clip-path: polygon(8% 0%, 100% 0%, 95% 100%, 0% 100%);
-}
-
-28% {
-transform:
-translateX(408px)
-translateY(-12px)
-rotate(0.55deg)
-skewX(-8deg)
-scaleX(1.73)
-scaleY(2.32);
-clip-path: polygon(10% 0%, 100% 0%, 94% 100%, 0% 100%);
-}
-
-46% {
-transform:
-translateX(282px)
-translateY(0px)
-rotate(0.9deg)
-skewX(-33deg)
-scaleX(1.60)
-scaleY(1.46);
-clip-path: polygon(30% 0%, 100% 0%, 80% 100%, 0% 100%);
-box-shadow:
-18px 10px 18px rgba(0, 0, 0, 0.14),
-28px 14px 30px rgba(0, 0, 0, 0.07),
-inset 0 1px 0 rgba(255,255,255,0.24);
-}
-
-66% {
-transform:
-translateX(138px)
-translateY(18px)
-rotate(-0.4deg)
-skewX(-12deg)
-scaleX(1.20)
-scaleY(1.10);
-clip-path: polygon(10% 0%, 100% 0%, 93% 100%, 0% 100%);
-box-shadow:
-9px 7px 12px rgba(0, 0, 0, 0.11),
-14px 10px 16px rgba(0, 0, 0, 0.055),
-inset 0 1px 0 rgba(255,255,255,0.24);
-}
-
-84% {
-transform:
-translateX(28px)
-translateY(56px)
-rotate(-2.25deg)
-skewX(-2deg)
-scaleX(1.03)
-scaleY(1.01);
-clip-path: polygon(2% 0%, 100% 0%, 99% 100%, 0% 100%);
-box-shadow:
-3px 4px 7px rgba(0, 0, 0, 0.085),
-5px 6px 10px rgba(0, 0, 0, 0.04),
-inset 0 1px 0 rgba(255,255,255,0.24);
-}
-
-92% {
-transform:
-translateX(-3px)
-translateY(63px)
-rotate(-2.9deg)
-skewX(-0.5deg)
-scaleX(1.01)
-scaleY(1.01);
-clip-path: polygon(0.7% 0%, 100% 0%, 100% 100%, 0% 100%);
-}
-
-100% {
-transform:
-translateX(0)
-translateY(84px)
-rotate(-3deg)
-skewX(0deg)
-scaleX(1)
-scaleY(1);
-clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
-box-shadow:
-1px 2px 4px rgba(0, 0, 0, 0.07),
-2px 4px 7px rgba(0, 0, 0, 0.03),
-inset 0 1px 0 rgba(255,255,255,0.24);
-}
-}
-
-#waiting-screen::before {
-  inset: 14px;
-}
-  
 @keyframes prepFlightShadowMoveMobile {
-0% {
-opacity: 0.40;
-transform:
-translateX(505px)
-translateY(10px)
-skewX(-16deg)
-scaleX(1.72)
-scaleY(3.45);
-filter: blur(20px);
-}
+  0% {
+    opacity: 0.40;
+    transform:
+      translateX(360px)
+      translateY(10px)
+      skewX(-16deg)
+      scaleX(1.50)
+      scaleY(2.90);
+    filter: blur(20px);
+  }
 
-24% {
-opacity: 0.28;
-transform:
-translateX(410px)
-translateY(15px)
-skewX(-21deg)
-scaleX(1.56)
-scaleY(2.48);
-filter: blur(16px);
-}
+  24% {
+    opacity: 0.28;
+    transform:
+      translateX(280px)
+      translateY(15px)
+      skewX(-21deg)
+      scaleX(1.40)
+      scaleY(2.15);
+    filter: blur(16px);
+  }
 
-46% {
-opacity: 0.18;
-transform:
-translateX(282px)
-translateY(22px)
-skewX(-27deg)
-scaleX(1.42)
-scaleY(1.62);
-filter: blur(12px);
-}
+  46% {
+    opacity: 0.18;
+    transform:
+      translateX(170px)
+      translateY(22px)
+      skewX(-24deg)
+      scaleX(1.26)
+      scaleY(1.45);
+    filter: blur(12px);
+  }
 
-76% {
-opacity: 0.09;
-transform:
-translateX(80px)
-translateY(64px)
-skewX(-7deg)
-scaleX(1.10)
-scaleY(0.86);
-filter: blur(8px);
-}
+  76% {
+    opacity: 0.09;
+    transform:
+      translateX(50px)
+      translateY(56px)
+      skewX(-7deg)
+      scaleX(1.08)
+      scaleY(0.84);
+    filter: blur(8px);
+  }
 
-100% {
-opacity: 0;
-transform:
-translateX(0)
-translateY(72px)
-skewX(0deg)
-scaleX(1)
-scaleY(0.72);
-filter: blur(7px);
-}
-}
-}
-
-body.break-active .prep-note-sheet {
-transform: none !important;
-
-position: absolute;
-left: 50%;
-transform: translateX(-50%) rotate(-3deg);
-
-top: calc(50% + 140px); /* ← das ist der wichtige Teil */
+  100% {
+    opacity: 0;
+    transform:
+      translateX(0)
+      translateY(60px)
+      skewX(0deg)
+      scaleX(1)
+      scaleY(0.72);
+    filter: blur(7px);
+  }
 }
