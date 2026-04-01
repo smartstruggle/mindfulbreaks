@@ -554,8 +554,55 @@ body {
 }
 
 /* =========================
-   RESPONSIVE
+   BREAK SCREEN LAYOUT FIX
 ========================= */
+
+#break-screen {
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+#break-screen .screen-center {
+  min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 48px 20px 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.flip-clock-wrap {
+  margin-top: 10px;
+  margin-bottom: 34px;
+}
+
+.prep-overlay.prep-overlay-persistent .prep-note-sheet {
+  transform:
+    translateX(0)
+    translateY(118px)
+    rotate(-3deg)
+    skewX(0deg)
+    scaleX(1)
+    scaleY(1);
+}
+
+.prep-overlay.prep-overlay-persistent .prep-flight-shadow {
+  opacity: 0;
+  transform:
+    translateX(0)
+    translateY(126px)
+    skewX(0deg)
+    scaleX(1)
+    scaleY(0.72);
+}
+
+#timer {
+  display: none;
+}
 
 @media (max-width: 900px) {
   .setup-center {
@@ -621,6 +668,7 @@ body {
     padding: 16px 32px;
   }
 
+  /* Waiting Screen Blatt */
   #waiting-screen {
     padding: 20px;
     align-items: center;
@@ -639,7 +687,39 @@ body {
     min-height: auto;
     padding: 34px 20px 38px;
   }
-}
+
+  /* Break Screen */
+  #break-screen .screen-center {
+    padding: 28px 16px 28px;
+    justify-content: flex-start;
+  }
+
+  .flip-clock-wrap {
+    width: 100%;
+    max-width: 420px;
+    margin-top: 4px;
+    margin-bottom: 24px;
+  }
+
+  .prep-overlay.prep-overlay-persistent .prep-note-sheet {
+    transform:
+      translateX(0)
+      translateY(86px)
+      rotate(-3deg)
+      skewX(0deg)
+      scaleX(1)
+      scaleY(1);
+  }
+
+  .prep-overlay.prep-overlay-persistent .prep-flight-shadow {
+    opacity: 0;
+    transform:
+      translateX(0)
+      translateY(92px)
+      skewX(0deg)
+      scaleX(1)
+      scaleY(0.72);
+  }
 }
 
 @media (max-width: 768px) {
@@ -699,40 +779,103 @@ body {
     margin: 0;
   }
 
-  .sticky-wrap {
-    margin-top: 26px;
-    transform: scale(0.9);
-    transform-origin: top center;
+  /* Waiting Screen Blatt */
+  #waiting-screen .screen-center {
+    padding: 28px 18px 32px;
   }
 
-  .sticky-note {
-    width: 320px;
-    min-height: 210px;
-    padding: 30px 22px 24px;
+  #waiting-screen::before {
+    top: 14px;
   }
 
-  .sticky-note-inner {
-    font-size: 30px;
+  /* Prep Note mobil */
+  .prep-note-sheet {
+    width: 270px;
+    min-height: 255px;
+    padding: 20px 16px 16px;
+
+    transform:
+      translateX(505px)
+      translateY(-24px)
+      rotate(0.3deg)
+      skewX(-4deg)
+      scaleX(1.82)
+      scaleY(3.75);
+
+    box-shadow:
+      52px 18px 48px rgba(0, 0, 0, 0.19),
+      86px 28px 104px rgba(0, 0, 0, 0.095),
+      inset 0 1px 0 rgba(255,255,255,0.24);
+
+    clip-path: polygon(8% 0%, 100% 0%, 96% 100%, 0% 100%);
   }
 
-  #sticky-waiting-time {
-    font-size: 24px;
-    margin-top: 14px;
+  .prep-note-inner {
+    min-height: 215px;
+    gap: 10px;
   }
 
-#waiting-screen .screen-center {
-  padding: 28px 18px 32px;
-}
+  .note-copy-intro {
+    gap: 10px;
+    padding-top: 4px;
+  }
 
-#waiting-screen::before {
-  top: 14px;
-}
-  
+  .note-main-text {
+    font-size: 21px;
+    line-height: 1.04;
+  }
+
+  .note-check-item {
+    font-size: 16px;
+    line-height: 1.08;
+  }
+
+  .note-handwriting-line {
+    font-size: 26px;
+    line-height: 1.05;
+  }
+
+  .note-handwriting-line-secondary {
+    margin-top: 10px;
+    font-size: 21px;
+  }
+
+  .prep-confirm-button {
+    min-width: 170px;
+    padding: 14px 22px;
+    font-size: 16px;
+  }
+
+  .prep-flight-shadow {
+    width: 280px;
+    height: 255px;
+    transform:
+      translateX(505px)
+      translateY(8px)
+      skewX(-16deg)
+      scaleX(1.72)
+      scaleY(3.45);
+  }
+
+  .prep-note-sheet.is-placing {
+    animation: placeStickyTakeoverMobile 1550ms cubic-bezier(0.24, 0.72, 0.22, 1) forwards;
+  }
+
+  .prep-note-sheet.is-placing + .prep-flight-shadow {
+    animation: prepFlightShadowMoveMobile 1550ms cubic-bezier(0.24, 0.72, 0.22, 1) forwards;
+  }
+
+  /* Break Screen */
+  #break-screen .screen-center {
+    padding: 18px 14px 24px;
+  }
+
   .flip-clock-wrap {
     width: 100%;
     max-width: 360px;
     padding: 8px;
     border-radius: 28px;
+    margin-top: 0;
     margin-bottom: 18px;
   }
 
@@ -803,12 +946,30 @@ body {
     right: -2px;
   }
 
-  .sticky-wrap {
-    transform: scale(0.9);
-    transform-origin: top center;
+  .prep-overlay.prep-overlay-persistent .prep-note-sheet {
+    width: 270px;
+    min-height: 255px;
+    transform:
+      translateX(0)
+      translateY(72px)
+      rotate(-3deg)
+      skewX(0deg)
+      scaleX(1)
+      scaleY(1);
+  }
+
+  .prep-overlay.prep-overlay-persistent .prep-flight-shadow {
+    width: 280px;
+    height: 255px;
+    opacity: 0;
+    transform:
+      translateX(0)
+      translateY(78px)
+      skewX(0deg)
+      scaleX(1)
+      scaleY(0.72);
   }
 }
-
 
 /* =========================
 PREP NOTE / FULL REBUILD
