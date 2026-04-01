@@ -34,6 +34,18 @@ background:
 radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08), transparent 65%);
 }
 
+body.morning {
+  background: radial-gradient(circle at 30% 20%, #f4f7f5 0%, #dfe8e3 40%, #cfdcd5 100%);
+}
+
+body.day {
+  background: radial-gradient(circle at 30% 20%, #eef3ef 0%, #cfded4 40%, #aebfb4 100%);
+}
+
+body.night {
+  background: radial-gradient(circle at 30% 20%, #2f3a38 0%, #1f2625 40%, #141818 100%);
+}
+
 /* =========================
    SCREEN CENTERING SYSTEM
 ========================= */
