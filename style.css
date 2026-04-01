@@ -1,7 +1,7 @@
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #fdfe7de;
+  background: #dfe7de;
   min-height: 100vh;
 }
 
@@ -38,9 +38,14 @@ body {
 
 #setup-screen {
   display: block;
+  position: relative;
+  z-index: 2;
 }
 
 .start-screen {
+  position: relative;
+  z-index: 2;
+
   width: min(82vw, 980px);
   aspect-ratio: 210 / 297;
   margin: 0 auto;
@@ -63,6 +68,17 @@ body {
   box-shadow:
     0 28px 55px rgba(0, 0, 0, 0.10),
     inset 0 0 50px rgba(0, 0, 0, 0.025);
+
+  transition:
+    filter 420ms ease,
+    opacity 420ms ease,
+    transform 420ms ease;
+}
+
+#setup-screen.is-blurring .start-screen {
+  filter: blur(10px);
+  opacity: 0.42;
+  transform: scale(0.985);
 }
 
 .title {
@@ -201,6 +217,34 @@ body {
   text-align: center;
 }
 
+#waiting-screen {
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+#waiting-screen::before {
+  content: "";
+  position: absolute;
+  inset: 24px;
+  border-radius: 8px;
+  background-color: #f8f7f3;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.035) 1px, transparent 1px);
+  background-size: 26px 26px;
+  box-shadow:
+    0 28px 55px rgba(0, 0, 0, 0.10),
+    inset 0 0 50px rgba(0, 0, 0, 0.025);
+  z-index: 0;
+  pointer-events: none;
+}
+
+#waiting-screen .screen-center {
+  position: relative;
+  z-index: 1;
+}
 
 /* =========================
    FLIP CLOCK
@@ -1382,6 +1426,10 @@ inset 0 1px 0 rgba(255,255,255,0.24);
 }
 }
 
+#waiting-screen::before {
+  inset: 14px;
+}
+  
 @keyframes prepFlightShadowMoveMobile {
 0% {
 opacity: 0.40;
