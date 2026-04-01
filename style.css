@@ -74,10 +74,23 @@ body {
     transform 420ms ease;
 }
 
-#setup-screen.is-blurring .start-screen {
+.start-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+
+  transition:
+    filter 420ms ease,
+    opacity 420ms ease,
+    transform 420ms ease;
+}
+
+#setup-screen.is-blurring .start-content {
   filter: blur(10px);
-  opacity: 0.42;
-  transform: scale(0.985);
+  opacity: 0.35;
+  transform: scale(0.98);
 }
 
 .title {
