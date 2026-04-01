@@ -88,9 +88,9 @@ body {
 }
 
 #setup-screen.is-blurring .start-content {
-  filter: blur(10px);
-  opacity: 0.35;
-  transform: scale(0.98);
+  filter: blur(4px);
+  opacity: 0.00;
+  transform: scale(0.985);
 }
 
 .title {
