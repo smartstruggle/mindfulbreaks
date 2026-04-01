@@ -80,17 +80,16 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 18px;
-
   transition:
-    filter 420ms ease,
-    opacity 420ms ease,
-    transform 420ms ease;
+    filter 700ms cubic-bezier(0.22, 0.72, 0.2, 1),
+    opacity 700ms cubic-bezier(0.22, 0.72, 0.2, 1),
+    transform 700ms cubic-bezier(0.22, 0.72, 0.2, 1);
 }
 
 #setup-screen.is-blurring .start-content {
-  filter: blur(4px);
-  opacity: 0.00;
-  transform: scale(0.985);
+  filter: blur(2px);
+  opacity: 0;
+  transform: scale(0.992);
 }
 
 .title {
@@ -862,7 +861,7 @@ body {
 ========================= */
 
 .prep-note-sheet.is-placing {
-  animation: placeStickyTakeover 1320ms cubic-bezier(0.22, 0.78, 0.22, 1) forwards;
+  animation: placeStickyTakeover 1180ms cubic-bezier(0.18, 0.72, 0.2, 1) forwards;
 }
 
 .prep-note-sheet.is-taking-away {
@@ -916,19 +915,19 @@ body {
   }
 
   48% {
-    transform:
-      translateX(362px)
-      translateY(-3px)
-      rotate(0.9deg)
-      skewX(-24deg)
-      scaleX(1.68)
-      scaleY(1.48);
-    clip-path: polygon(22% 0%, 100% 0%, 87% 100%, 0% 100%);
-    box-shadow:
-      26px 14px 28px rgba(0, 0, 0, 0.15),
-      42px 20px 48px rgba(0, 0, 0, 0.075),
-      inset 0 1px 0 rgba(255,255,255,0.24);
-  }
+  transform:
+    translateX(380px)
+    translateY(4px)
+    rotate(0.8deg)
+    skewX(-18deg)
+    scaleX(1.58)
+    scaleY(1.42);
+  clip-path: polygon(18% 0%, 100% 0%, 89% 100%, 0% 100%);
+  box-shadow:
+    22px 12px 24px rgba(0, 0, 0, 0.13),
+    34px 16px 38px rgba(0, 0, 0, 0.065),
+    inset 0 1px 0 rgba(255,255,255,0.24);
+}
 
   68% {
     transform:
@@ -945,21 +944,21 @@ body {
       inset 0 1px 0 rgba(255,255,255,0.24);
   }
 
-  86% {
-    transform:
-      translateX(36px)
-      translateY(70px)
-      rotate(-2.3deg)
-      skewX(-1.8deg)
-      scaleX(1.03)
-      scaleY(1.01);
-    clip-path: polygon(2% 0%, 100% 0%, 99% 100%, 0% 100%);
-    box-shadow:
-      4px 5px 9px rgba(0, 0, 0, 0.09),
-      7px 8px 12px rgba(0, 0, 0, 0.04),
-      inset 0 1px 0 rgba(255,255,255,0.24);
-  }
-
+ 86% {
+  transform:
+    translateX(22px)
+    translateY(74px)
+    rotate(-2.1deg)
+    skewX(-1.2deg)
+    scaleX(1.02)
+    scaleY(1.01);
+  clip-path: polygon(2% 0%, 100% 0%, 99% 100%, 0% 100%);
+  box-shadow:
+    3px 4px 7px rgba(0, 0, 0, 0.08),
+    5px 6px 10px rgba(0, 0, 0, 0.035),
+    inset 0 1px 0 rgba(255,255,255,0.24);
+}
+  
   100% {
     transform:
       translateX(0)
@@ -1331,8 +1330,8 @@ body {
   }
 
   .prep-note-sheet.is-placing {
-    animation: placeStickyTakeoverMobile 1280ms cubic-bezier(0.22, 0.78, 0.22, 1) forwards;
-  }
+  animation: placeStickyTakeoverMobile 1120ms cubic-bezier(0.18, 0.72, 0.2, 1) forwards;
+}
 
   .prep-note-sheet.is-placing + .prep-flight-shadow {
     animation: prepFlightShadowMoveMobile 1280ms cubic-bezier(0.22, 0.78, 0.22, 1) forwards;
@@ -1481,20 +1480,20 @@ body {
     clip-path: polygon(10% 0%, 100% 0%, 94% 100%, 0% 100%);
   }
 
-  48% {
-    transform:
-      translateX(170px)
-      translateY(2px)
-      rotate(0.9deg)
-      skewX(-22deg)
-      scaleX(1.34)
-      scaleY(1.38);
-    clip-path: polygon(22% 0%, 100% 0%, 87% 100%, 0% 100%);
-    box-shadow:
-      18px 10px 18px rgba(0, 0, 0, 0.14),
-      28px 14px 30px rgba(0, 0, 0, 0.07),
-      inset 0 1px 0 rgba(255,255,255,0.24);
-  }
+48% {
+  transform:
+    translateX(178px)
+    translateY(6px)
+    rotate(0.8deg)
+    skewX(-18deg)
+    scaleX(1.28)
+    scaleY(1.34);
+  clip-path: polygon(18% 0%, 100% 0%, 89% 100%, 0% 100%);
+  box-shadow:
+    15px 9px 16px rgba(0, 0, 0, 0.12),
+    24px 12px 26px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255,255,255,0.24);
+}
 
   68% {
     transform:
@@ -1512,19 +1511,19 @@ body {
   }
 
   86% {
-    transform:
-      translateX(18px)
-      translateY(48px)
-      rotate(-2.25deg)
-      skewX(-1.6deg)
-      scaleX(1.03)
-      scaleY(1.01);
-    clip-path: polygon(2% 0%, 100% 0%, 99% 100%, 0% 100%);
-      box-shadow:
-      3px 4px 7px rgba(0, 0, 0, 0.085),
-      5px 6px 10px rgba(0, 0, 0, 0.04),
-      inset 0 1px 0 rgba(255,255,255,0.24);
-  }
+  transform:
+    translateX(12px)
+    translateY(50px)
+    rotate(-2.1deg)
+    skewX(-1.1deg)
+    scaleX(1.02)
+    scaleY(1.01);
+  clip-path: polygon(2% 0%, 100% 0%, 99% 100%, 0% 100%);
+  box-shadow:
+    3px 4px 6px rgba(0, 0, 0, 0.075),
+    4px 5px 8px rgba(0, 0, 0, 0.03),
+    inset 0 1px 0 rgba(255,255,255,0.24);
+}
 
   100% {
     transform:
