@@ -679,6 +679,18 @@ gongSound.addEventListener("error", () => {
   console.log("Fehler beim Laden von gong.mp3. Prüfe Dateiname und Speicherort.");
 });
 
+
+const hour = new Date().getHours();
+const body = document.body;
+
+if (hour >= 6 && hour < 11) {
+  body.classList.add("morning");
+} else if (hour >= 11 && hour < 18) {
+  body.classList.add("day");
+} else {
+  body.classList.add("night");
+}
+
 /* =========================
    INIT
 ========================= */
