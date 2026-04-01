@@ -4,14 +4,14 @@ font-family: -apple-system, BlinkMacSystemFont, sans-serif;
 min-height: 100vh;
 
 background:
-radial-gradient(circle at 20% 20%, rgba(255,255,255,0.18), transparent 40%),
-radial-gradient(circle at 80% 70%, rgba(255,255,255,0.08), transparent 45%),
+radial-gradient(circle at 18% 16%, rgba(255,255,255,0.34), transparent 34%),
+radial-gradient(circle at 82% 72%, rgba(255,255,255,0.14), transparent 42%),
 linear-gradient(
 160deg,
-#2f4a3a 0%,
-#3f5f4c 35%,
-#5e7a64 70%,
-#7f9a83 100%
+#edf1ef 0%,
+#e3eae6 30%,
+#d8e2dd 68%,
+#ccd8d2 100%
 );
 }
 
