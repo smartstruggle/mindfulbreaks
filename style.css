@@ -1228,18 +1228,26 @@ body {
     margin: 0;
   }
 
-  #waiting-screen .screen-center {
-    padding: 28px 18px 32px;
-  }
+#waiting-screen {
+  padding: 14px;
+  align-items: flex-start;
+}
 
-  #waiting-screen::before {
-    top: 14px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 92vw;
-    aspect-ratio: auto;
-    min-height: auto;
-  }
+#waiting-screen::before {
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 92vw;
+  min-height: calc(100vh - 28px);
+  aspect-ratio: unset;
+}
+
+#waiting-screen .screen-center {
+  width: 92vw;
+  min-height: calc(100vh - 28px);
+  padding: 28px 18px 32px;
+  box-sizing: border-box;
+}
 
   .prep-note-sheet {
     width: 270px;
