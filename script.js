@@ -248,7 +248,7 @@ function wait(ms) {
 async function blurSetupScreenBeforePrep() {
   if (!setupScreen) return;
   setupScreen.classList.add("is-blurring");
-  await wait(180);
+  await wait(420);
 }
 
 function showPrepNote() {
