@@ -726,77 +726,72 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
 }
 
 /* =========================
-   STICKY SHEET
-========================= */
-
-/* =========================
-PREP STICKY – REALISTIC
+PREP STICKY – SHADOW RESET
 ========================= */
 
 .prep-note-sheet {
 position: relative;
 z-index: 2;
 
-width: 340px;
-min-height: 318px;
+width: 342px;
+min-height: 320px;
 padding: 26px 24px 24px;
 box-sizing: border-box;
 border-radius: 2px;
 overflow: visible;
 
-/* deine gewünschte Grundform */
-clip-path: polygon(2% 0%, 100% 0%, 98.8% 98%, 0% 100%);
+/* etwas schräger */
+transform:
+translateX(0)
+translateY(0)
+rotate(-4.2deg)
+skewX(-1.2deg)
+scale(1);
 
-/* Farbe + obere Klebekante + subtile Tiefe */
+transform-origin: center center;
+will-change: transform, box-shadow, filter;
+
+/* obere Klebekante + warmes Papiergelb */
 background:
 linear-gradient(
 180deg,
-#e7ac3d 0px,
-#e7ac3d 42px,
-#f3df58 42px,
-#f6e45f 100%
+#d9a43a 0px,
+#d9a43a 38px,
+#f0db52 38px,
+#f4e15b 100%
 );
 
-border: 1px solid rgba(177, 137, 33, 0.20);
+border: 1px solid rgba(162, 126, 28, 0.24);
 
-/* Startposition für deine Bewegung kannst du später weiterverwenden */
-opacity: 1;
-transform:
-translateX(980px)
-translateY(-6px)
-rotate(2deg)
-skewX(-22deg)
-scaleX(2.9)
-scaleY(2.45);
+/* fast gerade Form, ganz leichte organische Unruhe */
+clip-path: polygon(1.5% 0%, 100% 0%, 99.2% 99%, 0% 100%);
 
-transform-origin: top right;
-will-change: transform, box-shadow, clip-path, filter;
-
-/* WICHTIG: deutlicher äußerer Schlagschatten */
+/* DEUTLICHER Schlagschatten */
 box-shadow:
-18px 16px 22px rgba(0, 0, 0, 0.10),
-34px 30px 42px rgba(0, 0, 0, 0.12),
-58px 54px 72px rgba(0, 0, 0, 0.10);
+0 10px 14px rgba(0, 0, 0, 0.10),
+12px 18px 22px rgba(0, 0, 0, 0.18),
+24px 34px 34px rgba(0, 0, 0, 0.22),
+42px 54px 48px rgba(0, 0, 0, 0.16);
 }
 
-/* Papiertextur + leichtes Faserkorn */
+/* Papierstruktur */
 .prep-note-sheet::before {
 content: "";
 position: absolute;
 inset: 0;
 border-radius: 2px;
 pointer-events: none;
-opacity: 0.35;
+opacity: 0.34;
 
 background:
-radial-gradient(rgba(123, 99, 29, 0.15) 0.55px, transparent 0.95px),
-radial-gradient(rgba(255,255,255,0.16) 0.45px, transparent 0.85px),
+radial-gradient(rgba(118, 91, 24, 0.16) 0.55px, transparent 0.9px),
+radial-gradient(rgba(255,255,255,0.10) 0.45px, transparent 0.8px),
 linear-gradient(
 165deg,
-rgba(255,255,255,0.08) 0%,
-rgba(255,255,255,0.00) 28%,
-rgba(201, 156, 32, 0.08) 72%,
-rgba(122, 89, 14, 0.08) 100%
+rgba(255,255,255,0.07) 0%,
+rgba(255,255,255,0.00) 24%,
+rgba(187, 145, 28, 0.07) 70%,
+rgba(109, 80, 16, 0.08) 100%
 );
 
 background-size:
@@ -807,57 +802,50 @@ background-size:
 mix-blend-mode: multiply;
 }
 
-/* Curl unten rechts + Schatten darunter */
+/* NUR äußerer Bodenschatten – kein Knick */
 .prep-note-sheet::after {
 content: "";
 position: absolute;
 pointer-events: none;
 
-right: -2px;
-bottom: -1px;
-width: 108px;
-height: 108px;
+left: 4px;
+right: -34px;
+bottom: -30px;
+height: 84px;
 
+border-radius: 50%;
 background:
-linear-gradient(
-145deg,
-#fff07e 0%,
-#f4df58 36%,
-#e0bf22 72%,
-#b8850d 100%
+radial-gradient(
+ellipse at center,
+rgba(0, 0, 0, 0.38) 0%,
+rgba(0, 0, 0, 0.28) 26%,
+rgba(0, 0, 0, 0.16) 52%,
+rgba(0, 0, 0, 0.07) 72%,
+rgba(0, 0, 0, 0.00) 100%
 );
 
-clip-path: polygon(100% 0, 20% 78%, 100% 100%);
-border-bottom-right-radius: 2px;
-
-box-shadow:
--8px -8px 14px rgba(255,255,255,0.20) inset,
--18px -12px 18px rgba(97, 66, 4, 0.12) inset,
--10px 12px 18px rgba(0, 0, 0, 0.10);
+filter: blur(16px);
+transform: translateX(20px) scaleX(0.92) scaleY(0.78);
+opacity: 1;
 }
 
-/* zusätzlicher weicher Bodenschatten außerhalb */
-.prep-note-shadow {
-display: none;
-}
-
+/* innere Fläche */
 .prep-note-inner {
 position: relative;
 z-index: 3;
-min-height: 248px;
+min-height: 250px;
 display: flex;
 align-items: flex-end;
 justify-content: center;
 }
 
-/* Falls der Text auf dem Prep-Sticky erstmal weg soll */
+/* optional: falls du den restlichen Prep-Text gerade nicht sehen willst */
 .prep-note-inner,
 .prep-note-inner *:not(.prep-confirm-button) {
 color: transparent !important;
 text-shadow: none !important;
 }
 
-/* explizit mögliche Textteile ausblenden */
 .prep-note-title,
 .prep-note-copy,
 .prep-note-checklist,
@@ -867,6 +855,7 @@ text-shadow: none !important;
 .prep-note-meta {
 display: none !important;
 }
+
 
 /* =========================
    FLIGHT SHADOW
