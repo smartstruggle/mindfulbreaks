@@ -818,38 +818,41 @@ z-index: 1;
 pointer-events: none;
 opacity: 0;
 
-width: 420px;
+width: 360px;
 height: 260px;
 
 background:
-/* 1. FORM (dein Dreieck / Keil!) */
+/* SCHMALER START OBEN RECHTS -> NACH UNTEN RECHTS AUFGEHEND */
 linear-gradient(
-135deg,
-rgba(0,0,0,0.0) 0%,
-rgba(0,0,0,0.0) 35%,
-rgba(0,0,0,0.08) 55%,
-rgba(0,0,0,0.18) 75%,
-rgba(0,0,0,0.28) 100%
+160deg,
+rgba(0, 0, 0, 0.00) 0%,
+rgba(0, 0, 0, 0.00) 38%,
+rgba(0, 0, 0, 0.05) 52%,
+rgba(0, 0, 0, 0.14) 72%,
+rgba(0, 0, 0, 0.24) 100%
 ),
 
-/* 2. WEICHHEIT unten */
+/* DUNKLER KERN UNTEN RECHTS */
 radial-gradient(
-ellipse at 70% 90%,
-rgba(0,0,0,0.25) 0%,
-rgba(0,0,0,0.12) 40%,
-rgba(0,0,0,0.0) 80%
+ellipse at 78% 92%,
+rgba(0, 0, 0, 0.34) 0%,
+rgba(0, 0, 0, 0.18) 34%,
+rgba(0, 0, 0, 0.06) 62%,
+rgba(0, 0, 0, 0.00) 100%
 );
 
-filter: blur(12px);
+filter: blur(10px);
 
 transform:
-translateX(40px)
-translateY(175px)
-skewX(-8deg)
-scaleY(0.9);
+translateX(42px)
+translateY(168px)
+skewX(-20deg)
+scaleX(1.00)
+scaleY(0.92);
 
-transform-origin: center;
+transform-origin: top right;
 }
+
 
 .prep-overlay:has(.prep-note-sheet.is-placing) .prep-rest-shadow {
 animation: restShadowFadeIn 1180ms cubic-bezier(0.18, 0.72, 0.2, 1) forwards;
@@ -1223,13 +1226,13 @@ opacity: 1;
 .prep-overlay.prep-overlay-persistent .prep-rest-shadow {
 opacity: 1;
 transform:
-translateX(72px)
-translateY(188px)
-skewX(-18deg)
-rotate(0.5deg)
-scaleX(1.08)
-scaleY(0.84);
+translateX(42px)
+translateY(168px)
+skewX(-20deg)
+scaleX(1.00)
+scaleY(0.92);
 }
+
 
 
 
