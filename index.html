@@ -24,37 +24,46 @@
             <div class="time-group">
               <label for="start-hour">Start</label>
               <div class="time-inputs">
-                <select id="start-hour"><option value="">HH</option></select>
+                <select id="start-hour">
+                  <option value="">HH</option>
+                </select>
                 <span class="colon">:</span>
-                <select id="start-minute"><option value="">MM</option></select>
+                <select id="start-minute">
+                  <option value="">MM</option>
+                </select>
               </div>
             </div>
 
             <div class="time-group">
               <label for="end-hour">Ende</label>
               <div class="time-inputs">
-                <select id="end-hour"><option value="">HH</option></select>
+                <select id="end-hour">
+                  <option value="">HH</option>
+                </select>
                 <span class="colon">:</span>
-                <select id="end-minute"><option value="">MM</option></select>
+                <select id="end-minute">
+                  <option value="">MM</option>
+                </select>
               </div>
             </div>
           </div>
 
           <button id="start-button">Pause planen</button>
+
           <p class="dedication">Für Joanna, Helen, Mirjam, Melanie &amp; Dilek</p>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- PREP OVERLAY -->
-  <div id="prepOverlay" class="prep-overlay" style="display:none;">
+  <!-- PREP OVERLAY / STICKY WIRD REINGEKLEBT -->
+  <div id="prepOverlay" class="prep-overlay" style="display: none;">
     <div class="prep-backdrop"></div>
 
     <div id="prepNoteSheet" class="prep-note-sheet">
       <div class="prep-note-inner">
         <div id="prepNoteContent" class="prep-note-content">
-          <div class="note-copy note-copy-intro">
+          <div class="note-copy note-copy-intro" id="noteCopyIntro">
             <div class="note-main-text">
               Bevor’s losgeht,<br />
               einmal kurz prüfen:
@@ -78,7 +87,7 @@
   </div>
 
   <!-- TRANSITION SCREEN -->
-  <div id="transition-screen" style="display:none;">
+  <div id="transition-screen" style="display: none;">
     <div class="screen-center">
       <div class="transition-note-wrap">
         <div class="prep-note-sheet note-static">
@@ -92,11 +101,14 @@
           </div>
         </div>
       </div>
+
+      <!-- optionaler fallback, falls dein altes CSS/JS irgendwo noch darauf schaut -->
+      <h2 id="waiting-text" style="display: none;">Deine nächste Pause ist um ...</h2>
     </div>
   </div>
 
   <!-- BREAK SCREEN -->
-  <div id="break-screen" style="display:none;">
+  <div id="break-screen" style="display: none;">
     <div class="screen-center">
       <div class="break-screen-layout">
         <div class="break-note-wrap">
@@ -105,7 +117,9 @@
               <div class="prep-note-content note-visible">
                 <div class="note-copy note-copy-break">
                   <div id="breakLine1" class="note-handwriting-line">Take a break</div>
-                  <div id="breakLine2" class="note-handwriting-line note-handwriting-line-secondary">du machst das gut</div>
+                  <div id="breakLine2" class="note-handwriting-line note-handwriting-line-secondary">
+                    du machst das gut
+                  </div>
                 </div>
               </div>
             </div>
@@ -142,7 +156,10 @@
     </div>
   </div>
 
+  <!-- GSAP -->
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+
+  <!-- DEIN SCRIPT -->
   <script src="script.js"></script>
 </body>
 </html>
