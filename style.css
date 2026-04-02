@@ -813,24 +813,6 @@ opacity: 0.92;
 }
 
 
-.prep-note-sheet::after {
-content: "";
-position: absolute;
-pointer-events: none;
-z-index: 0;
-
-left: -120px;
-right: -120px;
-top: -40px;
-bottom: -140px;
-
-background: rgba(255, 0, 0, 0.28);
-
-opacity: 1;
-filter: none;
-transform: none;
-}
-
 /* =========================
 FLIGHT SHADOW
 ========================= */
