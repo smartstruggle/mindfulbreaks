@@ -849,13 +849,13 @@ rgba(0, 0, 0, 0.04) 40%,
 rgba(0, 0, 0, 0.00) 78%
 );
 
-/* längerer Auslauf nach oben */
-    linear-gradient(
-      135deg,
-      rgba(0, 0, 0, 0.10) 0%,
-      rgba(0, 0, 0, 0.05) 24%,
-      rgba(0, 0, 0, 0.018) 52%,
-      rgba(0, 0, 0, 0.00) 78% );
+linear-gradient(
+225deg,
+rgba(0, 0, 0, 0.11) 0%,
+rgba(0, 0, 0, 0.06) 22%,
+rgba(0, 0, 0, 0.022) 48%,
+rgba(0, 0, 0, 0.00) 74%
+)
 
        
 filter: blur(16px);
