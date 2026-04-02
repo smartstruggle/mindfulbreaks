@@ -819,7 +819,7 @@ pointer-events: none;
 opacity: 0;
 
 width: 420px;
-height: 250px;
+height: 320px;
 
 background:
 /* Hauptschatten unten unter dem Sticky */
@@ -834,7 +834,7 @@ rgba(0, 0, 0, 0.00) 100%
 
 /* rechter Schatten, aber oben deutlich schmaler */
 radial-gradient(
-ellipse at 82% 58%,
+ellipse at 78% 38%,
 rgba(0, 0, 0, 0.16) 0%,
 rgba(0, 0, 0, 0.08) 28%,
 rgba(0, 0, 0, 0.02) 52%,
@@ -849,11 +849,20 @@ rgba(0, 0, 0, 0.04) 40%,
 rgba(0, 0, 0, 0.00) 78%
 );
 
+/* längerer Auslauf nach oben */
+    linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.10) 0%,
+      rgba(0, 0, 0, 0.05) 24%,
+      rgba(0, 0, 0, 0.018) 52%,
+      rgba(0, 0, 0, 0.00) 78% );
+
+       
 filter: blur(16px);
 
 transform:
 translateX(54px)
-translateY(220px)
+translateY(188px)
 skewX(-7deg)
 rotate(1deg)
 scaleX(1.00)
