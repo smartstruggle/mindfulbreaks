@@ -857,7 +857,7 @@ filter: blur(14px);
 
 /* DAS formt den Schatten als schräges Trapez / keilartig */
 clip-path: polygon(
-34% 0%,
+22% 0%,
 88% 0%,
 112% 100%,
 32% 100%
