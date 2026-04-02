@@ -729,108 +729,143 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
    STICKY SHEET
 ========================= */
 
+/* =========================
+PREP STICKY – REALISTIC
+========================= */
+
 .prep-note-sheet {
-  position: relative;
-  z-index: 2;
-  box-sizing: border-box;
-  overflow: visible;
+position: relative;
+z-index: 2;
 
-  width: 352px;
-  min-height: 332px;
-  padding: 28px 24px 24px;
+width: 340px;
+min-height: 318px;
+padding: 26px 24px 24px;
+box-sizing: border-box;
+border-radius: 2px;
+overflow: visible;
 
-  border-radius: 2px;
+/* deine gewünschte Grundform */
+clip-path: polygon(2% 0%, 100% 0%, 98.8% 98%, 0% 100%);
 
-  background:
-    radial-gradient(circle at 20% 16%, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 18%, transparent 34%),
-    linear-gradient(180deg, #f8e56b 0%, #f3d54e 58%, #e4bb33 100%);
+/* Farbe + obere Klebekante + subtile Tiefe */
+background:
+linear-gradient(
+180deg,
+#e7ac3d 0px,
+#e7ac3d 42px,
+#f3df58 42px,
+#f6e45f 100%
+);
 
-  border: 1px solid rgba(126, 93, 16, 0.22);
+border: 1px solid rgba(177, 137, 33, 0.20);
 
-  transform:
-    translateX(640px)
-    translateY(-20px)
-    rotate(-2.2deg)
-    skewX(-1.8deg)
-    skewY(0.35deg);
+/* Startposition für deine Bewegung kannst du später weiterverwenden */
+opacity: 1;
+transform:
+translateX(980px)
+translateY(-6px)
+rotate(2deg)
+skewX(-22deg)
+scaleX(2.9)
+scaleY(2.45);
 
-  transform-origin: top right;
+transform-origin: top right;
+will-change: transform, box-shadow, clip-path, filter;
 
-  /* obere Kante weniger waagerecht */
-  clip-path: polygon(
-    4.8% 5.8%,
-    97.4% 1.2%,
-    99.1% 95.8%,
-    8.8% 98.9%,
-    1.2% 11.4%
-  );
-
-  /* KEIN innerer Schatten */
-  box-shadow: none;
-
-  filter: saturate(1.02);
-  will-change: transform, clip-path, opacity, filter;
+/* WICHTIG: deutlicher äußerer Schlagschatten */
+box-shadow:
+18px 16px 22px rgba(0, 0, 0, 0.10),
+34px 30px 42px rgba(0, 0, 0, 0.12),
+58px 54px 72px rgba(0, 0, 0, 0.10);
 }
 
-/* feine Papiertextur, aber kein Schatten */
+/* Papiertextur + leichtes Faserkorn */
 .prep-note-sheet::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  border-radius: 2px;
-  opacity: 0.13;
+content: "";
+position: absolute;
+inset: 0;
+border-radius: 2px;
+pointer-events: none;
+opacity: 0.35;
 
-  background-image:
-    radial-gradient(rgba(116, 84, 18, 0.10) 0.55px, transparent 0.9px);
+background:
+radial-gradient(rgba(123, 99, 29, 0.15) 0.55px, transparent 0.95px),
+radial-gradient(rgba(255,255,255,0.16) 0.45px, transparent 0.85px),
+linear-gradient(
+165deg,
+rgba(255,255,255,0.08) 0%,
+rgba(255,255,255,0.00) 28%,
+rgba(201, 156, 32, 0.08) 72%,
+rgba(122, 89, 14, 0.08) 100%
+);
 
-  background-size: 6px 6px;
-  mix-blend-mode: multiply;
+background-size:
+4px 4px,
+7px 7px,
+100% 100%;
+
+mix-blend-mode: multiply;
 }
 
-/* NUR externer Schlagschatten hinten rechts unten */
+/* Curl unten rechts + Schatten darunter */
 .prep-note-sheet::after {
-  content: "";
-  position: absolute;
-  pointer-events: none;
-  z-index: -1;
+content: "";
+position: absolute;
+pointer-events: none;
 
-  left: 18%;
-  top: 14%;
-  width: 120%;
-  height: 120%;
+right: -2px;
+bottom: -1px;
+width: 108px;
+height: 108px;
 
-  background:
-    linear-gradient(
-      135deg,
-      rgba(0,0,0,0.00) 0%,
-      rgba(0,0,0,0.00) 28%,
-      rgba(0,0,0,0.14) 44%,
-      rgba(0,0,0,0.28) 60%,
-      rgba(0,0,0,0.46) 78%,
-      rgba(0,0,0,0.00) 100%
-    );
+background:
+linear-gradient(
+145deg,
+#fff07e 0%,
+#f4df58 36%,
+#e0bf22 72%,
+#b8850d 100%
+);
 
-  clip-path: polygon(
-    18% 18%,
-    57% 13%,
-    100% 58%,
-    93% 100%,
-    36% 100%,
-    8% 61%
-  );
+clip-path: polygon(100% 0, 20% 78%, 100% 100%);
+border-bottom-right-radius: 2px;
 
-  transform:
-    translateX(112px)
-    translateY(86px)
-    rotate(2deg)
-    skewX(-24deg)
-    scaleX(1.22)
-    scaleY(1.02);
+box-shadow:
+-8px -8px 14px rgba(255,255,255,0.20) inset,
+-18px -12px 18px rgba(97, 66, 4, 0.12) inset,
+-10px 12px 18px rgba(0, 0, 0, 0.10);
+}
 
-  transform-origin: top left;
-  opacity: 0.98;
-  filter: blur(13px);
+/* zusätzlicher weicher Bodenschatten außerhalb */
+.prep-note-shadow {
+display: none;
+}
+
+.prep-note-inner {
+position: relative;
+z-index: 3;
+min-height: 248px;
+display: flex;
+align-items: flex-end;
+justify-content: center;
+}
+
+/* Falls der Text auf dem Prep-Sticky erstmal weg soll */
+.prep-note-inner,
+.prep-note-inner *:not(.prep-confirm-button) {
+color: transparent !important;
+text-shadow: none !important;
+}
+
+/* explizit mögliche Textteile ausblenden */
+.prep-note-title,
+.prep-note-copy,
+.prep-note-checklist,
+.prep-note-text,
+.prep-note-caption,
+.prep-note-emoji,
+.prep-note-meta {
+display: none !important;
 }
 
 /* =========================
