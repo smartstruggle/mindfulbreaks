@@ -816,21 +816,20 @@ opacity: 0.92;
 }
 
 
-/* ruhender Außenschatten nur für das Sticky */
 .prep-note-sheet::after {
 content: "";
 position: absolute;
 pointer-events: none;
 z-index: -1;
 
-left: 6%;
-right: -18%;
-bottom: -34px;
-height: 34%;
+left: 10%;
+right: -12%;
+bottom: -58px;
+height: 22%;
 
 background:
 radial-gradient(
-ellipse at 38% 38%,
+ellipse at 50% 100%,
 rgba(0, 0, 0, 0.34) 0%,
 rgba(0, 0, 0, 0.22) 34%,
 rgba(0, 0, 0, 0.11) 62%,
@@ -841,13 +840,13 @@ opacity: 0.92;
 filter: blur(18px);
 
 transform:
-translateX(16px)
-skewX(-18deg)
-scaleX(1.08)
-scaleY(0.62)
-rotate(-1deg);
+translateX(0px)
+skewX(0deg)
+scaleX(1.02)
+scaleY(0.72)
+rotate(0deg);
 
-transform-origin: bottom left;
+transform-origin: center bottom;
 }
 
 
