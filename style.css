@@ -730,40 +730,43 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
 ========================= */
 
 .prep-note-sheet {
-position: relative;
-z-index: 2;
-width: 320px;
-min-height: 300px;
-padding: 26px 22px 22px;
-box-sizing: border-box;
-border-radius: 3px;
-overflow: visible;
+  position: relative;
+  z-index: 2;
+  width: 352px;
+  min-height: 330px;
+  padding: 28px 24px 24px;
+  box-sizing: border-box;
+  border-radius: 3px;
+  overflow: visible;
 
-background:
-radial-gradient(circle at 22% 18%, rgba(255,255,255,0.17) 0%, transparent 30%),
-radial-gradient(circle at 76% 72%, rgba(255,255,255,0.08) 0%, transparent 28%),
-linear-gradient(180deg, #f7df70 0%, #f1cf54 52%, #e1b939 100%);
+  background:
+    radial-gradient(circle at 22% 18%, rgba(255,255,255,0.18) 0%, transparent 28%),
+    radial-gradient(circle at 76% 72%, rgba(255,255,255,0.08) 0%, transparent 26%),
+    linear-gradient(180deg, #f8e36d 0%, #f2d357 52%, #e2ba3b 100%);
 
-border: 1px solid rgba(156, 114, 20, 0.18);
+  border: 1px solid rgba(145, 108, 20, 0.22);
 
-transform:
-translateX(640px)
-translateY(-34px)
-rotate(0.3deg)
-skewX(-4deg)
-scaleX(1.95)
-scaleY(4.15);
+  transform:
+    translateX(640px)
+    translateY(-34px)
+    rotate(-1.4deg)
+    skewX(-3deg)
+    scaleX(1.95)
+    scaleY(4.15);
 
-transform-origin: top right;
-will-change: transform, box-shadow, clip-path, opacity;
+  transform-origin: top right;
+  will-change: transform, box-shadow, clip-path, opacity, filter;
 
-box-shadow:
-0 16px 28px rgba(0,0,0,0.12),
-70px 24px 72px rgba(0, 0, 0, 0.24),
-120px 38px 150px rgba(0, 0, 0, 0.14),
-inset 0 1px 0 rgba(255,255,255,0.24);
+  box-shadow:
+    0 10px 22px rgba(72, 52, 10, 0.16),
+    0 24px 50px rgba(0, 0, 0, 0.10),
+    70px 24px 72px rgba(0, 0, 0, 0.24),
+    120px 38px 150px rgba(0, 0, 0, 0.14),
+    inset 0 1px 0 rgba(255,255,255,0.30),
+    inset 0 -10px 18px rgba(156, 114, 20, 0.06);
 
-clip-path: polygon(8% 0%, 100% 0%, 96% 100%, 0% 100%);
+  clip-path: polygon(3% 0%, 100% 0%, 98% 100%, 0% 100%);
+  filter: saturate(1.02);
 }
 
 .prep-note-sheet::before {
@@ -772,36 +775,41 @@ clip-path: polygon(8% 0%, 100% 0%, 96% 100%, 0% 100%);
   inset: 0;
   border-radius: 3px;
   pointer-events: none;
-  opacity: 0.14;
+  opacity: 0.18;
   background-image:
-    radial-gradient(rgba(120,84,16,0.18) 0.5px, transparent 0.7px);
-  background-size: 6px 6px;
+    radial-gradient(rgba(118, 88, 20, 0.16) 0.55px, transparent 0.8px),
+    linear-gradient(180deg, rgba(255,255,255,0.05), rgba(0,0,0,0.015));
+  background-size: 6px 6px, 100% 100%;
   mix-blend-mode: multiply;
 }
 
 .prep-note-sheet::after {
   content: "";
   position: absolute;
-  left: 8%;
-  right: 8%;
-  bottom: 8px;
-  height: 23%;
+  left: 6%;
+  right: -12%;
+  bottom: -18px;
+  height: 42%;
   pointer-events: none;
-  border-radius: 0 0 14px 14px;
 
   background:
     radial-gradient(
-      ellipse at center,
-      rgba(86, 56, 8, 0.18) 0%,
-      rgba(86, 56, 8, 0.10) 42%,
-      rgba(86, 56, 8, 0.04) 72%,
-      rgba(86, 56, 8, 0) 100%
+      ellipse at 30% 20%,
+      rgba(0,0,0,0.35) 0%,
+      rgba(0,0,0,0.22) 35%,
+      rgba(0,0,0,0.10) 65%,
+      rgba(0,0,0,0) 100%
     );
 
-  opacity: 0.48;
-  filter: blur(4px);
-  transform: translateY(2px) scaleX(0.94) scaleY(0.72);
-  transform-origin: bottom center;
+  opacity: 0.9;
+  filter: blur(10px);
+
+  transform:
+    skewX(-18deg)
+    scaleX(1.25)
+    scaleY(0.7);
+
+  transform-origin: bottom left;
 }
 
 /* =========================
