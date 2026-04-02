@@ -1,7 +1,9 @@
 const startButton = document.getElementById("start-button");
 
 const setupScreen = document.getElementById("setup-screen");
-const transitionScreen = document.getElementById("transition-screen");
+const waitingScreen =
+  document.getElementById("transition-screen") ||
+  document.getElementById("waiting-screen");
 const breakScreen = document.getElementById("break-screen");
 
 const startHour = document.getElementById("start-hour");
@@ -9,12 +11,27 @@ const startMinute = document.getElementById("start-minute");
 const endHour = document.getElementById("end-hour");
 const endMinute = document.getElementById("end-minute");
 
-const prepOverlay = document.getElementById("prepOverlay");
-const prepNoteSheet = document.getElementById("prepNoteSheet");
-const prepFlightShadow = document.getElementById("prepFlightShadow");
-const prepNoteContent = document.getElementById("prepNoteContent");
-const prepConfirmButton = document.getElementById("prepConfirmButton");
+const prepOverlay =
+  document.getElementById("prepOverlay") ||
+  document.getElementById("prep-overlay");
 
+const prepNote =
+  document.getElementById("prepNoteSheet") ||
+  document.getElementById("prep-note");
+
+const prepFlightShadow =
+  document.getElementById("prepFlightShadow") ||
+  document.querySelector(".prep-flight-shadow");
+
+const prepConfirmButton =
+  document.getElementById("prepConfirmButton") ||
+  document.getElementById("prep-confirm-button");
+
+const prepNoteContent =
+  document.getElementById("prepNoteContent") ||
+  document.getElementById("prep-note-content");
+
+const waitingText = document.getElementById("waiting-text");
 const transitionLine1 = document.getElementById("transitionLine1");
 const transitionLine2 = document.getElementById("transitionLine2");
 
@@ -30,90 +47,34 @@ gongSound.preload = "auto";
 
 let waitingInterval = null;
 let breakInterval = null;
+let reminderTimeout = null;
 
 let activeStartTime = null;
 let activeEndTime = null;
 
-let appState = "idle";
 let soundUnlocked = false;
+let appState = "idle"; // idle | prep | waiting | break | ending
+let prepConfirmed = false;
+let startGongPlayed = false;
+let endGongPlayed = false;
+let endingSequenceRunning = false;
 let typingToken = 0;
 
 /* =========================
-   HELPERS
+   BASIC SETUP
 ========================= */
-
-function wait(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function resetTypingToken() {
-  typingToken += 1;
-}
-
-async function typeText(element, text, speed = 42) {
-  if (!element) return;
-  typingToken += 1;
-  const token = typingToken;
-
-  element.textContent = "";
-  element.classList.add("note-writing-caret");
-
-  for (let i = 0; i < text.length; i++) {
-    if (token !== typingToken) return;
-    element.textContent += text[i];
-    await wait(speed);
-  }
-
-  await wait(180);
-
-  if (token === typingToken) {
-    element.classList.remove("note-writing-caret");
-  }
-}
 
 function fillTimeOptions() {
   for (let i = 0; i < 24; i++) {
-    const hour = String(i).padStart(2, "0");
+    const hour = i.toString().padStart(2, "0");
     startHour.innerHTML += `<option value="${hour}">${hour}</option>`;
     endHour.innerHTML += `<option value="${hour}">${hour}</option>`;
   }
 
   for (let i = 0; i < 60; i++) {
-    const minute = String(i).padStart(2, "0");
+    const minute = i.toString().padStart(2, "0");
     startMinute.innerHTML += `<option value="${minute}">${minute}</option>`;
     endMinute.innerHTML += `<option value="${minute}">${minute}</option>`;
-  }
-}
-
-function getTodayDateForTime(timeString) {
-  const [hours, minutes] = timeString.split(":").map(Number);
-  const date = new Date();
-  date.setHours(hours, minutes, 0, 0);
-  return date;
-}
-
-function validateTimes(startTime, endTime) {
-  return getTodayDateForTime(endTime) > getTodayDateForTime(startTime);
-}
-
-function clearIntervals() {
-  if (waitingInterval) {
-    clearInterval(waitingInterval);
-    waitingInterval = null;
-  }
-  if (breakInterval) {
-    clearInterval(breakInterval);
-    breakInterval = null;
-  }
-}
-
-function showOnlyScreen(screen) {
-  setupScreen.style.display = "none";
-  transitionScreen.style.display = "none";
-  breakScreen.style.display = "none";
-
-  if (screen) {
-    screen.style.display = "block";
   }
 }
 
@@ -122,21 +83,52 @@ function updateFlipClock(totalSeconds) {
   const minutes = Math.floor(safeSeconds / 60);
   const seconds = safeSeconds % 60;
 
-  const minString = String(minutes).padStart(2, "0");
-  const secString = String(seconds).padStart(2, "0");
+  const minString = minutes.toString().padStart(2, "0");
+  const secString = seconds.toString().padStart(2, "0");
 
-  flipMinTens.textContent = minString[0];
-  flipMinOnes.textContent = minString[1];
-  flipSecTens.textContent = secString[0];
-  flipSecOnes.textContent = secString[1];
+  if (flipMinTens) flipMinTens.textContent = minString[0];
+  if (flipMinOnes) flipMinOnes.textContent = minString[1];
+  if (flipSecTens) flipSecTens.textContent = secString[0];
+  if (flipSecOnes) flipSecOnes.textContent = secString[1];
+}
 
-  if (timer) {
-    timer.textContent = `${minString}:${secString}`;
+function clearIntervals() {
+  if (waitingInterval) {
+    clearInterval(waitingInterval);
+    waitingInterval = null;
+  }
+
+  if (breakInterval) {
+    clearInterval(breakInterval);
+    breakInterval = null;
+  }
+
+  if (reminderTimeout) {
+    clearTimeout(reminderTimeout);
+    reminderTimeout = null;
   }
 }
 
+function getTodayDateForTime(timeString) {
+  const [hours, minutes] = timeString.split(":").map(Number);
+  const date = new Date();
+
+  date.setHours(hours);
+  date.setMinutes(minutes);
+  date.setSeconds(0);
+  date.setMilliseconds(0);
+
+  return date;
+}
+
+function validateTimes(startTime, endTime) {
+  const startDate = getTodayDateForTime(startTime);
+  const endDate = getTodayDateForTime(endTime);
+  return endDate > startDate;
+}
+
 /* =========================
-   AUDIO
+   AUDIO / NOTIFICATIONS
 ========================= */
 
 async function unlockSound() {
@@ -145,15 +137,22 @@ async function unlockSound() {
   try {
     gongSound.muted = true;
     gongSound.currentTime = 0;
+
     const playPromise = gongSound.play();
-    if (playPromise) await playPromise;
+    if (playPromise !== undefined) {
+      await playPromise;
+    }
+
     gongSound.pause();
     gongSound.currentTime = 0;
     gongSound.muted = false;
     soundUnlocked = true;
+
+    console.log("Sound erfolgreich freigeschaltet.");
     return true;
   } catch (error) {
     gongSound.muted = false;
+    console.log("Sound konnte nicht freigeschaltet werden:", error);
     return false;
   }
 }
@@ -161,128 +160,606 @@ async function unlockSound() {
 function playGong() {
   try {
     const gong = gongSound.cloneNode();
-    gong.volume = 0.75;
-    gong.play().catch(() => {});
-  } catch (error) {}
+    gong.volume = 0;
+    gong.currentTime = 0;
+
+    const playPromise = gong.play();
+
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          let vol = 0;
+
+          const fadeIn = setInterval(() => {
+            vol += 0.04;
+            if (vol >= 0.75) {
+              gong.volume = 0.75;
+              clearInterval(fadeIn);
+            } else {
+              gong.volume = vol;
+            }
+          }, 40);
+
+          setTimeout(() => {
+            let fadeVol = gong.volume;
+
+            const fadeOut = setInterval(() => {
+              fadeVol -= 0.02;
+              if (fadeVol <= 0) {
+                gong.volume = 0;
+                clearInterval(fadeOut);
+              } else {
+                gong.volume = fadeVol;
+              }
+            }, 60);
+          }, 3000);
+        })
+        .catch((error) => {
+          console.log("Gong Fehler:", error);
+        });
+    }
+  } catch (error) {
+    console.log("Gong konnte nicht abgespielt werden:", error);
+  }
 }
 
 async function requestNotificationPermission() {
-  if ("Notification" in window && Notification.permission === "default") {
-    try {
+  try {
+    if ("Notification" in window && Notification.permission === "default") {
       await Notification.requestPermission();
-    } catch (error) {}
+    }
+  } catch (error) {
+    console.log("Notification permission fehlgeschlagen:", error);
   }
 }
 
 function showNotification(title, body) {
-  if ("Notification" in window && Notification.permission === "granted") {
-    try {
+  try {
+    if ("Notification" in window && Notification.permission === "granted") {
       new Notification(title, { body });
-    } catch (error) {}
+    }
+  } catch (error) {
+    console.log("Notification konnte nicht angezeigt werden:", error);
   }
 }
 
 /* =========================
-   PREP ANIMATION
+   SCREEN HELPERS
 ========================= */
 
-function resetPrepVisuals() {
-  prepOverlay.style.display = "none";
-  prepOverlay.classList.remove("prep-overlay-persistent");
-  prepNoteSheet.classList.remove("is-placing");
+function showSetupScreen() {
+  document.body.classList.remove("waiting-active", "break-active");
 
-  gsap.set(prepNoteContent, { opacity: 0, y: 8 });
-  gsap.set(prepConfirmButton, { opacity: 0, y: 8, pointerEvents: "none" });
-  gsap.set(prepFlightShadow, { opacity: 0 });
+  if (setupScreen) setupScreen.style.display = "block";
+  if (waitingScreen) waitingScreen.style.display = "none";
+  if (breakScreen) breakScreen.style.display = "none";
 }
 
-function animatePrepStickyIn() {
-  appState = "prep";
-  prepOverlay.style.display = "flex";
+function showWaitingScreen() {
+  document.body.classList.add("waiting-active");
+  document.body.classList.remove("break-active");
 
-  prepNoteSheet.classList.remove("is-placing");
-  void prepNoteSheet.offsetWidth;
-  prepNoteSheet.classList.add("is-placing");
+  if (setupScreen) setupScreen.style.display = "none";
+  if (waitingScreen) waitingScreen.style.display = "block";
+  if (breakScreen) breakScreen.style.display = "none";
+}
 
-  const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+function showBreakScreen() {
+  document.body.classList.add("break-active");
+  document.body.classList.remove("waiting-active");
 
-  tl.set(prepFlightShadow, {
-    opacity: 0,
-    x: 685,
-    y: 56,
-    skewX: -8,
-    scaleX: 1.45,
-    scaleY: 0.96,
-    filter: "blur(20px)"
-  });
-
-  tl.to(prepFlightShadow, {
-    duration: 0.18,
-    opacity: 0.56
-  }, 0);
-
-  tl.to(prepFlightShadow, {
-    duration: 1.18,
-    x: 0,
-    y: 142,
-    skewX: -2,
-    scaleX: 1,
-    scaleY: 0.66,
-    opacity: 0,
-    filter: "blur(8px)"
-  }, 0);
-
-  tl.to(prepNoteContent, {
-    duration: 0.3,
-    opacity: 1,
-    y: 0
-  }, 0.95);
-
-  tl.to(prepConfirmButton, {
-    duration: 0.3,
-    opacity: 1,
-    y: 0,
-    pointerEvents: "auto"
-  }, 1.05);
-
-  tl.call(() => {
-    prepOverlay.classList.add("prep-overlay-persistent");
-  });
+  if (setupScreen) setupScreen.style.display = "none";
+  if (waitingScreen) waitingScreen.style.display = "none";
+  if (breakScreen) breakScreen.style.display = "block";
 }
 
 /* =========================
-   FLOW
+   NOTE CONTENT HELPERS
 ========================= */
 
-async function startWaitingPhase() {
-  appState = "waiting";
-  showOnlyScreen(transitionScreen);
+function resetTypingToken() {
+  typingToken += 1;
+}
 
+function wait(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function blurSetupScreenBeforePrep() {
+  if (!setupScreen) return;
+  setupScreen.classList.add("is-blurring");
+  await wait(420);
+}
+
+function showPrepNote() {
+  if (!prepOverlay || !prepNote) return;
+
+  appState = "prep";
+  prepOverlay.style.display = "flex";
+  prepOverlay.classList.remove("prep-overlay-persistent");
+
+  prepNote.classList.remove("is-taking-away");
+  prepNote.classList.remove("is-placing");
+
+  if (prepNoteContent) {
+    prepNoteContent.style.opacity = "0";
+    prepNoteContent.style.transform = "translateY(8px)";
+    prepNoteContent.style.transition = "none";
+  }
+
+  if (prepConfirmButton) {
+    prepConfirmButton.style.opacity = "0";
+    prepConfirmButton.style.transform = "translateY(8px)";
+    prepConfirmButton.style.pointerEvents = "none";
+  }
+
+  void prepNote.offsetWidth;
+  prepNote.classList.add("is-placing");
+
+  if (typeof gsap !== "undefined" && prepFlightShadow) {
+    gsap.killTweensOf(prepFlightShadow);
+    gsap.set(prepFlightShadow, {
+      opacity: 0,
+      x: 685,
+      y: 56,
+      skewX: -8,
+      scaleX: 1.45,
+      scaleY: 0.96,
+      filter: "blur(20px)"
+    });
+
+    gsap.to(prepFlightShadow, {
+      opacity: 0.58,
+      duration: 0.18,
+      ease: "power2.out"
+    });
+
+    gsap.to(prepFlightShadow, {
+      x: 0,
+      y: 140,
+      skewX: -2,
+      scaleX: 0.98,
+      scaleY: 0.66,
+      opacity: 0,
+      filter: "blur(8px)",
+      duration: 1.18,
+      ease: "power2.out"
+    });
+  }
+
+  if (typeof gsap !== "undefined") {
+    gsap.to(prepNoteContent, {
+      opacity: 1,
+      y: 0,
+      duration: 0.34,
+      ease: "power2.out",
+      delay: 1.0
+    });
+
+    gsap.to(prepConfirmButton, {
+      opacity: 1,
+      y: 0,
+      duration: 0.34,
+      ease: "power2.out",
+      delay: 1.1,
+      onStart: () => {
+        prepConfirmButton.style.pointerEvents = "auto";
+        prepConfirmButton.style.display = "inline-flex";
+      },
+      onComplete: () => {
+        if (prepOverlay) {
+          prepOverlay.classList.add("prep-overlay-persistent");
+        }
+      }
+    });
+  } else {
+    setTimeout(() => {
+      if (prepNoteContent) {
+        prepNoteContent.style.transition = "opacity 340ms ease, transform 340ms ease";
+        prepNoteContent.style.opacity = "1";
+        prepNoteContent.style.transform = "translateY(0)";
+      }
+    }, 1000);
+
+    setTimeout(() => {
+      if (prepConfirmButton) {
+        prepConfirmButton.style.transition = "opacity 340ms ease, transform 340ms ease";
+        prepConfirmButton.style.opacity = "1";
+        prepConfirmButton.style.transform = "translateY(0)";
+        prepConfirmButton.style.pointerEvents = "auto";
+        prepConfirmButton.style.display = "inline-flex";
+      }
+
+      if (prepOverlay) {
+        prepOverlay.classList.add("prep-overlay-persistent");
+      }
+    }, 1100);
+  }
+}
+
+function showConfirmButton() {
+  if (!prepConfirmButton) return;
+  prepConfirmButton.style.opacity = "1";
+  prepConfirmButton.style.pointerEvents = "auto";
+  prepConfirmButton.style.display = "inline-flex";
+}
+
+function hideConfirmButton() {
+  if (!prepConfirmButton) return;
+  prepConfirmButton.style.opacity = "0";
+  prepConfirmButton.style.pointerEvents = "none";
+}
+
+function resetPrepNoteVisualState() {
+  if (!prepOverlay || !prepNote) return;
+
+  prepOverlay.style.display = "none";
+  prepOverlay.classList.remove("prep-overlay-persistent");
+  prepNote.classList.remove("is-taking-away");
+  prepNote.classList.remove("is-placing");
+
+  if (prepFlightShadow) {
+    prepFlightShadow.style.opacity = "0";
+    prepFlightShadow.style.transform = "";
+    prepFlightShadow.style.filter = "";
+  }
+}
+
+function renderPrepIntroNote() {
+  if (!prepNoteContent) return;
+
+  prepNoteContent.innerHTML = `
+    <div class="note-copy note-copy-intro">
+      <div class="note-main-text">
+        Deine Pause ist<br>
+        eingeplant 🌿🍵
+      </div>
+
+      <div class="note-checklist">
+        <div class="note-check-item">✓ Erinnerung aktiv</div>
+        <div class="note-check-item">✓ Gong ist an</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderWaitingNote(startTime) {
+  if (transitionLine1 && transitionLine2) {
+    transitionLine1.textContent = "";
+    transitionLine2.textContent = "";
+    return typeTransitionText(startTime);
+  }
+
+  if (!prepNoteContent) return;
+
+  prepNoteContent.innerHTML = `
+    <div class="note-copy note-copy-waiting">
+      <div id="note-handwriting-line-1" class="note-handwriting-line"></div>
+    </div>
+  `;
+
+  const line1 = document.getElementById("note-handwriting-line-1");
+  return typeText(line1, `Deine nächste Pause ist um ${startTime}.`, 52);
+}
+
+function renderBreakNote() {
+  const breakLine1 = document.getElementById("breakLine1");
+  const breakLine2 = document.getElementById("breakLine2");
+
+  if (breakLine1) {
+    breakLine1.textContent = "Schöne Pause";
+  }
+
+  if (breakLine2) {
+    breakLine2.textContent = "";
+  }
+
+  if (breakLine1) {
+    return typeText(breakLine1, "Schöne Pause", 48);
+  }
+
+  if (!prepNoteContent) return;
+
+  prepNoteContent.innerHTML = `
+    <div class="note-copy note-copy-break">
+      <div id="note-handwriting-line-1" class="note-handwriting-line"></div>
+    </div>
+  `;
+
+  const line1 = document.getElementById("note-handwriting-line-1");
+  return typeText(line1, "Schöne Pause", 48);
+}
+
+async function appendBreakClosingNote() {
+  const breakLine2 = document.getElementById("breakLine2");
+  if (breakLine2) {
+    breakLine2.textContent = "";
+    await typeText(
+      breakLine2,
+      "Danke, dass du dir heute Zeit für dich genommen hast.",
+      38
+    );
+    return;
+  }
+
+  if (!prepNoteContent) return;
+
+  let wrap = prepNoteContent.querySelector(".note-copy-break");
+  if (!wrap) {
+    wrap = document.createElement("div");
+    wrap.className = "note-copy note-copy-break";
+    prepNoteContent.innerHTML = "";
+    prepNoteContent.appendChild(wrap);
+  }
+
+  let line2 = document.getElementById("note-handwriting-line-2");
+  if (!line2) {
+    line2 = document.createElement("div");
+    line2.id = "note-handwriting-line-2";
+    line2.className = "note-handwriting-line note-handwriting-line-secondary";
+    wrap.appendChild(line2);
+  }
+
+  await typeText(line2, "Danke, dass du dir heute Zeit für dich genommen hast.", 38);
+}
+
+async function fadeNoteContentOut(duration = 380) {
+  if (!prepNoteContent) return;
+
+  if (typeof gsap !== "undefined") {
+    await gsap.to(prepNoteContent, {
+      opacity: 0,
+      duration: duration / 1000,
+      ease: "power2.out"
+    });
+    return;
+  }
+
+  prepNoteContent.style.transition = `opacity ${duration}ms ease`;
+  prepNoteContent.style.opacity = "0";
+  await wait(duration);
+}
+
+async function swapNoteContent(renderFn) {
+  if (transitionLine1 || document.getElementById("breakLine1")) {
+    resetTypingToken();
+    const maybePromise = renderFn();
+    if (maybePromise instanceof Promise) {
+      await maybePromise;
+    }
+    return;
+  }
+
+  if (!prepNoteContent) return;
+
+  await fadeNoteContentOut(320);
   resetTypingToken();
+  prepNoteContent.innerHTML = "";
+  prepNoteContent.style.transition = "none";
+  prepNoteContent.style.opacity = "1";
+
+  const maybePromise = renderFn();
+  if (maybePromise instanceof Promise) {
+    await maybePromise;
+  }
+}
+
+async function typeTransitionText(startTime) {
+  if (!transitionLine1 || !transitionLine2) return;
   transitionLine1.textContent = "";
   transitionLine2.textContent = "";
 
-  await typeText(transitionLine1, "Deine Pause ist um", 46);
-  await typeText(transitionLine2, activeStartTime, 62);
+  await typeText(transitionLine1, "Deine Pause ist um", 52);
+  await typeText(transitionLine2, startTime, 62);
+}
 
-  const startDate = getTodayDateForTime(activeStartTime);
+/* =========================
+   TYPING EFFECT
+========================= */
+
+async function typeText(element, text, speed = 42) {
+  if (!element) return;
+
+  typingToken += 1;
+  const currentToken = typingToken;
+
+  element.textContent = "";
+  element.classList.add("note-writing-caret");
+
+  for (let i = 0; i < text.length; i++) {
+    if (currentToken !== typingToken) return;
+    element.textContent += text[i];
+    await wait(speed);
+  }
+
+  await wait(120);
+
+  if (currentToken === typingToken) {
+    element.classList.remove("note-writing-caret");
+  }
+}
+
+/* =========================
+   APP STATE / FLOW
+========================= */
+
+function resetApp() {
+  clearIntervals();
+  resetTypingToken();
+
+  appState = "idle";
+  prepConfirmed = false;
+  startGongPlayed = false;
+  endGongPlayed = false;
+  endingSequenceRunning = false;
+
+  activeStartTime = null;
+  activeEndTime = null;
+
+  showSetupScreen();
+
+  if (setupScreen) {
+    setupScreen.classList.remove("is-blurring");
+  }
+
+  startHour.value = "";
+  startMinute.value = "";
+  endHour.value = "";
+  endMinute.value = "";
+
+  if (timer) {
+    timer.textContent = "00:00";
+  }
+
+  updateFlipClock(0);
+  resetPrepNoteVisualState();
+
+  if (prepNoteContent) {
+    prepNoteContent.innerHTML = "";
+    prepNoteContent.style.opacity = "1";
+    prepNoteContent.style.transition = "none";
+    prepNoteContent.style.transform = "";
+  }
+
+  if (transitionLine1) transitionLine1.textContent = "";
+  if (transitionLine2) transitionLine2.textContent = "";
+
+  const breakLine1 = document.getElementById("breakLine1");
+  const breakLine2 = document.getElementById("breakLine2");
+  if (breakLine1) breakLine1.textContent = "Take a break";
+  if (breakLine2) breakLine2.textContent = "du machst das gut";
+
+  showConfirmButton();
+}
+
+async function confirmPrepNoteAndContinue() {
+  if (prepOverlay) {
+    prepOverlay.classList.add("prep-overlay-persistent");
+  }
+
+  if (typeof gsap !== "undefined") {
+    await gsap.to(prepConfirmButton, {
+      opacity: 0,
+      y: 6,
+      duration: 0.22,
+      ease: "power2.out",
+      onComplete: () => {
+        prepConfirmButton.style.pointerEvents = "none";
+      }
+    });
+
+    await gsap.to(prepNoteContent, {
+      opacity: 0,
+      y: -6,
+      duration: 0.24,
+      ease: "power2.out"
+    });
+  } else {
+    hideConfirmButton();
+    if (prepNoteContent) {
+      prepNoteContent.style.transition = "opacity 240ms ease, transform 240ms ease";
+      prepNoteContent.style.opacity = "0";
+      prepNoteContent.style.transform = "translateY(-6px)";
+      await wait(240);
+    }
+  }
+
+  if (activeStartTime && activeEndTime) {
+    const now = new Date();
+    const startDate = getTodayDateForTime(activeStartTime);
+    const endDate = getTodayDateForTime(activeEndTime);
+
+    if (now >= endDate) {
+      alert("Diese Zeitspanne ist heute schon vorbei 💛");
+      resetApp();
+      return;
+    }
+
+    if (prepOverlay) {
+      prepOverlay.style.display = "none";
+    }
+
+    if (now >= startDate && now < endDate) {
+      await startBreakPhase(false);
+      return;
+    }
+
+    await startWaitingPhase(activeStartTime, activeEndTime);
+  }
+}
+
+async function startWaitingPhase(startTime, endTime) {
+  clearIntervals();
+  resetTypingToken();
+
+  appState = "waiting";
+  activeStartTime = startTime;
+  activeEndTime = endTime;
+
+  showWaitingScreen();
+
+  if (waitingText) {
+    waitingText.textContent = `Deine nächste Pause ist um ${startTime}`;
+  }
+
+  await swapNoteContent(() => renderWaitingNote(startTime));
+
+  const startDate = getTodayDateForTime(startTime);
+  const endDate = getTodayDateForTime(endTime);
+  const now = new Date();
+
+  if (endDate <= startDate) {
+    alert("Die Endzeit muss nach der Startzeit liegen 💛");
+    resetApp();
+    return;
+  }
+
+  if (now >= endDate) {
+    resetApp();
+    return;
+  }
+
+  if (now >= startDate) {
+    await triggerBreakStart(true);
+    return;
+  }
 
   waitingInterval = setInterval(async () => {
     if (appState !== "waiting") return;
 
-    const now = new Date();
-    if (now >= startDate) {
+    const currentNow = new Date();
+
+    if (currentNow >= startDate) {
       clearIntervals();
-      playGong();
-      showNotification("Pause 💛", "Zeit für deine Pause 🌿");
-      await startBreakPhase();
+      await triggerBreakStart(true);
     }
   }, 500);
 }
 
-async function startBreakPhase() {
+async function triggerBreakStart(playCue = true) {
+  if (startGongPlayed === false && playCue) {
+    playGong();
+    showNotification("Pause 💛", "Zeit für deine Pause 🌿");
+    startGongPlayed = true;
+  }
+
+  await startBreakPhase(false);
+}
+
+async function startBreakPhase(playCue = false) {
+  clearIntervals();
+  resetTypingToken();
+
   appState = "break";
-  showOnlyScreen(breakScreen);
+  showBreakScreen();
+
+  if (playCue && startGongPlayed === false) {
+    playGong();
+    showNotification("Pause 💛", "Zeit für deine Pause 🌿");
+    startGongPlayed = true;
+  }
+
+  await swapNoteContent(() => renderBreakNote());
 
   const endDate = getTodayDateForTime(activeEndTime);
 
@@ -294,11 +771,14 @@ async function startBreakPhase() {
 
     updateFlipClock(remainingSeconds);
 
+    if (timer) {
+      const minutes = Math.floor(remainingSeconds / 60).toString().padStart(2, "0");
+      const seconds = (remainingSeconds % 60).toString().padStart(2, "0");
+      timer.textContent = `${minutes}:${seconds}`;
+    }
+
     if (remainingSeconds <= 0) {
-      clearIntervals();
-      playGong();
-      showNotification("Pause vorbei ✨", "Deine Pause ist jetzt vorbei.");
-      resetApp();
+      triggerBreakEnd();
     }
   }
 
@@ -306,25 +786,57 @@ async function startBreakPhase() {
   breakInterval = setInterval(renderRemainingTime, 250);
 }
 
-function resetApp() {
+async function triggerBreakEnd() {
+  if (endingSequenceRunning) return;
+  endingSequenceRunning = true;
+  appState = "ending";
+
   clearIntervals();
-  resetTypingToken();
-
-  appState = "idle";
-  activeStartTime = null;
-  activeEndTime = null;
-
-  startHour.value = "";
-  startMinute.value = "";
-  endHour.value = "";
-  endMinute.value = "";
-
   updateFlipClock(0);
-  transitionLine1.textContent = "";
-  transitionLine2.textContent = "";
 
-  showOnlyScreen(setupScreen);
-  resetPrepVisuals();
+  if (timer) {
+    timer.textContent = "00:00";
+  }
+
+  if (!endGongPlayed) {
+    playGong();
+    showNotification("Pause vorbei ✨", "Deine Pause ist jetzt vorbei.");
+    endGongPlayed = true;
+  }
+
+  await wait(2200);
+  await appendBreakClosingNote();
+  await wait(2200);
+
+  resetApp();
+}
+
+function syncAppState() {
+  if (!activeStartTime || !activeEndTime) return;
+  if (appState === "prep" || appState === "ending") return;
+
+  const now = new Date();
+  const startDate = getTodayDateForTime(activeStartTime);
+  const endDate = getTodayDateForTime(activeEndTime);
+
+  if (appState === "waiting") {
+    if (now >= endDate) {
+      resetApp();
+      return;
+    }
+
+    if (now >= startDate && now < endDate) {
+      startGongPlayed = true;
+      startBreakPhase(false);
+    }
+  }
+
+  if (appState === "break") {
+    if (now >= endDate) {
+      endGongPlayed = true;
+      resetApp();
+    }
+  }
 }
 
 /* =========================
@@ -332,8 +844,12 @@ function resetApp() {
 ========================= */
 
 startButton.addEventListener("click", async () => {
-  await unlockSound();
+  const unlocked = await unlockSound();
   await requestNotificationPermission();
+
+  if (!unlocked) {
+    console.log("Hinweis: Sound ist noch nicht freigeschaltet oder Datei fehlt.");
+  }
 
   if (!startHour.value || !startMinute.value || !endHour.value || !endMinute.value) {
     alert("Bitte beide Zeiten vollständig eingeben 🥺");
@@ -351,65 +867,50 @@ startButton.addEventListener("click", async () => {
   activeStartTime = startTime;
   activeEndTime = endTime;
 
-  resetPrepVisuals();
-  animatePrepStickyIn();
+  prepConfirmed = false;
+  startGongPlayed = false;
+  endGongPlayed = false;
+  endingSequenceRunning = false;
+  resetTypingToken();
+
+  renderPrepIntroNote();
+  showConfirmButton();
+
+  await blurSetupScreenBeforePrep();
+  showPrepNote();
 });
 
-prepConfirmButton.addEventListener("click", async () => {
-  await gsap.to(prepConfirmButton, {
-    opacity: 0,
-    y: 6,
-    duration: 0.22,
-    pointerEvents: "none"
+if (prepConfirmButton) {
+  prepConfirmButton.addEventListener("click", async () => {
+    prepConfirmed = true;
+    await confirmPrepNoteAndContinue();
   });
-
-  await gsap.to(prepNoteContent, {
-    opacity: 0,
-    y: -6,
-    duration: 0.24
-  });
-
-  prepOverlay.style.display = "none";
-
-  const now = new Date();
-  const startDate = getTodayDateForTime(activeStartTime);
-  const endDate = getTodayDateForTime(activeEndTime);
-
-  if (now >= endDate) {
-    alert("Diese Zeitspanne ist heute schon vorbei 💛");
-    resetApp();
-    return;
-  }
-
-  if (now >= startDate && now < endDate) {
-    playGong();
-    showNotification("Pause 💛", "Zeit für deine Pause 🌿");
-    await startBreakPhase();
-    return;
-  }
-
-  await startWaitingPhase();
-});
+}
 
 document.addEventListener("visibilitychange", () => {
-  if (!document.hidden && appState === "waiting") {
-    const startDate = getTodayDateForTime(activeStartTime);
-    if (new Date() >= startDate) {
-      clearIntervals();
-      startBreakPhase();
-    }
+  if (!document.hidden) {
+    syncAppState();
   }
 });
 
 window.addEventListener("focus", () => {
-  if (appState === "waiting") {
-    const startDate = getTodayDateForTime(activeStartTime);
-    if (new Date() >= startDate) {
-      clearIntervals();
-      startBreakPhase();
-    }
-  }
+  syncAppState();
 });
+
+gongSound.addEventListener("error", () => {
+  console.log("Fehler beim Laden von gong.mp3. Prüfe Dateiname und Speicherort.");
+});
+
+const hour = new Date().getHours();
+const body = document.body;
+
+if (hour >= 6 && hour < 11) {
+  body.classList.add("morning");
+} else if (hour >= 11 && hour < 18) {
+  body.classList.add("day");
+} else {
+  body.classList.add("night");
+}
 
 /* =========================
    INIT
@@ -417,5 +918,3 @@ window.addEventListener("focus", () => {
 
 fillTimeOptions();
 updateFlipClock(0);
-resetPrepVisuals();
-showOnlyScreen(setupScreen);
