@@ -852,13 +852,9 @@ transform-origin: top right;
 
 .prep-overlay.prep-overlay-persistent .prep-rest-shadow {
 opacity: 1;
-transform:
-translateX(42px)
-translateY(168px)
-skewX(-20deg)
-scaleX(1.00)
-scaleY(0.92);
 }
+
+
 
 /* =========================
 FLIGHT SHADOW
