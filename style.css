@@ -815,6 +815,42 @@ background-size:
 opacity: 0.92;
 }
 
+
+/* ruhender Außenschatten nur für das Sticky */
+.prep-note-sheet::after {
+content: "";
+position: absolute;
+pointer-events: none;
+z-index: -1;
+
+left: 6%;
+right: -18%;
+bottom: -34px;
+height: 34%;
+
+background:
+radial-gradient(
+ellipse at 38% 38%,
+rgba(0, 0, 0, 0.34) 0%,
+rgba(0, 0, 0, 0.22) 34%,
+rgba(0, 0, 0, 0.11) 62%,
+rgba(0, 0, 0, 0.00) 100%
+);
+
+opacity: 0.92;
+filter: blur(18px);
+
+transform:
+translateX(16px)
+skewX(-18deg)
+scaleX(1.08)
+scaleY(0.62)
+rotate(-1deg);
+
+transform-origin: bottom left;
+}
+
+
 /* =========================
 FLIGHT SHADOW
 ========================= */
