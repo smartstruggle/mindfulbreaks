@@ -729,109 +729,80 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
    STICKY SHEET (FINAL)
 ========================= */
 
+/* =========================
+STICKY SHEET (CLEAN BASE)
+========================= */
+
 .prep-note-sheet {
-  position: relative;
-  z-index: 2;
+position: relative;
+z-index: 2;
 
-  width: 352px;
-  min-height: 330px;
-  padding: 28px 24px 24px;
-  box-sizing: border-box;
+width: 352px;
+min-height: 330px;
+padding: 28px 24px 24px;
+box-sizing: border-box;
 
-  border-radius: 2px;
-  overflow: visible;
+border-radius: 2px;
+overflow: visible;
 
-  background:
-    radial-gradient(circle at 24% 18%, rgba(255,255,255,0.18) 0%, transparent 28%),
-    radial-gradient(circle at 78% 74%, rgba(255,255,255,0.07) 0%, transparent 24%),
-    linear-gradient(180deg, #f8e36d 0%, #f2d357 54%, #e2ba3b 100%);
+/* echtes Post-it Gelb + leichte Unebenheit */
+background:
+linear-gradient(
+180deg,
+#f9e46f 0%,
+#f4d95c 55%,
+#e7bf3c 100%
+);
 
-  border: 1px solid rgba(135, 101, 18, 0.24);
+border: 1px solid rgba(135, 101, 18, 0.22);
 
-  /* mehr "organische" Lage */
-  transform:
-    translateX(640px)
-    translateY(-34px)
-    rotate(-2.2deg)
-    skewX(-2deg)
-    scaleX(1.95)
-    scaleY(4.15);
+/* WICHTIG: KEIN innerer Schatten mehr */
+box-shadow: none;
 
-  transform-origin: top right;
+transform:
+translateX(640px)
+translateY(-34px)
+rotate(-2.2deg)
+skewX(-2deg)
+scaleX(1.95)
+scaleY(4.15);
 
-  will-change: transform, box-shadow, clip-path, opacity, filter;
+transform-origin: top right;
 
-  /* weniger Glow, mehr Gewicht */
-  box-shadow:
-    0 6px 12px rgba(72, 52, 10, 0.10),
-    0 18px 30px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255,255,255,0.30),
-    inset 0 -10px 18px rgba(156, 114, 20, 0.06);
-
-  /* unperfekte Papierform */
-  clip-path: polygon(
-    4% 2%,
-    96% 0%,
-    100% 97%,
-    8% 100%,
-    0% 10%
-  );
-
-  filter: saturate(1.02);
+will-change: transform, opacity;
 }
 
-/* Papier-Textur */
+/* =========================
+PAPER TEXTURE + KLEBEKANTE
+========================= */
 
 .prep-note-sheet::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 2px;
-  pointer-events: none;
+content: "";
+position: absolute;
+inset: 0;
+pointer-events: none;
 
-  opacity: 0.17;
+/* Papierstruktur + Klebekante */
+background:
+/* Klebekante oben */
+linear-gradient(
+to bottom,
+rgba(210, 160, 20, 0.65) 0px,
+rgba(210, 160, 20, 0.55) 10px,
+rgba(255,255,255,0.25) 10px,
+rgba(255,255,255,0.0) 18px
+),
 
-  background-image:
-    radial-gradient(rgba(118, 88, 20, 0.15) 0.55px, transparent 0.85px),
-    linear-gradient(180deg, rgba(255,255,255,0.05), rgba(0,0,0,0.015));
+/* ganz feine Papierstruktur */
+radial-gradient(rgba(120, 90, 20, 0.10) 0.4px, transparent 0.8px);
 
-  background-size: 6px 6px, 100% 100%;
-  mix-blend-mode: multiply;
+background-size:
+100% 100%,
+6px 6px;
+
+opacity: 0.6;
 }
 
-/* Schatten (wichtigster Teil!) */
-
-.prep-note-sheet::after {
-  content: "";
-  position: absolute;
-  pointer-events: none;
-
-  left: 2%;
-  right: -26%;
-  bottom: -22px;
-  height: 54%;
-
-  background:
-    radial-gradient(
-      ellipse at 26% 24%,
-      rgba(0,0,0,0.30) 0%,
-      rgba(0,0,0,0.20) 30%,
-      rgba(0,0,0,0.11) 58%,
-      rgba(0,0,0,0) 100%
-    );
-
-  opacity: 0.95;
-  filter: blur(11px);
-
-  transform:
-    translateX(18px)
-    skewX(-28deg)
-    scaleX(1.18)
-    scaleY(0.58)
-    rotate(1deg);
-
-  transform-origin: bottom left;
-}
 /* =========================
 FLIGHT SHADOW
 ========================= */
