@@ -818,39 +818,54 @@ z-index: 1;
 pointer-events: none;
 opacity: 0;
 
-width: 430px;
+width: 460px;
 height: 290px;
 
 background:
+/* Hauptmasse unten rechts */
 radial-gradient(
-ellipse at 46% 78%,
-rgba(0, 0, 0, 0.26) 0%,
-rgba(0, 0, 0, 0.16) 30%,
-rgba(0, 0, 0, 0.07) 56%,
+ellipse at 72% 82%,
+rgba(0, 0, 0, 0.34) 0%,
+rgba(0, 0, 0, 0.22) 24%,
+rgba(0, 0, 0, 0.11) 52%,
+rgba(0, 0, 0, 0.03) 74%,
 rgba(0, 0, 0, 0.00) 100%
 ),
+
+/* rechter Kanten-Schatten, der höher mitläuft */
 radial-gradient(
-ellipse at 78% 58%,
-rgba(0, 0, 0, 0.18) 0%,
-rgba(0, 0, 0, 0.10) 34%,
+ellipse at 84% 54%,
+rgba(0, 0, 0, 0.20) 0%,
+rgba(0, 0, 0, 0.11) 30%,
+rgba(0, 0, 0, 0.03) 62%,
 rgba(0, 0, 0, 0.00) 100%
 ),
-linear-gradient(
-180deg,
+
+/* weicher Raum-/Halo-Schatten darunter */
+radial-gradient(
+ellipse at 58% 76%,
 rgba(0, 0, 0, 0.10) 0%,
-rgba(0, 0, 0, 0.06) 28%,
-rgba(0, 0, 0, 0.02) 58%,
-rgba(0, 0, 0, 0.00) 100%
+rgba(0, 0, 0, 0.05) 42%,
+rgba(0, 0, 0, 0.00) 84%
+),
+
+/* ganz leichte diagonale Rückführung nach links oben */
+linear-gradient(
+135deg,
+rgba(0, 0, 0, 0.08) 0%,
+rgba(0, 0, 0, 0.04) 26%,
+rgba(0, 0, 0, 0.015) 48%,
+rgba(0, 0, 0, 0.00) 72%
 );
 
-filter: blur(18px);
+filter: blur(16px);
 
 transform:
-translateX(86px)
-translateY(116px)
+translateX(82px)
+translateY(122px)
 skewX(-10deg)
 rotate(1deg)
-scaleX(0.98)
+scaleX(1.02)
 scaleY(1);
 
 transform-origin: center center;
@@ -1228,13 +1243,14 @@ opacity: 1;
 .prep-overlay.prep-overlay-persistent .prep-rest-shadow {
 opacity: 1;
 transform:
-translateX(86px)
-translateY(116px)
+translateX(82px)
+translateY(122px)
 skewX(-10deg)
 rotate(1deg)
-scaleX(0.98)
+scaleX(1.02)
 scaleY(1);
 }
+
 
 
 
