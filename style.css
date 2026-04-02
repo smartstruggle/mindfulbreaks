@@ -818,59 +818,51 @@ z-index: 1;
 pointer-events: none;
 opacity: 0;
 
-width: 420px;
-height: 320px;
+width: 430px;
+height: 300px;
 
 background:
-/* Hauptschatten unten unter dem Sticky */
+/* 1) oberer, schmaler Ansatz nahe rechter Kante */
 radial-gradient(
-ellipse at 58% 82%,
-rgba(0, 0, 0, 0.30) 0%,
-rgba(0, 0, 0, 0.20) 24%,
-rgba(0, 0, 0, 0.10) 50%,
-rgba(0, 0, 0, 0.03) 72%,
-rgba(0, 0, 0, 0.00) 100%
-),
-
-/* rechter Schatten, aber oben deutlich schmaler */
-radial-gradient(
-ellipse at 78% 38%,
-rgba(0, 0, 0, 0.16) 0%,
-rgba(0, 0, 0, 0.08) 28%,
-rgba(0, 0, 0, 0.02) 52%,
-rgba(0, 0, 0, 0.00) 100%
-),
-
-/* weicher Unterbau direkt unter dem Sticky */
-radial-gradient(
-ellipse at 64% 93%,
+ellipse at 72% 28%,
 rgba(0, 0, 0, 0.10) 0%,
-rgba(0, 0, 0, 0.04) 40%,
-rgba(0, 0, 0, 0.00) 78%
+rgba(0, 0, 0, 0.05) 22%,
+rgba(0, 0, 0, 0.015) 44%,
+rgba(0, 0, 0, 0.00) 100%
+),
+
+/* 2) Hauptmasse unten – größter Abstand zur Fläche */
+radial-gradient(
+ellipse at 60% 88%,
+rgba(0, 0, 0, 0.34) 0%,
+rgba(0, 0, 0, 0.22) 24%,
+rgba(0, 0, 0, 0.11) 52%,
+rgba(0, 0, 0, 0.03) 74%,
+rgba(0, 0, 0, 0.00) 100%
+),
+
+/* 3) diagonaler Auslauf nach rechts unten */
+linear-gradient(
+155deg,
+rgba(0, 0, 0, 0.00) 0%,
+rgba(0, 0, 0, 0.02) 24%,
+rgba(0, 0, 0, 0.06) 52%,
+rgba(0, 0, 0, 0.10) 74%,
+rgba(0, 0, 0, 0.00) 100%
 );
 
-linear-gradient(
-225deg,
-rgba(0, 0, 0, 0.11) 0%,
-rgba(0, 0, 0, 0.06) 22%,
-rgba(0, 0, 0, 0.022) 48%,
-rgba(0, 0, 0, 0.00) 74%
-)
-
-       
 filter: blur(16px);
 
 transform:
-translateX(54px)
-translateY(188px)
-skewX(-7deg)
+translateX(56px)
+translateY(182px)
+skewX(-12deg)
 rotate(1deg)
 scaleX(1.00)
 scaleY(0.96);
 
 transform-origin: center center;
 }
-
 
 .prep-overlay:has(.prep-note-sheet.is-placing) .prep-rest-shadow {
 animation: restShadowFadeIn 1180ms cubic-bezier(0.18, 0.72, 0.2, 1) forwards;
@@ -1244,13 +1236,14 @@ opacity: 1;
 .prep-overlay.prep-overlay-persistent .prep-rest-shadow {
 opacity: 1;
 transform:
-translateX(54px)
-translateY(152px)
-skewX(-7deg)
+translateX(56px)
+translateY(182px)
+skewX(-12deg)
 rotate(1deg)
 scaleX(1.00)
 scaleY(0.96);
 }
+
 
 
 
