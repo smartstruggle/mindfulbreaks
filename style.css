@@ -818,14 +818,26 @@ z-index: 1;
 pointer-events: none;
 opacity: 0;
 
-width: 420px;
-height: 180px;
+width: 360px;
+height: 120px;
 
-background: rgba(255, 0, 0, 0.28);
+background:
+radial-gradient(
+ellipse at 50% 42%,
+rgba(0, 0, 0, 0.30) 0%,
+rgba(0, 0, 0, 0.18) 34%,
+rgba(0, 0, 0, 0.08) 62%,
+rgba(0, 0, 0, 0.00) 100%
+);
+
+filter: blur(16px);
 
 transform:
-translateX(10px)
-translateY(250px);
+translateX(64px)
+translateY(282px)
+rotate(2deg)
+scaleX(1.12)
+scaleY(0.78);
 
 transform-origin: center center;
 }
@@ -1202,9 +1214,13 @@ opacity: 1;
 .prep-overlay.prep-overlay-persistent .prep-rest-shadow {
 opacity: 1;
 transform:
-translateX(10px)
-translateY(250px);
-} 
+translateX(64px)
+translateY(282px)
+rotate(2deg)
+scaleX(1.12)
+scaleY(0.78);
+}
+
 
 .prep-overlay.prep-overlay-persistent .prep-flight-shadow {
   opacity: 0;
