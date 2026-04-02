@@ -1,9 +1,7 @@
 const startButton = document.getElementById("start-button");
 
 const setupScreen = document.getElementById("setup-screen");
-const waitingScreen =
-  document.getElementById("transition-screen") ||
-  document.getElementById("waiting-screen");
+const waitingScreen = document.getElementById("waiting-screen");
 const breakScreen = document.getElementById("break-screen");
 
 const startHour = document.getElementById("start-hour");
@@ -11,30 +9,12 @@ const startMinute = document.getElementById("start-minute");
 const endHour = document.getElementById("end-hour");
 const endMinute = document.getElementById("end-minute");
 
-const prepOverlay =
-  document.getElementById("prepOverlay") ||
-  document.getElementById("prep-overlay");
-
-const prepNote =
-  document.getElementById("prepNoteSheet") ||
-  document.getElementById("prep-note");
-
-const prepFlightShadow =
-  document.getElementById("prepFlightShadow") ||
-  document.querySelector(".prep-flight-shadow");
-
-const prepConfirmButton =
-  document.getElementById("prepConfirmButton") ||
-  document.getElementById("prep-confirm-button");
-
-const prepNoteContent =
-  document.getElementById("prepNoteContent") ||
-  document.getElementById("prep-note-content");
+const prepOverlay = document.getElementById("prep-overlay");
+const prepNote = document.getElementById("prep-note");
+const prepConfirmButton = document.getElementById("prep-confirm-button");
+const prepNoteContent = document.getElementById("prep-note-content");
 
 const waitingText = document.getElementById("waiting-text");
-const transitionLine1 = document.getElementById("transitionLine1");
-const transitionLine2 = document.getElementById("transitionLine2");
-
 const timer = document.getElementById("timer");
 
 const flipMinTens = document.getElementById("flip-min-tens");
@@ -230,27 +210,27 @@ function showNotification(title, body) {
 function showSetupScreen() {
   document.body.classList.remove("waiting-active", "break-active");
 
-  if (setupScreen) setupScreen.style.display = "block";
-  if (waitingScreen) waitingScreen.style.display = "none";
-  if (breakScreen) breakScreen.style.display = "none";
+  setupScreen.style.display = "block";
+  waitingScreen.style.display = "none";
+  breakScreen.style.display = "none";
 }
 
 function showWaitingScreen() {
   document.body.classList.add("waiting-active");
   document.body.classList.remove("break-active");
 
-  if (setupScreen) setupScreen.style.display = "none";
-  if (waitingScreen) waitingScreen.style.display = "block";
-  if (breakScreen) breakScreen.style.display = "none";
+  setupScreen.style.display = "none";
+  waitingScreen.style.display = "block";
+  breakScreen.style.display = "none";
 }
 
 function showBreakScreen() {
   document.body.classList.add("break-active");
   document.body.classList.remove("waiting-active");
 
-  if (setupScreen) setupScreen.style.display = "none";
-  if (waitingScreen) waitingScreen.style.display = "none";
-  if (breakScreen) breakScreen.style.display = "block";
+  setupScreen.style.display = "none";
+  waitingScreen.style.display = "none";
+  breakScreen.style.display = "block";
 }
 
 /* =========================
@@ -281,100 +261,8 @@ function showPrepNote() {
   prepNote.classList.remove("is-taking-away");
   prepNote.classList.remove("is-placing");
 
-  if (prepNoteContent) {
-    prepNoteContent.style.opacity = "0";
-    prepNoteContent.style.transform = "translateY(8px)";
-    prepNoteContent.style.transition = "none";
-  }
-
-  if (prepConfirmButton) {
-    prepConfirmButton.style.opacity = "0";
-    prepConfirmButton.style.transform = "translateY(8px)";
-    prepConfirmButton.style.pointerEvents = "none";
-  }
-
   void prepNote.offsetWidth;
   prepNote.classList.add("is-placing");
-
-  if (typeof gsap !== "undefined" && prepFlightShadow) {
-    gsap.killTweensOf(prepFlightShadow);
-    gsap.set(prepFlightShadow, {
-      opacity: 0,
-      x: 685,
-      y: 56,
-      skewX: -8,
-      scaleX: 1.45,
-      scaleY: 0.96,
-      filter: "blur(20px)"
-    });
-
-    gsap.to(prepFlightShadow, {
-      opacity: 0.58,
-      duration: 0.18,
-      ease: "power2.out"
-    });
-
-    gsap.to(prepFlightShadow, {
-      x: 0,
-      y: 140,
-      skewX: -2,
-      scaleX: 0.98,
-      scaleY: 0.66,
-      opacity: 0,
-      filter: "blur(8px)",
-      duration: 1.18,
-      ease: "power2.out"
-    });
-  }
-
-  if (typeof gsap !== "undefined") {
-    gsap.to(prepNoteContent, {
-      opacity: 1,
-      y: 0,
-      duration: 0.34,
-      ease: "power2.out",
-      delay: 1.0
-    });
-
-    gsap.to(prepConfirmButton, {
-      opacity: 1,
-      y: 0,
-      duration: 0.34,
-      ease: "power2.out",
-      delay: 1.1,
-      onStart: () => {
-        prepConfirmButton.style.pointerEvents = "auto";
-        prepConfirmButton.style.display = "inline-flex";
-      },
-      onComplete: () => {
-        if (prepOverlay) {
-          prepOverlay.classList.add("prep-overlay-persistent");
-        }
-      }
-    });
-  } else {
-    setTimeout(() => {
-      if (prepNoteContent) {
-        prepNoteContent.style.transition = "opacity 340ms ease, transform 340ms ease";
-        prepNoteContent.style.opacity = "1";
-        prepNoteContent.style.transform = "translateY(0)";
-      }
-    }, 1000);
-
-    setTimeout(() => {
-      if (prepConfirmButton) {
-        prepConfirmButton.style.transition = "opacity 340ms ease, transform 340ms ease";
-        prepConfirmButton.style.opacity = "1";
-        prepConfirmButton.style.transform = "translateY(0)";
-        prepConfirmButton.style.pointerEvents = "auto";
-        prepConfirmButton.style.display = "inline-flex";
-      }
-
-      if (prepOverlay) {
-        prepOverlay.classList.add("prep-overlay-persistent");
-      }
-    }, 1100);
-  }
 }
 
 function showConfirmButton() {
@@ -397,12 +285,6 @@ function resetPrepNoteVisualState() {
   prepOverlay.classList.remove("prep-overlay-persistent");
   prepNote.classList.remove("is-taking-away");
   prepNote.classList.remove("is-placing");
-
-  if (prepFlightShadow) {
-    prepFlightShadow.style.opacity = "0";
-    prepFlightShadow.style.transform = "";
-    prepFlightShadow.style.filter = "";
-  }
 }
 
 function renderPrepIntroNote() {
@@ -424,12 +306,6 @@ function renderPrepIntroNote() {
 }
 
 function renderWaitingNote(startTime) {
-  if (transitionLine1 && transitionLine2) {
-    transitionLine1.textContent = "";
-    transitionLine2.textContent = "";
-    return typeTransitionText(startTime);
-  }
-
   if (!prepNoteContent) return;
 
   prepNoteContent.innerHTML = `
@@ -443,21 +319,6 @@ function renderWaitingNote(startTime) {
 }
 
 function renderBreakNote() {
-  const breakLine1 = document.getElementById("breakLine1");
-  const breakLine2 = document.getElementById("breakLine2");
-
-  if (breakLine1) {
-    breakLine1.textContent = "Schöne Pause";
-  }
-
-  if (breakLine2) {
-    breakLine2.textContent = "";
-  }
-
-  if (breakLine1) {
-    return typeText(breakLine1, "Schöne Pause", 48);
-  }
-
   if (!prepNoteContent) return;
 
   prepNoteContent.innerHTML = `
@@ -471,17 +332,6 @@ function renderBreakNote() {
 }
 
 async function appendBreakClosingNote() {
-  const breakLine2 = document.getElementById("breakLine2");
-  if (breakLine2) {
-    breakLine2.textContent = "";
-    await typeText(
-      breakLine2,
-      "Danke, dass du dir heute Zeit für dich genommen hast.",
-      38
-    );
-    return;
-  }
-
   if (!prepNoteContent) return;
 
   let wrap = prepNoteContent.querySelector(".note-copy-break");
@@ -506,30 +356,12 @@ async function appendBreakClosingNote() {
 async function fadeNoteContentOut(duration = 380) {
   if (!prepNoteContent) return;
 
-  if (typeof gsap !== "undefined") {
-    await gsap.to(prepNoteContent, {
-      opacity: 0,
-      duration: duration / 1000,
-      ease: "power2.out"
-    });
-    return;
-  }
-
   prepNoteContent.style.transition = `opacity ${duration}ms ease`;
   prepNoteContent.style.opacity = "0";
   await wait(duration);
 }
 
 async function swapNoteContent(renderFn) {
-  if (transitionLine1 || document.getElementById("breakLine1")) {
-    resetTypingToken();
-    const maybePromise = renderFn();
-    if (maybePromise instanceof Promise) {
-      await maybePromise;
-    }
-    return;
-  }
-
   if (!prepNoteContent) return;
 
   await fadeNoteContentOut(320);
@@ -544,15 +376,6 @@ async function swapNoteContent(renderFn) {
   }
 }
 
-async function typeTransitionText(startTime) {
-  if (!transitionLine1 || !transitionLine2) return;
-  transitionLine1.textContent = "";
-  transitionLine2.textContent = "";
-
-  await typeText(transitionLine1, "Deine Pause ist um", 52);
-  await typeText(transitionLine2, startTime, 62);
-}
-
 /* =========================
    TYPING EFFECT
 ========================= */
@@ -564,18 +387,11 @@ async function typeText(element, text, speed = 42) {
   const currentToken = typingToken;
 
   element.textContent = "";
-  element.classList.add("note-writing-caret");
 
   for (let i = 0; i < text.length; i++) {
     if (currentToken !== typingToken) return;
     element.textContent += text[i];
     await wait(speed);
-  }
-
-  await wait(120);
-
-  if (currentToken === typingToken) {
-    element.classList.remove("note-writing-caret");
   }
 }
 
@@ -618,16 +434,7 @@ function resetApp() {
     prepNoteContent.innerHTML = "";
     prepNoteContent.style.opacity = "1";
     prepNoteContent.style.transition = "none";
-    prepNoteContent.style.transform = "";
   }
-
-  if (transitionLine1) transitionLine1.textContent = "";
-  if (transitionLine2) transitionLine2.textContent = "";
-
-  const breakLine1 = document.getElementById("breakLine1");
-  const breakLine2 = document.getElementById("breakLine2");
-  if (breakLine1) breakLine1.textContent = "Take a break";
-  if (breakLine2) breakLine2.textContent = "du machst das gut";
 
   showConfirmButton();
 }
@@ -637,32 +444,7 @@ async function confirmPrepNoteAndContinue() {
     prepOverlay.classList.add("prep-overlay-persistent");
   }
 
-  if (typeof gsap !== "undefined") {
-    await gsap.to(prepConfirmButton, {
-      opacity: 0,
-      y: 6,
-      duration: 0.22,
-      ease: "power2.out",
-      onComplete: () => {
-        prepConfirmButton.style.pointerEvents = "none";
-      }
-    });
-
-    await gsap.to(prepNoteContent, {
-      opacity: 0,
-      y: -6,
-      duration: 0.24,
-      ease: "power2.out"
-    });
-  } else {
-    hideConfirmButton();
-    if (prepNoteContent) {
-      prepNoteContent.style.transition = "opacity 240ms ease, transform 240ms ease";
-      prepNoteContent.style.opacity = "0";
-      prepNoteContent.style.transform = "translateY(-6px)";
-      await wait(240);
-    }
-  }
+  hideConfirmButton();
 
   if (activeStartTime && activeEndTime) {
     const now = new Date();
@@ -673,10 +455,6 @@ async function confirmPrepNoteAndContinue() {
       alert("Diese Zeitspanne ist heute schon vorbei 💛");
       resetApp();
       return;
-    }
-
-    if (prepOverlay) {
-      prepOverlay.style.display = "none";
     }
 
     if (now >= startDate && now < endDate) {
@@ -900,6 +678,7 @@ window.addEventListener("focus", () => {
 gongSound.addEventListener("error", () => {
   console.log("Fehler beim Laden von gong.mp3. Prüfe Dateiname und Speicherort.");
 });
+
 
 const hour = new Date().getHours();
 const body = document.body;
