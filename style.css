@@ -822,44 +822,44 @@ width: 430px;
 height: 300px;
 
 background:
-/* 1) oberer, schmaler Ansatz nahe rechter Kante */
+/* oben fast nichts */
 radial-gradient(
-ellipse at 72% 28%,
-rgba(0, 0, 0, 0.10) 0%,
-rgba(0, 0, 0, 0.05) 22%,
-rgba(0, 0, 0, 0.015) 44%,
+ellipse at 80% 18%,
+rgba(0, 0, 0, 0.06) 0%,
+rgba(0, 0, 0, 0.03) 18%,
+rgba(0, 0, 0, 0.008) 36%,
 rgba(0, 0, 0, 0.00) 100%
 ),
 
-/* 2) Hauptmasse unten – größter Abstand zur Fläche */
+/* unten rechts = Anchor Point */
 radial-gradient(
-ellipse at 60% 88%,
-rgba(0, 0, 0, 0.34) 0%,
-rgba(0, 0, 0, 0.22) 24%,
-rgba(0, 0, 0, 0.11) 52%,
-rgba(0, 0, 0, 0.03) 74%,
+ellipse at 68% 94%,
+rgba(0, 0, 0, 0.40) 0%,
+rgba(0, 0, 0, 0.26) 20%,
+rgba(0, 0, 0, 0.10) 44%,
+rgba(0, 0, 0, 0.02) 66%,
 rgba(0, 0, 0, 0.00) 100%
 ),
 
-/* 3) diagonaler Auslauf nach rechts unten */
+/* diagonaler Auslauf */
 linear-gradient(
 155deg,
 rgba(0, 0, 0, 0.00) 0%,
-rgba(0, 0, 0, 0.02) 24%,
-rgba(0, 0, 0, 0.06) 52%,
-rgba(0, 0, 0, 0.10) 74%,
+rgba(0, 0, 0, 0.015) 22%,
+rgba(0, 0, 0, 0.05) 50%,
+rgba(0, 0, 0, 0.10) 76%,
 rgba(0, 0, 0, 0.00) 100%
 );
 
 filter: blur(16px);
 
 transform:
-translateX(56px)
-translateY(182px)
-skewX(-12deg)
-rotate(1deg)
-scaleX(1.00)
-scaleY(0.96);
+translateX(72px)
+translateY(188px)
+skewX(-18deg)
+rotate(0.5deg)
+scaleX(1.08)
+scaleY(0.84);
 
 transform-origin: center center;
 }
@@ -1236,12 +1236,12 @@ opacity: 1;
 .prep-overlay.prep-overlay-persistent .prep-rest-shadow {
 opacity: 1;
 transform:
-translateX(56px)
-translateY(182px)
-skewX(-12deg)
-rotate(1deg)
-scaleX(1.00)
-scaleY(0.96);
+translateX(72px)
+translateY(188px)
+skewX(-18deg)
+rotate(0.5deg)
+scaleX(1.08)
+scaleY(0.84);
 }
 
 
