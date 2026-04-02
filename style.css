@@ -812,6 +812,23 @@ background-size:
 opacity: 0.92;
 }
 
+.prep-rest-shadow {
+position: absolute;
+z-index: 1;
+pointer-events: none;
+opacity: 0;
+
+width: 420px;
+height: 180px;
+
+background: rgba(255, 0, 0, 0.28);
+
+transform:
+translateX(10px)
+translateY(250px);
+
+transform-origin: center center;
+}
 
 /* =========================
 FLIGHT SHADOW
@@ -1162,6 +1179,14 @@ filter: blur(8px);
     scaleX(1)
     scaleY(1);
 }
+
+.prep-overlay.prep-overlay-persistent .prep-rest-shadow {
+opacity: 1;
+transform:
+translateX(10px)
+translateY(250px);
+}
+
 
 .prep-overlay.prep-overlay-persistent .prep-flight-shadow {
   opacity: 0;
