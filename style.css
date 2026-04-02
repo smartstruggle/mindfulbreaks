@@ -816,7 +816,7 @@ opacity: 0.92;
 position: absolute;
 z-index: 1;
 pointer-events: none;
-opacity: 0;
+opacity: 1;
 
 width: 420px;
 height: 180px;
@@ -829,6 +829,7 @@ translateY(250px);
 
 transform-origin: center center;
 }
+
 
 /* =========================
 FLIGHT SHADOW
@@ -1180,13 +1181,12 @@ filter: blur(8px);
     scaleY(1);
 }
 
-.prep-overlay.prep-overlay-persistent .prep-rest-shadow {
+/* .prep-overlay.prep-overlay-persistent .prep-rest-shadow {
 opacity: 1;
 transform:
 translateX(10px)
 translateY(250px);
-}
-
+} */
 
 .prep-overlay.prep-overlay-persistent .prep-flight-shadow {
   opacity: 0;
