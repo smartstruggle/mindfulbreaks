@@ -16,150 +16,101 @@
   <div id="setup-screen">
     <div class="screen-center setup-center">
       <div class="start-screen">
-        <div class="start-content">
-          <h1 class="title">Wann möchtest du heute Pause machen?</h1>
-          <p class="subtitle">Lege Start und Ende fest.</p>
+         <div class="start-content">
+        <h1 class="title">Wann möchtest du heute Pause machen?</h1>
+        <p class="subtitle">Lege Start und Ende fest.</p>
 
-          <div class="time-row">
-            <div class="time-group">
-              <label for="start-hour">Start</label>
-              <div class="time-inputs">
-                <select id="start-hour">
-                  <option value="">HH</option>
-                </select>
-                <span class="colon">:</span>
-                <select id="start-minute">
-                  <option value="">MM</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="time-group">
-              <label for="end-hour">Ende</label>
-              <div class="time-inputs">
-                <select id="end-hour">
-                  <option value="">HH</option>
-                </select>
-                <span class="colon">:</span>
-                <select id="end-minute">
-                  <option value="">MM</option>
-                </select>
-              </div>
+        <div class="time-row">
+          <div class="time-group">
+            <label for="start-hour">Start</label>
+            <div class="time-inputs">
+              <select id="start-hour">
+                <option value="">HH</option>
+              </select>
+              <span class="colon">:</span>
+              <select id="start-minute">
+                <option value="">MM</option>
+              </select>
             </div>
           </div>
 
-          <button id="start-button">Pause planen</button>
-
-          <p class="dedication">Für Joanna, Helen, Mirjam, Melanie &amp; Dilek</p>
+          <div class="time-group">
+            <label for="end-hour">Ende</label>
+            <div class="time-inputs">
+              <select id="end-hour">
+                <option value="">HH</option>
+              </select>
+              <span class="colon">:</span>
+              <select id="end-minute">
+                <option value="">MM</option>
+              </select>
+            </div>
+          </div>
         </div>
+
+        <button id="start-button">Pause planen</button>
+
+        <p class="dedication">Für Joanna, Helen, Mirjam, Melanie &amp; Dilek</p>
+           </div>
       </div>
     </div>
   </div>
 
-  <!-- PREP OVERLAY / STICKY WIRD REINGEKLEBT -->
-  <div id="prepOverlay" class="prep-overlay" style="display: none;">
+  <!-- EIN EINZIGES STICKY / BLEIBT DURCH ALLE PHASEN -->
+  <div id="prep-overlay" class="prep-overlay" style="display: none;">
     <div class="prep-backdrop"></div>
+    <div class="prep-flight-shadow"></div>
 
-    <div id="prepNoteSheet" class="prep-note-sheet">
+    <div id="prep-note" class="prep-note-sheet">
       <div class="prep-note-inner">
-        <div id="prepNoteContent" class="prep-note-content">
-          <div class="note-copy note-copy-intro" id="noteCopyIntro">
-            <div class="note-main-text">
-              Bevor’s losgeht,<br />
-              einmal kurz prüfen:
-            </div>
+        <div id="prep-note-content" class="prep-note-content"></div>
 
-            <div class="note-checklist">
-              <div class="note-check-item">✓ Sound ist an</div>
-              <div class="note-check-item">✓ Benachrichtigungen sind erlaubt</div>
-              <div class="note-check-item">✓ Dein Pausentab ist bereit</div>
-            </div>
-          </div>
-        </div>
-
-        <button id="prepConfirmButton" class="prep-confirm-button">
+        <button id="prep-confirm-button" class="prep-confirm-button">
           Ich bin bereit
         </button>
       </div>
     </div>
-
-    <div id="prepFlightShadow" class="prep-flight-shadow"></div>
   </div>
 
   <!-- TRANSITION SCREEN -->
-  <div id="transition-screen" style="display: none;">
+  <div id="waiting-screen" style="display: none;">
     <div class="screen-center">
-      <div class="transition-note-wrap">
-        <div class="prep-note-sheet note-static">
-          <div class="prep-note-inner">
-            <div class="prep-note-content note-visible">
-              <div class="note-copy note-copy-waiting">
-                <div id="transitionLine1" class="note-handwriting-line"></div>
-                <div id="transitionLine2" class="note-handwriting-line note-handwriting-line-secondary"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- optionaler fallback, falls dein altes CSS/JS irgendwo noch darauf schaut -->
-      <h2 id="waiting-text" style="display: none;">Deine nächste Pause ist um ...</h2>
+      <h2 id="waiting-text">Deine nächste Pause ist um ...</h2>
     </div>
   </div>
 
   <!-- BREAK SCREEN -->
   <div id="break-screen" style="display: none;">
     <div class="screen-center">
-      <div class="break-screen-layout">
-        <div class="break-note-wrap">
-          <div class="prep-note-sheet note-static">
-            <div class="prep-note-inner">
-              <div class="prep-note-content note-visible">
-                <div class="note-copy note-copy-break">
-                  <div id="breakLine1" class="note-handwriting-line">Take a break</div>
-                  <div id="breakLine2" class="note-handwriting-line note-handwriting-line-secondary">
-                    du machst das gut
-                  </div>
-                </div>
+      <div class="flip-clock-wrap">
+        <div class="flip-clock-panel">
+          <div class="flip-label" id="flip-label">Break ends in</div>
+
+          <div class="flip-display">
+            <div class="flip-group">
+              <div class="flip-card" id="flip-min-tens">0</div>
+              <div class="flip-card" id="flip-min-ones">0</div>
+            </div>
+
+            <div class="flip-middle-panel">
+              <div class="flip-separator">
+                <span></span>
+                <span></span>
               </div>
+            </div>
+
+            <div class="flip-group">
+              <div class="flip-card" id="flip-sec-tens">0</div>
+              <div class="flip-card" id="flip-sec-ones">0</div>
             </div>
           </div>
         </div>
-
-        <div class="flip-clock-wrap">
-          <div class="flip-clock-panel">
-            <div class="flip-label" id="flip-label">Break ends in</div>
-
-            <div class="flip-display">
-              <div class="flip-group">
-                <div class="flip-card" id="flip-min-tens">0</div>
-                <div class="flip-card" id="flip-min-ones">0</div>
-              </div>
-
-              <div class="flip-middle-panel">
-                <div class="flip-separator">
-                  <span></span>
-                  <span></span>
-                </div>
-              </div>
-
-              <div class="flip-group">
-                <div class="flip-card" id="flip-sec-tens">0</div>
-                <div class="flip-card" id="flip-sec-ones">0</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div id="timer" aria-hidden="true">00:00</div>
       </div>
+
+      <div id="timer" aria-hidden="true">00:00</div>
     </div>
   </div>
 
-  <!-- GSAP -->
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-
-  <!-- DEIN SCRIPT -->
   <script src="script.js"></script>
 </body>
 </html>
