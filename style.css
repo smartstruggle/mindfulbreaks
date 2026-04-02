@@ -822,7 +822,6 @@ width: 360px;
 height: 260px;
 
 background:
-/* SCHMALER START OBEN RECHTS -> NACH UNTEN RECHTS AUFGEHEND */
 linear-gradient(
 160deg,
 rgba(0, 0, 0, 0.00) 0%,
@@ -831,8 +830,6 @@ rgba(0, 0, 0, 0.05) 52%,
 rgba(0, 0, 0, 0.14) 72%,
 rgba(0, 0, 0, 0.24) 100%
 ),
-
-/* DUNKLER KERN UNTEN RECHTS */
 radial-gradient(
 ellipse at 78% 92%,
 rgba(0, 0, 0, 0.34) 0%,
@@ -853,9 +850,14 @@ scaleY(0.92);
 transform-origin: top right;
 }
 
-
-.prep-overlay:has(.prep-note-sheet.is-placing) .prep-rest-shadow {
-animation: restShadowFadeIn 1180ms cubic-bezier(0.18, 0.72, 0.2, 1) forwards;
+.prep-overlay.prep-overlay-persistent .prep-rest-shadow {
+opacity: 1;
+transform:
+translateX(42px)
+translateY(168px)
+skewX(-20deg)
+scaleX(1.00)
+scaleY(0.92);
 }
 
 /* =========================
