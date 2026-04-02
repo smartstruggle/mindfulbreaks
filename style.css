@@ -812,56 +812,43 @@ background-size:
 opacity: 0.92;
 }
 
-.prep-rest-shadow {
+..prep-rest-shadow {
 position: absolute;
 z-index: 1;
 pointer-events: none;
 opacity: 0;
 
-width: 430px;
-height: 300px;
+width: 420px;
+height: 260px;
 
 background:
-/* oben fast nichts */
-radial-gradient(
-ellipse at 80% 18%,
-rgba(0, 0, 0, 0.06) 0%,
-rgba(0, 0, 0, 0.03) 18%,
-rgba(0, 0, 0, 0.008) 36%,
-rgba(0, 0, 0, 0.00) 100%
-),
-
-/* unten rechts = Anchor Point */
-radial-gradient(
-ellipse at 68% 94%,
-rgba(0, 0, 0, 0.40) 0%,
-rgba(0, 0, 0, 0.26) 20%,
-rgba(0, 0, 0, 0.10) 44%,
-rgba(0, 0, 0, 0.02) 66%,
-rgba(0, 0, 0, 0.00) 100%
-),
-
-/* diagonaler Auslauf */
+/* 1. FORM (dein Dreieck / Keil!) */
 linear-gradient(
-155deg,
-rgba(0, 0, 0, 0.00) 0%,
-rgba(0, 0, 0, 0.015) 22%,
-rgba(0, 0, 0, 0.05) 50%,
-rgba(0, 0, 0, 0.10) 76%,
-rgba(0, 0, 0, 0.00) 100%
+135deg,
+rgba(0,0,0,0.0) 0%,
+rgba(0,0,0,0.0) 35%,
+rgba(0,0,0,0.08) 55%,
+rgba(0,0,0,0.18) 75%,
+rgba(0,0,0,0.28) 100%
+),
+
+/* 2. WEICHHEIT unten */
+radial-gradient(
+ellipse at 70% 90%,
+rgba(0,0,0,0.25) 0%,
+rgba(0,0,0,0.12) 40%,
+rgba(0,0,0,0.0) 80%
 );
 
-filter: blur(16px);
+filter: blur(12px);
 
 transform:
-translateX(72px)
-translateY(188px)
-skewX(-18deg)
-rotate(0.5deg)
-scaleX(1.08)
-scaleY(0.84);
+translateX(40px)
+translateY(175px)
+skewX(-8deg)
+scaleY(0.9);
 
-transform-origin: center center;
+transform-origin: center;
 }
 
 .prep-overlay:has(.prep-note-sheet.is-placing) .prep-rest-shadow {
