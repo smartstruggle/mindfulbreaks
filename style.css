@@ -726,7 +726,7 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
 }
 
 /* =========================
-   STICKY SHEET (REWORKED)
+   STICKY SHEET
 ========================= */
 
 .prep-note-sheet {
@@ -742,111 +742,95 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
   border-radius: 2px;
 
   background:
-    radial-gradient(circle at 20% 16%, rgba(255,255,255,0.20) 0%, rgba(255,255,255,0.08) 18%, transparent 34%),
-    radial-gradient(circle at 74% 70%, rgba(255,255,255,0.08) 0%, transparent 30%),
-    linear-gradient(180deg, #f8e56b 0%, #f3d54e 56%, #e4bb33 100%);
+    radial-gradient(circle at 20% 16%, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 18%, transparent 34%),
+    linear-gradient(180deg, #f8e56b 0%, #f3d54e 58%, #e4bb33 100%);
 
-  border: 1px solid rgba(126, 93, 16, 0.28);
+  border: 1px solid rgba(126, 93, 16, 0.22);
 
-  /* natürlicher, weniger technisch */
   transform:
     translateX(640px)
     translateY(-20px)
     rotate(-2.2deg)
-    skewX(-2deg)
-    skewY(0.4deg);
+    skewX(-1.8deg)
+    skewY(0.35deg);
 
   transform-origin: top right;
 
-  /* obere Kante bewusst leicht schräg / unperfekt */
+  /* obere Kante weniger waagerecht */
   clip-path: polygon(
-    4.8% 5.2%,
-    97.2% 1.1%,
-    99.1% 95.6%,
+    4.8% 5.8%,
+    97.4% 1.2%,
+    99.1% 95.8%,
     8.8% 98.9%,
-    1.3% 11.2%
+    1.2% 11.4%
   );
 
-  box-shadow:
-    0 2px 0 rgba(255,255,255,0.22) inset,
-    0 -10px 18px rgba(142, 103, 18, 0.06) inset,
-    0 8px 14px rgba(59, 42, 8, 0.10),
-    0 18px 28px rgba(0, 0, 0, 0.08);
+  /* KEIN innerer Schatten */
+  box-shadow: none;
 
-  filter: saturate(1.03);
-  will-change: transform, box-shadow, clip-path, opacity, filter;
+  filter: saturate(1.02);
+  will-change: transform, clip-path, opacity, filter;
 }
 
-/* feine Papiertextur */
+/* feine Papiertextur, aber kein Schatten */
 .prep-note-sheet::before {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
   border-radius: 2px;
-  opacity: 0.18;
+  opacity: 0.13;
 
   background-image:
-    radial-gradient(rgba(116, 84, 18, 0.13) 0.55px, transparent 0.9px),
-    linear-gradient(180deg, rgba(255,255,255,0.045), rgba(0,0,0,0.018));
+    radial-gradient(rgba(116, 84, 18, 0.10) 0.55px, transparent 0.9px);
 
-  background-size: 6px 6px, 100% 100%;
+  background-size: 6px 6px;
   mix-blend-mode: multiply;
 }
 
-/* KRASSER Schlagschatten nach rechts unten */
+/* NUR externer Schlagschatten hinten rechts unten */
 .prep-note-sheet::after {
   content: "";
   position: absolute;
   pointer-events: none;
   z-index: -1;
 
-  left: 10%;
-  top: 10%;
-  width: 125%;
+  left: 18%;
+  top: 14%;
+  width: 120%;
   height: 120%;
 
   background:
     linear-gradient(
       135deg,
       rgba(0,0,0,0.00) 0%,
-      rgba(0,0,0,0.00) 24%,
-      rgba(0,0,0,0.10) 38%,
-      rgba(0,0,0,0.22) 54%,
-      rgba(0,0,0,0.36) 72%,
-      rgba(0,0,0,0.52) 86%,
+      rgba(0,0,0,0.00) 28%,
+      rgba(0,0,0,0.14) 44%,
+      rgba(0,0,0,0.28) 60%,
+      rgba(0,0,0,0.46) 78%,
       rgba(0,0,0,0.00) 100%
     );
 
-  /* länglicher, gezeichneter Schattenkeil */
   clip-path: polygon(
-    16% 16%,
-    56% 12%,
+    18% 18%,
+    57% 13%,
     100% 58%,
-    94% 100%,
-    34% 100%,
-    7% 60%
+    93% 100%,
+    36% 100%,
+    8% 61%
   );
 
   transform:
-    translateX(110px)
-    translateY(82px)
-    rotate(2.4deg)
-    skewX(-22deg)
-    scaleX(1.18)
-    scaleY(0.98);
+    translateX(112px)
+    translateY(86px)
+    rotate(2deg)
+    skewX(-24deg)
+    scaleX(1.22)
+    scaleY(1.02);
 
   transform-origin: top left;
   opacity: 0.98;
-  filter: blur(14px);
-}
-
-/* =========================
-   OPTIONAL: EDGE DEPTH
-========================= */
-
-.prep-note-sheet .note-edge-shadow {
-  display: none;
+  filter: blur(13px);
 }
 
 /* =========================
@@ -899,7 +883,6 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
 .prep-note-sheet.is-placing + .prep-flight-shadow {
   animation: prepFlightShadowMove 1320ms cubic-bezier(0.22, 0.78, 0.22, 1) forwards;
 }
-
 
 /* =========================
    PREP NOTE CONTENT
