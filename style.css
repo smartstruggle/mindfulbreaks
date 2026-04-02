@@ -859,8 +859,8 @@ filter: blur(14px);
 clip-path: polygon(
 34% 0%,
 88% 0%,
-100% 100%,
-20% 100%
+112% 100%,
+32% 100%
 );
 
 transform:
