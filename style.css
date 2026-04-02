@@ -726,11 +726,7 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
 }
 
 /* =========================
-   STICKY SHEET (FINAL)
-========================= */
-
-/* =========================
-STICKY SHEET (CLEAN BASE)
+STICKY SHEET (PAPER FIRST)
 ========================= */
 
 .prep-note-sheet {
@@ -739,24 +735,23 @@ z-index: 2;
 
 width: 352px;
 min-height: 330px;
-padding: 28px 24px 24px;
+padding: 34px 24px 24px;
 box-sizing: border-box;
 
-border-radius: 2px;
+border-radius: 1px;
 overflow: visible;
 
-/* echtes Post-it Gelb + leichte Unebenheit */
+/* flaches Papier ohne inneren Schatten */
 background:
 linear-gradient(
 180deg,
-#f9e46f 0%,
-#f4d95c 55%,
-#e7bf3c 100%
+#f6e548 0%,
+#f2de2f 54%,
+#e6cb1e 100%
 );
 
-border: 1px solid rgba(135, 101, 18, 0.22);
+border: 1px solid rgba(126, 98, 18, 0.20);
 
-/* WICHTIG: KEIN innerer Schatten mehr */
 box-shadow: none;
 
 transform:
@@ -768,12 +763,11 @@ scaleX(1.95)
 scaleY(4.15);
 
 transform-origin: top right;
-
 will-change: transform, opacity;
 }
 
 /* =========================
-PAPER TEXTURE + KLEBEKANTE
+PAPER TEXTURE + WIDE ADHESIVE BAND
 ========================= */
 
 .prep-note-sheet::before {
@@ -782,25 +776,43 @@ position: absolute;
 inset: 0;
 pointer-events: none;
 
-/* Papierstruktur + Klebekante */
 background:
-/* Klebekante oben */
+/* breite Klebekante */
 linear-gradient(
 to bottom,
-rgba(210, 160, 20, 0.65) 0px,
-rgba(210, 160, 20, 0.55) 10px,
-rgba(255,255,255,0.25) 10px,
-rgba(255,255,255,0.0) 18px
+rgba(211, 134, 14, 0.78) 0px,
+rgba(205, 129, 10, 0.72) 18px,
+rgba(198, 121, 7, 0.58) 28px,
+rgba(255, 235, 170, 0.18) 28px,
+rgba(255, 255, 255, 0.00) 40px
 ),
 
-/* ganz feine Papierstruktur */
-radial-gradient(rgba(120, 90, 20, 0.10) 0.4px, transparent 0.8px);
+/* ganz leichte horizontale Papierunruhe */
+linear-gradient(
+180deg,
+rgba(255,255,255,0.04) 0%,
+rgba(255,255,255,0.015) 22%,
+rgba(0,0,0,0.018) 58%,
+rgba(255,255,255,0.02) 100%
+),
+
+/* feine Fasern / Papierkorn */
+radial-gradient(rgba(118, 88, 18, 0.11) 0.45px, transparent 0.95px),
+
+/* größere unregelmäßige Wolken für echte Blattstruktur */
+radial-gradient(circle at 18% 26%, rgba(255,255,255,0.08) 0%, transparent 16%),
+radial-gradient(circle at 72% 68%, rgba(120,90,20,0.05) 0%, transparent 18%),
+radial-gradient(circle at 48% 52%, rgba(255,255,255,0.05) 0%, transparent 22%);
 
 background-size:
 100% 100%,
-6px 6px;
+100% 100%,
+5px 5px,
+100% 100%,
+100% 100%,
+100% 100%;
 
-opacity: 0.6;
+opacity: 0.9;
 }
 
 /* =========================
