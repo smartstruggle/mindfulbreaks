@@ -861,66 +861,162 @@ display: none !important;
    FLIGHT SHADOW
 ========================= */
 
+/* =========================
+   STICKY NOTE SHEET
+========================= */
+
+.prep-note-sheet {
+  position: relative;
+  z-index: 2;
+  box-sizing: border-box;
+  overflow: visible;
+
+  width: 344px;
+  min-height: 320px;
+  padding: 28px 24px 24px;
+
+  border-radius: 2px;
+
+  background:
+    radial-gradient(circle at 18% 14%, rgba(255,255,255,0.24) 0%, rgba(255,255,255,0.10) 16%, transparent 34%),
+    radial-gradient(circle at 76% 72%, rgba(255,255,255,0.10) 0%, transparent 24%),
+    linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.00) 24%, rgba(0,0,0,0.02) 100%),
+    linear-gradient(180deg, #f6dc73 0%, #efcb51 54%, #deb438 100%);
+
+  border: 1px solid rgba(150, 108, 16, 0.18);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.24),
+    inset 0 -1px 0 rgba(126, 84, 8, 0.08);
+
+  transform:
+    translateX(640px)
+    translateY(-34px)
+    rotate(0.4deg)
+    skewX(-5deg)
+    scaleX(1.92)
+    scaleY(4.0);
+
+  clip-path: polygon(8% 0%, 100% 0%, 96% 100%, 0% 100%);
+  transform-origin: top left;
+  will-change: transform, clip-path, box-shadow, filter;
+}
+
+/* Papiertextur */
+.prep-note-sheet::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.34;
+  mix-blend-mode: multiply;
+
+  background-image:
+    radial-gradient(rgba(120, 86, 18, 0.14) 0.5px, transparent 0.9px),
+    radial-gradient(rgba(255,255,255,0.10) 0.4px, transparent 0.8px),
+    linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.02));
+  background-size:
+    7px 7px,
+    11px 11px,
+    100% 100%;
+  background-position:
+    0 0,
+    3px 4px,
+    0 0;
+  border-radius: inherit;
+}
+
+/* unterer plastischer Kontaktschatten */
+.prep-note-sheet::after {
+  content: "";
+  position: absolute;
+  left: 16px;
+  right: 8px;
+  bottom: -16px;
+  height: 26px;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(0,0,0,0.28) 0%,
+      rgba(0,0,0,0.18) 34%,
+      rgba(0,0,0,0.09) 58%,
+      rgba(0,0,0,0.00) 100%
+    );
+
+  filter: blur(10px);
+
+  transform:
+    translateX(8px)
+    translateY(0)
+    rotate(1.2deg)
+    scaleX(1.02)
+    scaleY(0.84);
+
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.prep-overlay.prep-overlay-persistent .prep-note-sheet::after,
+.break-note-wrap .prep-note-sheet::after {
+  opacity: 1;
+}
+
+/* =========================
+   FLIGHT SHADOW
+========================= */
+
 .prep-flight-shadow {
   position: absolute;
   z-index: 1;
   pointer-events: none;
   opacity: 0;
 
-  width: 350px;
-  height: 320px;
-  border-radius: 6px;
+  width: 400px;
+  height: 210px;
+  border-radius: 50%;
 
   background:
-    linear-gradient(
-      128deg,
-      rgba(0,0,0,0.00) 0%,
-      rgba(0,0,0,0.00) 30%,
-      rgba(0,0,0,0.12) 46%,
-      rgba(0,0,0,0.26) 68%,
-      rgba(0,0,0,0.42) 100%
+    radial-gradient(
+      ellipse at center,
+      rgba(0, 0, 0, 0.42) 0%,
+      rgba(0, 0, 0, 0.28) 24%,
+      rgba(0, 0, 0, 0.15) 48%,
+      rgba(0, 0, 0, 0.07) 70%,
+      rgba(0, 0, 0, 0.00) 100%
     );
 
-  clip-path: polygon(
-    12% 6%,
-    78% 0%,
-    100% 68%,
-    86% 100%,
-    28% 98%,
-    0% 34%
-  );
-
-  filter: blur(19px);
+  filter: blur(20px);
 
   transform:
-    translateX(690px)
-    translateY(30px)
-    rotate(1deg)
-    skewX(-18deg)
-    scaleX(1.5)
-    scaleY(1.15);
+    translateX(685px)
+    translateY(56px)
+    rotate(0deg)
+    skewX(-8deg)
+    scaleX(1.45)
+    scaleY(0.96);
 
   transform-origin: top left;
   will-change: transform, opacity, filter;
 }
 
-.prep-note-sheet.is-placing + .prep-flight-shadow {
-  animation: prepFlightShadowMove 1320ms cubic-bezier(0.22, 0.78, 0.22, 1) forwards;
-}
-
 /* =========================
-   PREP NOTE CONTENT
+   NOTE CONTENT
 ========================= */
 
 .prep-note-inner {
   position: relative;
   z-index: 2;
-  min-height: 252px;
+  min-height: 268px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  gap: 14px;
+  gap: 16px;
 }
 
 .prep-note-content {
@@ -930,12 +1026,13 @@ display: none !important;
   align-items: flex-start;
   justify-content: center;
   text-align: center;
-  opacity: 1;
+  opacity: 0;
+  transform: translateY(8px);
 }
 
 .note-copy {
   width: 100%;
-  color: rgba(46, 34, 16, 0.92);
+  color: rgba(46, 34, 16, 0.94);
   font-family: "Caveat", cursive;
 }
 
@@ -948,8 +1045,8 @@ display: none !important;
 }
 
 .note-main-text {
-  font-size: 25px;
-  line-height: 1.06;
+  font-size: 26px;
+  line-height: 1.05;
   text-align: center;
   letter-spacing: 0.1px;
 }
@@ -958,7 +1055,7 @@ display: none !important;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-top: 2px;
+  margin-top: 4px;
 }
 
 .note-check-item {
@@ -974,14 +1071,14 @@ display: none !important;
   align-items: center;
   justify-content: center;
   min-height: 100%;
-  padding-top: 14px;
+  padding-top: 16px;
 }
 
 .note-handwriting-line {
   font-family: "Caveat", cursive;
-  font-size: 30px;
+  font-size: 31px;
   line-height: 1.08;
-  color: rgba(46, 34, 16, 0.95);
+  color: rgba(46, 34, 16, 0.96);
   text-align: center;
   white-space: pre-wrap;
 }
@@ -990,6 +1087,19 @@ display: none !important;
   margin-top: 14px;
   font-size: 24px;
   line-height: 1.08;
+}
+
+.note-writing-caret::after {
+  content: "|";
+  display: inline-block;
+  margin-left: 2px;
+  opacity: 0.85;
+  animation: noteCaretBlink 0.9s steps(1) infinite;
+}
+
+@keyframes noteCaretBlink {
+  0%, 49% { opacity: 0.85; }
+  50%, 100% { opacity: 0; }
 }
 
 /* =========================
@@ -1015,30 +1125,23 @@ display: none !important;
     0 6px 14px rgba(0, 0, 0, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.10);
 
-  transition:
-    transform 0.16s ease,
-    opacity 0.28s ease;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+
+  transition: transform 0.16s ease;
 }
 
 .prep-confirm-button:hover {
   transform: translateY(-1px);
 }
 
-.prep-overlay.prep-overlay-persistent .prep-confirm-button {
-  opacity: 0;
-  pointer-events: none;
-}
-
 /* =========================
-   STICKY ANIMATION
+   STICKY PLACING
 ========================= */
 
 .prep-note-sheet.is-placing {
   animation: placeStickyTakeover 1180ms cubic-bezier(0.18, 0.72, 0.2, 1) forwards;
-}
-
-.prep-note-sheet.is-taking-away {
-  animation: none;
 }
 
 @keyframes placeStickyTakeover {
@@ -1046,105 +1149,200 @@ display: none !important;
     transform:
       translateX(640px)
       translateY(-34px)
-      rotate(0.3deg)
-      skewX(-4deg)
-      scaleX(1.95)
-      scaleY(4.15);
-    clip-path: polygon(8% 0%, 100% 0%, 96% 100%, 0% 100%);
-    box-shadow:
-      70px 24px 72px rgba(0, 0, 0, 0.20),
-      120px 38px 150px rgba(0, 0, 0, 0.10),
-      inset 0 1px 0 rgba(255,255,255,0.24);
-  }
-
-  14% {
-    transform:
-      translateX(585px)
-      translateY(-30px)
-      rotate(0.35deg)
+      rotate(0.4deg)
       skewX(-5deg)
       scaleX(1.92)
-      scaleY(3.55);
+      scaleY(4.0);
+    clip-path: polygon(8% 0%, 100% 0%, 96% 100%, 0% 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.22),
+      70px 26px 74px rgba(0, 0, 0, 0.18),
+      120px 38px 144px rgba(0, 0, 0, 0.08);
+  }
+
+  16% {
+    transform:
+      translateX(582px)
+      translateY(-28px)
+      rotate(0.45deg)
+      skewX(-7deg)
+      scaleX(1.88)
+      scaleY(3.4);
     clip-path: polygon(8% 0%, 100% 0%, 95% 100%, 0% 100%);
     box-shadow:
-      60px 22px 62px rgba(0, 0, 0, 0.19),
-      104px 34px 128px rgba(0, 0, 0, 0.095),
-      inset 0 1px 0 rgba(255,255,255,0.24);
+      inset 0 1px 0 rgba(255,255,255,0.22),
+      58px 23px 62px rgba(0, 0, 0, 0.17),
+      102px 34px 126px rgba(0, 0, 0, 0.075);
   }
 
-  30% {
+  34% {
     transform:
-      translateX(505px)
-      translateY(-18px)
-      rotate(0.6deg)
-      skewX(-9deg)
-      scaleX(1.84)
-      scaleY(2.45);
+      translateX(500px)
+      translateY(-16px)
+      rotate(0.7deg)
+      skewX(-11deg)
+      scaleX(1.8)
+      scaleY(2.35);
     clip-path: polygon(10% 0%, 100% 0%, 94% 100%, 0% 100%);
     box-shadow:
-      46px 18px 46px rgba(0, 0, 0, 0.17),
-      76px 26px 92px rgba(0, 0, 0, 0.085),
-      inset 0 1px 0 rgba(255,255,255,0.24);
+      inset 0 1px 0 rgba(255,255,255,0.22),
+      42px 18px 44px rgba(0, 0, 0, 0.15),
+      72px 26px 86px rgba(0, 0, 0, 0.07);
   }
 
-  48% {
-  transform:
-    translateX(380px)
-    translateY(4px)
-    rotate(0.8deg)
-    skewX(-18deg)
-    scaleX(1.58)
-    scaleY(1.42);
-  clip-path: polygon(18% 0%, 100% 0%, 89% 100%, 0% 100%);
-  box-shadow:
-    22px 12px 24px rgba(0, 0, 0, 0.13),
-    34px 16px 38px rgba(0, 0, 0, 0.065),
-    inset 0 1px 0 rgba(255,255,255,0.24);
-}
-
-  68% {
+  52% {
     transform:
-      translateX(178px)
-      translateY(18px)
-      rotate(-0.4deg)
-      skewX(-13deg)
-      scaleX(1.22)
-      scaleY(1.10);
-    clip-path: polygon(11% 0%, 100% 0%, 93% 100%, 0% 100%);
+      translateX(368px)
+      translateY(6px)
+      rotate(0.9deg)
+      skewX(-16deg)
+      scaleX(1.54)
+      scaleY(1.38);
+    clip-path: polygon(18% 0%, 100% 0%, 89% 100%, 0% 100%);
     box-shadow:
-      12px 9px 16px rgba(0, 0, 0, 0.12),
-      18px 12px 22px rgba(0, 0, 0, 0.06),
-      inset 0 1px 0 rgba(255,255,255,0.24);
+      inset 0 1px 0 rgba(255,255,255,0.22),
+      18px 11px 22px rgba(0, 0, 0, 0.12),
+      30px 15px 34px rgba(0, 0, 0, 0.055);
   }
 
- 86% {
-  transform:
-    translateX(22px)
-    translateY(74px)
-    rotate(-2.1deg)
-    skewX(-1.2deg)
-    scaleX(1.02)
-    scaleY(1.01);
-  clip-path: polygon(2% 0%, 100% 0%, 99% 100%, 0% 100%);
-  box-shadow:
-    3px 4px 7px rgba(0, 0, 0, 0.08),
-    5px 6px 10px rgba(0, 0, 0, 0.035),
-    inset 0 1px 0 rgba(255,255,255,0.24);
-}
-  
+  72% {
+    transform:
+      translateX(164px)
+      translateY(24px)
+      rotate(-0.3deg)
+      skewX(-10deg)
+      scaleX(1.18)
+      scaleY(1.08);
+    clip-path: polygon(10% 0%, 100% 0%, 93% 100%, 0% 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.22),
+      10px 8px 14px rgba(0, 0, 0, 0.10),
+      16px 11px 18px rgba(0, 0, 0, 0.045);
+  }
+
+  88% {
+    transform:
+      translateX(18px)
+      translateY(76px)
+      rotate(-2.2deg)
+      skewX(-1deg)
+      scaleX(1.01)
+      scaleY(1.01);
+    clip-path: polygon(2% 0%, 100% 0%, 99% 100%, 0% 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.22),
+      3px 4px 7px rgba(0, 0, 0, 0.08),
+      5px 7px 10px rgba(0, 0, 0, 0.03);
+  }
+
   100% {
     transform:
       translateX(0)
-      translateY(82px)
+      translateY(84px)
       rotate(-3deg)
       skewX(0deg)
       scaleX(1)
       scaleY(1);
     clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
     box-shadow:
-      1px 2px 4px rgba(0, 0, 0, 0.07),
-      2px 4px 7px rgba(0, 0, 0, 0.03),
-      inset 0 1px 0 rgba(255,255,255,0.24);
+      inset 0 1px 0 rgba(255,255,255,0.22),
+      1px 2px 4px rgba(0, 0, 0, 0.06),
+      2px 4px 8px rgba(0, 0, 0, 0.026);
+  }
+}
+
+/* =========================
+   TRANSITION / BREAK NOTE POSITIONING
+========================= */
+
+.transition-note-wrap,
+.break-note-wrap {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.break-note-wrap {
+  margin-top: 0;
+}
+
+.break-note-wrap .prep-note-sheet {
+  transform:
+    translateX(0)
+    translateY(0)
+    rotate(-2.2deg)
+    skewX(0deg)
+    scaleX(1)
+    scaleY(1);
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+/* WICHTIG: mehr Abstand zur Flipclock */
+.break-screen-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 54px;
+}
+
+.break-screen-layout .flip-clock-wrap {
+  margin-top: 8px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 768px) {
+  .prep-note-sheet {
+    width: 304px;
+    min-height: 286px;
+    padding: 24px 18px 20px;
+
+    transform:
+      translateX(405px)
+      translateY(-18px)
+      rotate(0.4deg)
+      skewX(-5deg)
+      scaleX(1.74)
+      scaleY(3.5);
+  }
+
+  .prep-note-inner {
+    min-height: 238px;
+  }
+
+  .note-main-text {
+    font-size: 23px;
+  }
+
+  .note-check-item {
+    font-size: 17px;
+  }
+
+  .note-handwriting-line {
+    font-size: 27px;
+  }
+
+  .note-handwriting-line-secondary {
+    font-size: 22px;
+  }
+
+  .prep-flight-shadow {
+    width: 310px;
+    height: 160px;
+    transform:
+      translateX(360px)
+      translateY(34px)
+      rotate(0deg)
+      skewX(-8deg)
+      scaleX(1.24)
+      scaleY(0.90);
+    filter: blur(16px);
+  }
+
+  .break-screen-layout {
+    gap: 38px;
   }
 }
 
