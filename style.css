@@ -729,19 +729,22 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
 STICKY SHEET (PAPER FIRST)
 ========================= */
 
+/* =========================
+STICKY SHEET (PAPER FIRST - TUNED)
+========================= */
+
 .prep-note-sheet {
 position: relative;
 z-index: 2;
 
-width: 352px;
-min-height: 330px;
-padding: 34px 24px 24px;
+width: 387px;
+min-height: 363px;
+padding: 46px 26px 24px;
 box-sizing: border-box;
 
 border-radius: 1px;
 overflow: visible;
 
-/* flaches Papier ohne inneren Schatten */
 background:
 linear-gradient(
 180deg,
@@ -751,14 +754,13 @@ linear-gradient(
 );
 
 border: 1px solid rgba(126, 98, 18, 0.20);
-
 box-shadow: none;
 
 transform:
 translateX(640px)
 translateY(-34px)
-rotate(-2.2deg)
-skewX(-2deg)
+rotate(2.4deg)
+skewX(-1deg)
 scaleX(1.95)
 scaleY(4.15);
 
@@ -767,7 +769,7 @@ will-change: transform, opacity;
 }
 
 /* =========================
-PAPER TEXTURE + WIDE ADHESIVE BAND
+PAPER TEXTURE + EXTRA WIDE ADHESIVE BAND
 ========================= */
 
 .prep-note-sheet::before {
@@ -777,17 +779,17 @@ inset: 0;
 pointer-events: none;
 
 background:
-/* breite Klebekante */
+/* deutlich breitere Klebekante */
 linear-gradient(
 to bottom,
-rgba(211, 134, 14, 0.78) 0px,
-rgba(205, 129, 10, 0.72) 18px,
-rgba(198, 121, 7, 0.58) 28px,
-rgba(255, 235, 170, 0.18) 28px,
-rgba(255, 255, 255, 0.00) 40px
+rgba(214, 137, 14, 0.82) 0px,
+rgba(208, 131, 10, 0.78) 22px,
+rgba(201, 124, 7, 0.64) 38px,
+rgba(190, 116, 5, 0.42) 52px,
+rgba(255, 236, 170, 0.18) 52px,
+rgba(255, 255, 255, 0.00) 68px
 ),
 
-/* ganz leichte horizontale Papierunruhe */
 linear-gradient(
 180deg,
 rgba(255,255,255,0.04) 0%,
@@ -796,10 +798,8 @@ rgba(0,0,0,0.018) 58%,
 rgba(255,255,255,0.02) 100%
 ),
 
-/* feine Fasern / Papierkorn */
 radial-gradient(rgba(118, 88, 18, 0.11) 0.45px, transparent 0.95px),
 
-/* größere unregelmäßige Wolken für echte Blattstruktur */
 radial-gradient(circle at 18% 26%, rgba(255,255,255,0.08) 0%, transparent 16%),
 radial-gradient(circle at 72% 68%, rgba(120,90,20,0.05) 0%, transparent 18%),
 radial-gradient(circle at 48% 52%, rgba(255,255,255,0.05) 0%, transparent 22%);
@@ -812,7 +812,7 @@ background-size:
 100% 100%,
 100% 100%;
 
-opacity: 0.9;
+opacity: 0.92;
 }
 
 /* =========================
