@@ -1,7 +1,7 @@
 const startButton = document.getElementById("start-button");
 
 const setupScreen = document.getElementById("setup-screen");
-const waitingScreen = document.getElementById("waiting-screen");
+const transitionScreen = document.getElementById("transition-screen");
 const breakScreen = document.getElementById("break-screen");
 
 const startHour = document.getElementById("start-hour");
@@ -9,12 +9,15 @@ const startMinute = document.getElementById("start-minute");
 const endHour = document.getElementById("end-hour");
 const endMinute = document.getElementById("end-minute");
 
-const prepOverlay = document.getElementById("prep-overlay");
-const prepNote = document.getElementById("prep-note");
-const prepConfirmButton = document.getElementById("prep-confirm-button");
-const prepNoteContent = document.getElementById("prep-note-content");
+const prepOverlay = document.getElementById("prepOverlay");
+const prepNoteSheet = document.getElementById("prepNoteSheet");
+const prepFlightShadow = document.getElementById("prepFlightShadow");
+const prepNoteContent = document.getElementById("prepNoteContent");
+const prepConfirmButton = document.getElementById("prepConfirmButton");
 
-const waitingText = document.getElementById("waiting-text");
+const transitionLine1 = document.getElementById("transitionLine1");
+const transitionLine2 = document.getElementById("transitionLine2");
+
 const timer = document.getElementById("timer");
 
 const flipMinTens = document.getElementById("flip-min-tens");
@@ -27,14 +30,12 @@ gongSound.preload = "auto";
 
 let waitingInterval = null;
 let breakInterval = null;
-let reminderTimeout = null;
 
 let activeStartTime = null;
 let activeEndTime = null;
 
 let soundUnlocked = false;
 let appState = "idle"; // idle | prep | waiting | break | ending
-let prepConfirmed = false;
 let startGongPlayed = false;
 let endGongPlayed = false;
 let endingSequenceRunning = false;
@@ -82,11 +83,14 @@ function clearIntervals() {
     clearInterval(breakInterval);
     breakInterval = null;
   }
+}
 
-  if (reminderTimeout) {
-    clearTimeout(reminderTimeout);
-    reminderTimeout = null;
-  }
+function wait(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function resetTypingToken() {
+  typingToken += 1;
 }
 
 function getTodayDateForTime(timeString) {
@@ -105,6 +109,14 @@ function validateTimes(startTime, endTime) {
   const startDate = getTodayDateForTime(startTime);
   const endDate = getTodayDateForTime(endTime);
   return endDate > startDate;
+}
+
+function formatSelectedStartTime() {
+  return `${startHour.value}:${startMinute.value}`;
+}
+
+function formatSelectedEndTime() {
+  return `${endHour.value}:${endMinute.value}`;
 }
 
 /* =========================
@@ -207,42 +219,86 @@ function showNotification(title, body) {
    SCREEN HELPERS
 ========================= */
 
-function showSetupScreen() {
+function showOnlyScreen(screenToShow) {
+  setupScreen.style.display = "none";
+  transitionScreen.style.display = "none";
+  breakScreen.style.display = "none";
+
   document.body.classList.remove("waiting-active", "break-active");
 
-  setupScreen.style.display = "block";
-  waitingScreen.style.display = "none";
-  breakScreen.style.display = "none";
+  if (screenToShow === setupScreen) {
+    setupScreen.style.display = "block";
+  }
+
+  if (screenToShow === transitionScreen) {
+    transitionScreen.style.display = "block";
+    document.body.classList.add("waiting-active");
+  }
+
+  if (screenToShow === breakScreen) {
+    breakScreen.style.display = "block";
+    document.body.classList.add("break-active");
+  }
 }
 
-function showWaitingScreen() {
-  document.body.classList.add("waiting-active");
-  document.body.classList.remove("break-active");
+function showSetupScreen() {
+  showOnlyScreen(setupScreen);
+}
 
-  setupScreen.style.display = "none";
-  waitingScreen.style.display = "block";
-  breakScreen.style.display = "none";
+function showTransitionScreen() {
+  showOnlyScreen(transitionScreen);
 }
 
 function showBreakScreen() {
-  document.body.classList.add("break-active");
-  document.body.classList.remove("waiting-active");
-
-  setupScreen.style.display = "none";
-  waitingScreen.style.display = "none";
-  breakScreen.style.display = "block";
+  showOnlyScreen(breakScreen);
 }
 
 /* =========================
-   NOTE CONTENT HELPERS
+   PREP OVERLAY HELPERS
 ========================= */
 
-function resetTypingToken() {
-  typingToken += 1;
+function setPrepIntroContent() {
+  if (!prepNoteContent) return;
+
+  prepNoteContent.innerHTML = `
+    <div class="note-copy note-copy-intro" id="noteCopyIntro">
+      <div class="note-main-text">
+        Bevor’s losgeht,<br>
+        einmal kurz prüfen:
+      </div>
+
+      <div class="note-checklist">
+        <div class="note-check-item">✓ Sound ist an</div>
+        <div class="note-check-item">✓ Benachrichtigungen sind erlaubt</div>
+        <div class="note-check-item">✓ Dein Pausentab ist bereit</div>
+      </div>
+    </div>
+  `;
 }
 
-function wait(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+function resetPrepOverlayVisuals() {
+  if (!prepOverlay || !prepNoteSheet || !prepFlightShadow || !prepNoteContent || !prepConfirmButton) {
+    return;
+  }
+
+  prepOverlay.style.display = "none";
+  prepOverlay.classList.remove("prep-overlay-persistent");
+  prepNoteSheet.classList.remove("is-placing");
+
+  gsap.set(prepFlightShadow, {
+    clearProps: "all"
+  });
+
+  gsap.set(prepNoteContent, {
+    opacity: 0,
+    y: 8
+  });
+
+  gsap.set(prepConfirmButton, {
+    opacity: 0,
+    y: 8,
+    pointerEvents: "none"
+  });
 }
 
 async function blurSetupScreenBeforePrep() {
@@ -251,129 +307,103 @@ async function blurSetupScreenBeforePrep() {
   await wait(420);
 }
 
-function showPrepNote() {
-  if (!prepOverlay || !prepNote) return;
+function animatePrepStickyIn() {
+  if (!prepOverlay || !prepNoteSheet || !prepFlightShadow || !prepNoteContent || !prepConfirmButton) {
+    return;
+  }
 
   appState = "prep";
   prepOverlay.style.display = "flex";
   prepOverlay.classList.remove("prep-overlay-persistent");
 
-  prepNote.classList.remove("is-taking-away");
-  prepNote.classList.remove("is-placing");
+  prepNoteSheet.classList.remove("is-placing");
+  void prepNoteSheet.offsetWidth;
+  prepNoteSheet.classList.add("is-placing");
 
-  void prepNote.offsetWidth;
-  prepNote.classList.add("is-placing");
+  const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+
+  tl.set(prepFlightShadow, {
+    opacity: 0,
+    x: 685,
+    y: 56,
+    skewX: -8,
+    scaleX: 1.45,
+    scaleY: 0.96,
+    filter: "blur(20px)"
+  });
+
+  tl.to(
+    prepFlightShadow,
+    {
+      duration: 0.16,
+      opacity: 0.58
+    },
+    0
+  );
+
+  tl.to(
+    prepFlightShadow,
+    {
+      duration: 1.18,
+      x: 0,
+      y: 140,
+      skewX: -2,
+      scaleX: 0.98,
+      scaleY: 0.66,
+      opacity: 0,
+      filter: "blur(8px)",
+      ease: "power2.out"
+    },
+    0
+  );
+
+  tl.to(
+    prepNoteContent,
+    {
+      duration: 0.34,
+      opacity: 1,
+      y: 0
+    },
+    1.00
+  );
+
+  tl.to(
+    prepConfirmButton,
+    {
+      duration: 0.34,
+      opacity: 1,
+      y: 0,
+      pointerEvents: "auto"
+    },
+    1.08
+  );
+
+  tl.call(() => {
+    prepOverlay.classList.add("prep-overlay-persistent");
+  });
 }
 
-function showConfirmButton() {
-  if (!prepConfirmButton) return;
-  prepConfirmButton.style.opacity = "1";
-  prepConfirmButton.style.pointerEvents = "auto";
-  prepConfirmButton.style.display = "inline-flex";
-}
+async function fadeOutPrepContentAndButton() {
+  const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
 
-function hideConfirmButton() {
-  if (!prepConfirmButton) return;
-  prepConfirmButton.style.opacity = "0";
-  prepConfirmButton.style.pointerEvents = "none";
-}
+  tl.to(prepConfirmButton, {
+    duration: 0.22,
+    opacity: 0,
+    y: 6,
+    pointerEvents: "none"
+  });
 
-function resetPrepNoteVisualState() {
-  if (!prepOverlay || !prepNote) return;
+  tl.to(
+    prepNoteContent,
+    {
+      duration: 0.24,
+      opacity: 0,
+      y: -6
+    },
+    0.02
+  );
 
-  prepOverlay.style.display = "none";
-  prepOverlay.classList.remove("prep-overlay-persistent");
-  prepNote.classList.remove("is-taking-away");
-  prepNote.classList.remove("is-placing");
-}
-
-function renderPrepIntroNote() {
-  if (!prepNoteContent) return;
-
-  prepNoteContent.innerHTML = `
-    <div class="note-copy note-copy-intro">
-      <div class="note-main-text">
-        Deine Pause ist<br>
-        eingeplant 🌿🍵
-      </div>
-
-      <div class="note-checklist">
-        <div class="note-check-item">✓ Erinnerung aktiv</div>
-        <div class="note-check-item">✓ Gong ist an</div>
-      </div>
-    </div>
-  `;
-}
-
-function renderWaitingNote(startTime) {
-  if (!prepNoteContent) return;
-
-  prepNoteContent.innerHTML = `
-    <div class="note-copy note-copy-waiting">
-      <div id="note-handwriting-line-1" class="note-handwriting-line"></div>
-    </div>
-  `;
-
-  const line1 = document.getElementById("note-handwriting-line-1");
-  return typeText(line1, `Deine nächste Pause ist um ${startTime}.`, 52);
-}
-
-function renderBreakNote() {
-  if (!prepNoteContent) return;
-
-  prepNoteContent.innerHTML = `
-    <div class="note-copy note-copy-break">
-      <div id="note-handwriting-line-1" class="note-handwriting-line"></div>
-    </div>
-  `;
-
-  const line1 = document.getElementById("note-handwriting-line-1");
-  return typeText(line1, "Schöne Pause", 48);
-}
-
-async function appendBreakClosingNote() {
-  if (!prepNoteContent) return;
-
-  let wrap = prepNoteContent.querySelector(".note-copy-break");
-  if (!wrap) {
-    wrap = document.createElement("div");
-    wrap.className = "note-copy note-copy-break";
-    prepNoteContent.innerHTML = "";
-    prepNoteContent.appendChild(wrap);
-  }
-
-  let line2 = document.getElementById("note-handwriting-line-2");
-  if (!line2) {
-    line2 = document.createElement("div");
-    line2.id = "note-handwriting-line-2";
-    line2.className = "note-handwriting-line note-handwriting-line-secondary";
-    wrap.appendChild(line2);
-  }
-
-  await typeText(line2, "Danke, dass du dir heute Zeit für dich genommen hast.", 38);
-}
-
-async function fadeNoteContentOut(duration = 380) {
-  if (!prepNoteContent) return;
-
-  prepNoteContent.style.transition = `opacity ${duration}ms ease`;
-  prepNoteContent.style.opacity = "0";
-  await wait(duration);
-}
-
-async function swapNoteContent(renderFn) {
-  if (!prepNoteContent) return;
-
-  await fadeNoteContentOut(320);
-  resetTypingToken();
-  prepNoteContent.innerHTML = "";
-  prepNoteContent.style.transition = "none";
-  prepNoteContent.style.opacity = "1";
-
-  const maybePromise = renderFn();
-  if (maybePromise instanceof Promise) {
-    await maybePromise;
-  }
+  return tl;
 }
 
 /* =========================
@@ -387,16 +417,37 @@ async function typeText(element, text, speed = 42) {
   const currentToken = typingToken;
 
   element.textContent = "";
+  element.classList.add("note-writing-caret");
 
   for (let i = 0; i < text.length; i++) {
     if (currentToken !== typingToken) return;
     element.textContent += text[i];
     await wait(speed);
   }
+
+  await wait(180);
+
+  if (currentToken === typingToken) {
+    element.classList.remove("note-writing-caret");
+  }
 }
 
 /* =========================
-   APP STATE / FLOW
+   TRANSITION CONTENT
+========================= */
+
+async function renderTransitionText(startTime) {
+  resetTypingToken();
+
+  if (transitionLine1) transitionLine1.textContent = "";
+  if (transitionLine2) transitionLine2.textContent = "";
+
+  await typeText(transitionLine1, "Deine Pause ist um", 48);
+  await typeText(transitionLine2, startTime, 62);
+}
+
+/* =========================
+   APP FLOW
 ========================= */
 
 function resetApp() {
@@ -404,7 +455,6 @@ function resetApp() {
   resetTypingToken();
 
   appState = "idle";
-  prepConfirmed = false;
   startGongPlayed = false;
   endGongPlayed = false;
   endingSequenceRunning = false;
@@ -428,42 +478,35 @@ function resetApp() {
   }
 
   updateFlipClock(0);
-  resetPrepNoteVisualState();
 
-  if (prepNoteContent) {
-    prepNoteContent.innerHTML = "";
-    prepNoteContent.style.opacity = "1";
-    prepNoteContent.style.transition = "none";
-  }
+  if (transitionLine1) transitionLine1.textContent = "";
+  if (transitionLine2) transitionLine2.textContent = "";
 
-  showConfirmButton();
+  setPrepIntroContent();
+  resetPrepOverlayVisuals();
 }
 
-async function confirmPrepNoteAndContinue() {
-  if (prepOverlay) {
-    prepOverlay.classList.add("prep-overlay-persistent");
+async function confirmPrepAndContinue() {
+  await fadeOutPrepContentAndButton();
+
+  const now = new Date();
+  const startDate = getTodayDateForTime(activeStartTime);
+  const endDate = getTodayDateForTime(activeEndTime);
+
+  if (now >= endDate) {
+    alert("Diese Zeitspanne ist heute schon vorbei 💛");
+    resetApp();
+    return;
   }
 
-  hideConfirmButton();
-
-  if (activeStartTime && activeEndTime) {
-    const now = new Date();
-    const startDate = getTodayDateForTime(activeStartTime);
-    const endDate = getTodayDateForTime(activeEndTime);
-
-    if (now >= endDate) {
-      alert("Diese Zeitspanne ist heute schon vorbei 💛");
-      resetApp();
-      return;
-    }
-
-    if (now >= startDate && now < endDate) {
-      await startBreakPhase(false);
-      return;
-    }
-
-    await startWaitingPhase(activeStartTime, activeEndTime);
+  if (now >= startDate && now < endDate) {
+    prepOverlay.style.display = "none";
+    await startBreakPhase(false);
+    return;
   }
+
+  prepOverlay.style.display = "none";
+  await startWaitingPhase(activeStartTime, activeEndTime);
 }
 
 async function startWaitingPhase(startTime, endTime) {
@@ -473,14 +516,6 @@ async function startWaitingPhase(startTime, endTime) {
   appState = "waiting";
   activeStartTime = startTime;
   activeEndTime = endTime;
-
-  showWaitingScreen();
-
-  if (waitingText) {
-    waitingText.textContent = `Deine nächste Pause ist um ${startTime}`;
-  }
-
-  await swapNoteContent(() => renderWaitingNote(startTime));
 
   const startDate = getTodayDateForTime(startTime);
   const endDate = getTodayDateForTime(endTime);
@@ -496,6 +531,9 @@ async function startWaitingPhase(startTime, endTime) {
     resetApp();
     return;
   }
+
+  showTransitionScreen();
+  await renderTransitionText(startTime);
 
   if (now >= startDate) {
     await triggerBreakStart(true);
@@ -515,7 +553,7 @@ async function startWaitingPhase(startTime, endTime) {
 }
 
 async function triggerBreakStart(playCue = true) {
-  if (startGongPlayed === false && playCue) {
+  if (!startGongPlayed && playCue) {
     playGong();
     showNotification("Pause 💛", "Zeit für deine Pause 🌿");
     startGongPlayed = true;
@@ -531,13 +569,11 @@ async function startBreakPhase(playCue = false) {
   appState = "break";
   showBreakScreen();
 
-  if (playCue && startGongPlayed === false) {
+  if (playCue && !startGongPlayed) {
     playGong();
     showNotification("Pause 💛", "Zeit für deine Pause 🌿");
     startGongPlayed = true;
   }
-
-  await swapNoteContent(() => renderBreakNote());
 
   const endDate = getTodayDateForTime(activeEndTime);
 
@@ -566,6 +602,7 @@ async function startBreakPhase(playCue = false) {
 
 async function triggerBreakEnd() {
   if (endingSequenceRunning) return;
+
   endingSequenceRunning = true;
   appState = "ending";
 
@@ -583,15 +620,12 @@ async function triggerBreakEnd() {
   }
 
   await wait(2200);
-  await appendBreakClosingNote();
-  await wait(2200);
-
   resetApp();
 }
 
 function syncAppState() {
   if (!activeStartTime || !activeEndTime) return;
-  if (appState === "prep" || appState === "ending") return;
+  if (appState === "prep" || appState === "ending" || appState === "idle") return;
 
   const now = new Date();
   const startDate = getTodayDateForTime(activeStartTime);
@@ -634,8 +668,8 @@ startButton.addEventListener("click", async () => {
     return;
   }
 
-  const startTime = `${startHour.value}:${startMinute.value}`;
-  const endTime = `${endHour.value}:${endMinute.value}`;
+  const startTime = formatSelectedStartTime();
+  const endTime = formatSelectedEndTime();
 
   if (!validateTimes(startTime, endTime)) {
     alert("Die Endzeit muss nach der Startzeit liegen 💛");
@@ -645,23 +679,21 @@ startButton.addEventListener("click", async () => {
   activeStartTime = startTime;
   activeEndTime = endTime;
 
-  prepConfirmed = false;
   startGongPlayed = false;
   endGongPlayed = false;
   endingSequenceRunning = false;
   resetTypingToken();
 
-  renderPrepIntroNote();
-  showConfirmButton();
+  setPrepIntroContent();
+  resetPrepOverlayVisuals();
 
   await blurSetupScreenBeforePrep();
-  showPrepNote();
+  animatePrepStickyIn();
 });
 
 if (prepConfirmButton) {
   prepConfirmButton.addEventListener("click", async () => {
-    prepConfirmed = true;
-    await confirmPrepNoteAndContinue();
+    await confirmPrepAndContinue();
   });
 }
 
@@ -679,6 +711,9 @@ gongSound.addEventListener("error", () => {
   console.log("Fehler beim Laden von gong.mp3. Prüfe Dateiname und Speicherort.");
 });
 
+/* =========================
+   DAYTIME THEME
+========================= */
 
 const hour = new Date().getHours();
 const body = document.body;
@@ -697,3 +732,6 @@ if (hour >= 6 && hour < 11) {
 
 fillTimeOptions();
 updateFlipClock(0);
+setPrepIntroContent();
+resetPrepOverlayVisuals();
+showSetupScreen();
