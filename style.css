@@ -812,7 +812,7 @@ background-size:
 opacity: 0.92;
 }
 
-..prep-rest-shadow {
+.prep-rest-shadow {
 position: absolute;
 z-index: 1;
 pointer-events: none;
