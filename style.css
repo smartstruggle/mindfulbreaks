@@ -818,58 +818,50 @@ z-index: 1;
 pointer-events: none;
 opacity: 0;
 
-width: 460px;
-height: 290px;
+width: 420px;
+height: 250px;
 
 background:
-/* Hauptmasse unten rechts */
+/* Hauptschatten unten unter dem Sticky */
 radial-gradient(
-ellipse at 72% 82%,
-rgba(0, 0, 0, 0.34) 0%,
-rgba(0, 0, 0, 0.22) 24%,
-rgba(0, 0, 0, 0.11) 52%,
-rgba(0, 0, 0, 0.03) 74%,
+ellipse at 58% 82%,
+rgba(0, 0, 0, 0.30) 0%,
+rgba(0, 0, 0, 0.20) 24%,
+rgba(0, 0, 0, 0.10) 50%,
+rgba(0, 0, 0, 0.03) 72%,
 rgba(0, 0, 0, 0.00) 100%
 ),
 
-/* rechter Kanten-Schatten, der höher mitläuft */
+/* rechter Schatten, aber oben deutlich schmaler */
 radial-gradient(
-ellipse at 84% 54%,
-rgba(0, 0, 0, 0.20) 0%,
-rgba(0, 0, 0, 0.11) 30%,
-rgba(0, 0, 0, 0.03) 62%,
+ellipse at 82% 58%,
+rgba(0, 0, 0, 0.16) 0%,
+rgba(0, 0, 0, 0.08) 28%,
+rgba(0, 0, 0, 0.02) 52%,
 rgba(0, 0, 0, 0.00) 100%
 ),
 
-/* weicher Raum-/Halo-Schatten darunter */
+/* weicher Unterbau direkt unter dem Sticky */
 radial-gradient(
-ellipse at 58% 76%,
+ellipse at 52% 88%,
 rgba(0, 0, 0, 0.10) 0%,
-rgba(0, 0, 0, 0.05) 42%,
-rgba(0, 0, 0, 0.00) 84%
-),
-
-/* ganz leichte diagonale Rückführung nach links oben */
-linear-gradient(
-135deg,
-rgba(0, 0, 0, 0.08) 0%,
-rgba(0, 0, 0, 0.04) 26%,
-rgba(0, 0, 0, 0.015) 48%,
-rgba(0, 0, 0, 0.00) 72%
+rgba(0, 0, 0, 0.04) 40%,
+rgba(0, 0, 0, 0.00) 78%
 );
 
 filter: blur(16px);
 
 transform:
-translateX(82px)
-translateY(122px)
-skewX(-10deg)
+translateX(54px)
+translateY(152px)
+skewX(-7deg)
 rotate(1deg)
-scaleX(1.02)
-scaleY(1);
+scaleX(1.00)
+scaleY(0.96);
 
 transform-origin: center center;
 }
+
 
 .prep-overlay:has(.prep-note-sheet.is-placing) .prep-rest-shadow {
 animation: restShadowFadeIn 1180ms cubic-bezier(0.18, 0.72, 0.2, 1) forwards;
@@ -1243,12 +1235,12 @@ opacity: 1;
 .prep-overlay.prep-overlay-persistent .prep-rest-shadow {
 opacity: 1;
 transform:
-translateX(82px)
-translateY(122px)
-skewX(-10deg)
+translateX(54px)
+translateY(152px)
+skewX(-7deg)
 rotate(1deg)
-scaleX(1.02)
-scaleY(1);
+scaleX(1.00)
+scaleY(0.96);
 }
 
 
