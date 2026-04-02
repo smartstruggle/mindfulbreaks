@@ -1985,3 +1985,77 @@ scaleY(0.72);
 filter: blur(8px);
 }
 }
+
+
+.prep-note-content {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.note-visible {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+.note-static {
+  transform:
+    translateX(0)
+    translateY(0)
+    rotate(-2.2deg)
+    skewX(0deg)
+    scaleX(1)
+    scaleY(1) !important;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%) !important;
+}
+
+.transition-note-wrap,
+.break-note-wrap {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.break-screen-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 54px;
+}
+
+.note-copy-waiting,
+.note-copy-break {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  padding-top: 16px;
+}
+
+.note-handwriting-line {
+  font-family: "Caveat", cursive;
+  font-size: 31px;
+  line-height: 1.08;
+  color: rgba(46, 34, 16, 0.96);
+  text-align: center;
+  white-space: pre-wrap;
+}
+
+.note-handwriting-line-secondary {
+  margin-top: 14px;
+  font-size: 24px;
+  line-height: 1.08;
+}
+
+.note-writing-caret::after {
+  content: "|";
+  display: inline-block;
+  margin-left: 2px;
+  opacity: 0.85;
+  animation: noteCaretBlink 0.9s steps(1) infinite;
+}
+
+@keyframes noteCaretBlink {
+  0%, 49% { opacity: 0.85; }
+  50%, 100% { opacity: 0; }
+}
