@@ -827,6 +827,7 @@ height: 320px;
 
 background:
 /* Hauptverlauf: unten rechts am dunkelsten, nach links/oben heller */
+background:
 linear-gradient(
 145deg,
 rgba(0, 0, 0, 0.00) 0%,
@@ -837,7 +838,6 @@ rgba(0, 0, 0, 0.16) 84%,
 rgba(0, 0, 0, 0.24) 100%
 ),
 
-/* dunkler Kern rechts unten */
 radial-gradient(
 ellipse at 84% 92%,
 rgba(0, 0, 0, 0.22) 0%,
@@ -846,13 +846,20 @@ rgba(0, 0, 0, 0.04) 62%,
 rgba(0, 0, 0, 0.00) 100%
 ),
 
-/* ganz leichte weiche Basis unter dem Sticky */
 radial-gradient(
 ellipse at 58% 88%,
 rgba(0, 0, 0, 0.08) 0%,
 rgba(0, 0, 0, 0.03) 42%,
 rgba(0, 0, 0, 0.00) 78%
+),
+
+radial-gradient(
+ellipse at 46% 96%,
+rgba(0, 0, 0, 0.10) 0%,
+rgba(0, 0, 0, 0.045) 38%,
+rgba(0, 0, 0, 0.00) 82%
 );
+
 
 filter: blur(12px);
 
@@ -865,12 +872,12 @@ filter: blur(12px);
 );*/
 
 clip-path: polygon(
-8% 0%,
-82% 0%,
-102% 54%,
-110% 86%,
-118% 100%,
-42% 100%
+0% 0%,
+78% 0%,
+102% 46%,
+112% 78%,
+122% 100%,
+18% 100%
 );
    
 transform:
