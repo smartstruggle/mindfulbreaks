@@ -825,7 +825,7 @@ opacity: 0;
 width: 440px;
 height: auto;
 
-filter: blur(6px)
+filter: blur(6px);
    
 transform:
 translateX(55px)
