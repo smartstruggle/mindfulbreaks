@@ -1803,14 +1803,4 @@ filter: blur(8px);
 }
 }
 
-/* =========================
-SHADOW VISIBILITY CONTROL
-========================= */
 
-#break-screen .prep-rest-shadow {
-display: none !important;
-}
-
-body.night .prep-rest-shadow {
-display: none !important;
-}
