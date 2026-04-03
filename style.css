@@ -822,34 +822,34 @@ z-index: 1;
 pointer-events: none;
 width: 500px;
 height: 340px;
-opacity: 0;
+opacity: 0.55;
 
 /* WICHTIG: Weniger Gradienten-Layer machen es sauberer.
 Ein Hauptverlauf für die Richtung und ein Radial für den Kern.
 */
 background:
 radial-gradient(
-ellipse at 80% 90%,
-rgba(0, 0, 0, 0.35) 0%, /* Dunkler Kern unten rechts */
-rgba(0, 0, 0, 0.1) 40%, /* Schneller Abfall */
-rgba(0, 0, 0, 0) 80%
+ellipse at 85% 85%,
+rgba(0, 0, 0, 0.25) 0%, /* Dunkler Kern unten rechts */
+rgba(0, 0, 0, 0.08) 40%, /* Schneller Abfall */
+rgba(0, 0, 0, 0) 75%
 ),
 linear-gradient(
 135deg,
-rgba(0, 0, 0, 0) 20%,
-rgba(0, 0, 0, 0.05) 100%
+rgba(0, 0, 0, 0) 30%,
+rgba(0, 0, 0, 0.03) 100%
 );
 
 /* Höherer Blur für den "weichen" Look von Bild 1 */
-filter: blur(18px);
+filter: blur(22px);
 
 /* Polygon leicht angepasst, damit es rechts weiter rausragt */
 clip-path: polygon(
-10% 10%,
-85% 5%,
-105% 50%,
+40% 10%,
+90% 5%,
+110% 50%,
 115% 105%,
-25% 105%
+30% 105%
 );
 
 /* Positionierung:
