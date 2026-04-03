@@ -1816,4 +1816,9 @@ filter: blur(8px);
 }
 }
 
+body.night .prep-rest-shadow,
+#break-screen .prep-rest-shadow {
+opacity: 0.45;
+filter: blur(2px) brightness(0.45);
+}
 
