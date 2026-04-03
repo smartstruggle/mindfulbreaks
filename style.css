@@ -818,44 +818,20 @@ REST SHADOW
 
 .prep-rest-shadow {
 position: absolute;
-z-index: 1; /* Muss direkt unter dem Post-it liegen */
+z-index: 1;
 pointer-events: none;
-width: 500px; /* Beibehalten */
-height: 320px; /* Beibehalten */
-opacity: 1; /* VOLLE DECKKRAFT, genau wie die Zeichnung */
+opacity: 0;
 
-/* Ein klarer Verlauf von oben-links (fast transparent) nach unten-rechts (fast schwarz) */
-background: linear-gradient(
-135deg,
-rgba(0, 0, 0, 0.2) 20%, /* Ein ganz leichter Ambient-Schatten */
-rgba(0, 0, 0, 0.8) 100% /* Fast volles Schwarz unten rechts */
-);
+width: 430px;
+height: auto;
 
-/* SEHR GERINGER BLUR, damit die Kanten scharf bleiben */
-filter: blur(4px);
-
-/* DAS PARALLELOGRAMM:
-Wir müssen das Polygon so anpassen, dass es die parallele Verschiebung
-der Zeichnung widerspiegelt. Es fängt oben links an und geht weit nach unten rechts.
-*/
-clip-path: polygon(
-0% 0%, /* Oben links */
-70% 0%, /* Oben rechts */
-100% 70%, /* Unten rechts (erzeugt die harte Ecke) */
-100% 100%, /* Unten rechts (Ecke) */
-30% 100% /* Unten links (versetzt nach rechts) */
-);
-
-/* POSITIONIERUNG:
-Wir verschieben den gesamten Schattenkörper nach rechts unten.
-*/
 transform:
-translateX(60px) /* Weiter nach rechts als bisher */
-translateY(180px); /* Weiter nach unten als bisher */
-
-transform-origin: top left;
+translateX(45px)
+translateY(165px)
+skewX(-6deg)
+rotate(1deg)
+scale(1.02);
 }
-
 
 
 /* Schatten erst gegen Ende des Einflugs zeigen */
