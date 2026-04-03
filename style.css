@@ -821,49 +821,39 @@ position: absolute;
 z-index: 1;
 pointer-events: none;
 width: 500px;
-height: 340px;
-opacity: 0.55;
+height: 320px;
+opacity: 0.45; /* Weniger Deckkraft macht es edler */
 
-/* WICHTIG: Weniger Gradienten-Layer machen es sauberer.
-Ein Hauptverlauf für die Richtung und ein Radial für den Kern.
-*/
-background:
-radial-gradient(
-ellipse at 85% 85%,
-rgba(0, 0, 0, 0.25) 0%, /* Dunkler Kern unten rechts */
-rgba(0, 0, 0, 0.08) 40%, /* Schneller Abfall */
-rgba(0, 0, 0, 0) 75%
-),
-linear-gradient(
-135deg,
-rgba(0, 0, 0, 0) 30%,
-rgba(0, 0, 0, 0.03) 100%
+/* Ein klarer Verlauf von oben-links (hell) nach unten-rechts (dunkel) */
+background: linear-gradient(
+145deg,
+rgba(0, 0, 0, 0) 20%, /* Oben links fast nichts */
+rgba(0, 0, 0, 0.05) 50%,
+rgba(0, 0, 0, 0.25) 100% /* Nur unten rechts die Tiefe */
 );
 
-/* Höherer Blur für den "weichen" Look von Bild 1 */
-filter: blur(22px);
+/* Der Blur muss hoch bleiben, damit die Kanten des Polygons verschwimmen */
+filter: blur(15px);
 
-/* Polygon leicht angepasst, damit es rechts weiter rausragt */
+/* DAS PARALLELOGRAMM:
+Wir ziehen die rechte Seite weiter runter als die linke.
+*/
 clip-path: polygon(
-40% 10%,
-90% 5%,
-110% 50%,
-115% 105%,
-30% 105%
+20% 40%, /* Start oben links (versteckt unterm Post-it) */
+85% 35%, /* Oben rechts */
+105% 85%, /* Unten rechts (rausragend) */
+35% 95% /* Unten links (leichte Neigung) */
 );
 
-/* Positionierung:
-Damit der Schatten 'unter' die Ecke wandert, muss er
-leicht versetzt und geschert werden.
-*/
+/* Verschiebung nach rechts unten */
 transform:
-translateX(45px)
-translateY(165px)
-skewX(-6deg)
-rotate(1deg);
+translateX(40px)
+translateY(160px)
+skewX(-10deg); /* Das erzeugt den Parallelogramm-Knick */
 
-transform-origin: top right;
+transform-origin: top left;
 }
+
 
 
 /* Schatten erst gegen Ende des Einflugs zeigen */
