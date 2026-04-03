@@ -831,8 +831,8 @@ filter: blur(3px);
 opacity: 0.55;
 
 /* macht den Schatten nach unten weicher */
-mask-image: linear-gradient(to bottom right, transparent 100%, black 70%);
--webkit-mask-image: linear-gradient(to bottom right, transparent 100%, black 70%);
+mask-image: linear-gradient(to bottom right, transparent 70%, black 100%);
+-webkit-mask-image: linear-gradient(to bottom right, transparent 70%, black 100%);
    
 transform:
 translateX(55px)
