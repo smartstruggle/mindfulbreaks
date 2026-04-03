@@ -820,76 +820,51 @@ REST SHADOW
 position: absolute;
 z-index: 1;
 pointer-events: none;
+width: 500px;
+height: 340px;
 opacity: 0;
 
-width: 500px;
-height: 320px;
-
+/* WICHTIG: Weniger Gradienten-Layer machen es sauberer.
+Ein Hauptverlauf für die Richtung und ein Radial für den Kern.
+*/
 background:
-/* Hauptverlauf: unten rechts am dunkelsten, nach links/oben heller */
-background:
+radial-gradient(
+ellipse at 80% 90%,
+rgba(0, 0, 0, 0.35) 0%, /* Dunkler Kern unten rechts */
+rgba(0, 0, 0, 0.1) 40%, /* Schneller Abfall */
+rgba(0, 0, 0, 0) 80%
+),
 linear-gradient(
-145deg,
-rgba(0, 0, 0, 0.00) 0%,
-rgba(0, 0, 0, 0.00) 26%,
-rgba(0, 0, 0, 0.025) 44%,
-rgba(0, 0, 0, 0.08) 66%,
-rgba(0, 0, 0, 0.16) 84%,
-rgba(0, 0, 0, 0.24) 100%
-),
-
-radial-gradient(
-ellipse at 84% 92%,
-rgba(0, 0, 0, 0.22) 0%,
-rgba(0, 0, 0, 0.12) 34%,
-rgba(0, 0, 0, 0.04) 62%,
-rgba(0, 0, 0, 0.00) 100%
-),
-
-radial-gradient(
-ellipse at 58% 88%,
-rgba(0, 0, 0, 0.08) 0%,
-rgba(0, 0, 0, 0.03) 42%,
-rgba(0, 0, 0, 0.00) 78%
-),
-
-radial-gradient(
-ellipse at 46% 96%,
-rgba(0, 0, 0, 0.10) 0%,
-rgba(0, 0, 0, 0.045) 38%,
-rgba(0, 0, 0, 0.00) 82%
+135deg,
+rgba(0, 0, 0, 0) 20%,
+rgba(0, 0, 0, 0.05) 100%
 );
 
+/* Höherer Blur für den "weichen" Look von Bild 1 */
+filter: blur(18px);
 
-filter: blur(12px);
-
-/*clip-path: polygon(
-8% 0%,
-82% 0%,
-102% 54%,
-116% 100%,
-42% 100%
-);*/
-
+/* Polygon leicht angepasst, damit es rechts weiter rausragt */
 clip-path: polygon(
-0% 0%,
-78% 0%,
-102% 46%,
-112% 78%,
-122% 100%,
-18% 100%
+10% 10%,
+85% 5%,
+105% 50%,
+115% 105%,
+25% 105%
 );
-   
+
+/* Positionierung:
+Damit der Schatten 'unter' die Ecke wandert, muss er
+leicht versetzt und geschert werden.
+*/
 transform:
-translateX(36px)
-translateY(178px)
-skewX(-4deg)
-rotate(0.5deg)
-scaleX(1)
-scaleY(0.94);
+translateX(45px)
+translateY(165px)
+skewX(-6deg)
+rotate(1deg);
 
 transform-origin: top right;
 }
+
 
 /* Schatten erst gegen Ende des Einflugs zeigen */
 .prep-overlay:has(.prep-note-sheet.is-placing) .prep-rest-shadow {
@@ -1267,14 +1242,14 @@ opacity: 1;
 }
 
 .prep-overlay.prep-overlay-persistent .prep-rest-shadow {
-opacity: 1;
+opacity: 0.6; /* Weniger ist mehr für Realismus */
+filter: blur(18px);
 transform:
-translateX(36px)
-translateY(178px)
-skewX(-4deg)
-rotate(0.5deg)
-scaleX(1)
-scaleY(0.94);
+translateX(45px)
+translateY(165px)
+skewX(-6deg)
+rotate(1deg)
+scale(1.02); /* Minimal größer als der Zettel wirken lassen */
 }
 
 
