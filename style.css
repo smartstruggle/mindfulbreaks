@@ -856,14 +856,23 @@ rgba(0, 0, 0, 0.00) 78%
 
 filter: blur(12px);
 
-clip-path: polygon(
+/*clip-path: polygon(
 8% 0%,
 82% 0%,
 102% 54%,
 116% 100%,
 42% 100%
-);
+);*/
 
+clip-path: polygon(
+8% 0%,
+82% 0%,
+102% 54%,
+110% 86%,
+118% 100%,
+42% 100%
+);
+   
 transform:
 translateX(36px)
 translateY(178px)
