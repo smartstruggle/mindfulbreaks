@@ -691,6 +691,8 @@ if (hour >= 6 && hour < 11) {
   body.classList.add("night");
 }
 
+console.log(gsap);
+
 /* =========================
    INIT
 ========================= */
