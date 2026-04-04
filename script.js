@@ -267,26 +267,26 @@ function showPrepNote() {
 
   // START: riesig, weit rechts draußen, untere Kante praktisch unsichtbar
   const startState = isMobile
-    ? {
-        x: 520,
-        y: -150,
-        scaleX: 2.9,
-        scaleY: 5.4,
-        rotation: -18,
-        rotationX: -20,
-        rotationY: -32,
-        skewX: -18
-      }
-    : {
-        x: 1120,
-        y: -260,
-        scaleX: 3.6,
-        scaleY: 6.8,
-        rotation: -20,
-        rotationX: -22,
-        rotationY: -36,
-        skewX: -22
-      };
+  ? {
+      x: 760,
+      y: -170,
+      scaleX: 3.6,
+      scaleY: 6.4,
+      rotation: -24,
+      rotationX: -20,
+      rotationY: -38,
+      skewX: -10
+    }
+  : {
+      x: 1480,
+      y: -330,
+      scaleX: 4.6,
+      scaleY: 8.2,
+      rotation: -26,
+      rotationX: -22,
+      rotationY: -42,
+      skewX: -12
+    };
 
   // MITTE: immer noch stark perspektivisch, jetzt trapezförmig
   const midState = isMobile
@@ -358,12 +358,12 @@ function showPrepNote() {
       };
 
   gsap.set(prepNote, {
-    clearProps: "transform",
-    transformOrigin: "8% 4%",
-    ...startState,
-    clipPath: "polygon(24% 0%, 100% 0%, 90% 100%, 42% 100%)",
-    force3D: true
-  });
+  clearProps: "transform",
+  transformOrigin: "8% 4%",
+  ...startState,
+  clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+  force3D: true
+});
 
   if (prepRestShadow) {
     gsap.set(prepRestShadow, {
@@ -378,12 +378,12 @@ function showPrepNote() {
   });
 
   // Phase 1: von rechts draußen rein, immer noch riesig und schräg
-  tl.to(prepNote, {
-    ...midState,
-    clipPath: "polygon(14% 0%, 100% 0%, 92% 100%, 18% 100%)",
-    duration: 0.95,
-    ease: "power3.out"
-  });
+ tl.to(prepNote, {
+  ...midState,
+  clipPath: "polygon(14% 0%, 100% 0%, 92% 100%, 18% 100%)",
+  duration: 1.08,
+  ease: "power3.out"
+});
 
   // Phase 2: Klebekante trifft zuerst, Form wird schmaler / gedrückter
   tl.to(prepNote, {
