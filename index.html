@@ -16,42 +16,42 @@
   <div id="setup-screen">
     <div class="screen-center setup-center">
       <div class="start-screen">
-         <div class="start-content">
-        <h1 class="title">Wann möchtest du heute Pause machen?</h1>
-        <p class="subtitle">Lege Start und Ende fest.</p>
+        <div class="start-content">
+          <h1 class="title">Wann möchtest du heute Pause machen?</h1>
+          <p class="subtitle">Lege Start und Ende fest.</p>
 
-        <div class="time-row">
-          <div class="time-group">
-            <label for="start-hour">Start</label>
-            <div class="time-inputs">
-              <select id="start-hour">
-                <option value="">HH</option>
-              </select>
-              <span class="colon">:</span>
-              <select id="start-minute">
-                <option value="">MM</option>
-              </select>
+          <div class="time-row">
+            <div class="time-group">
+              <label for="start-hour">Start</label>
+              <div class="time-inputs">
+                <select id="start-hour">
+                  <option value="">HH</option>
+                </select>
+                <span class="colon">:</span>
+                <select id="start-minute">
+                  <option value="">MM</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="time-group">
+              <label for="end-hour">Ende</label>
+              <div class="time-inputs">
+                <select id="end-hour">
+                  <option value="">HH</option>
+                </select>
+                <span class="colon">:</span>
+                <select id="end-minute">
+                  <option value="">MM</option>
+                </select>
+              </div>
             </div>
           </div>
 
-          <div class="time-group">
-            <label for="end-hour">Ende</label>
-            <div class="time-inputs">
-              <select id="end-hour">
-                <option value="">HH</option>
-              </select>
-              <span class="colon">:</span>
-              <select id="end-minute">
-                <option value="">MM</option>
-              </select>
-            </div>
-          </div>
+          <button id="start-button">Pause planen</button>
+
+          <p class="dedication">Für Joanna, Helen, Mirjam, Melanie &amp; Dilek</p>
         </div>
-
-        <button id="start-button">Pause planen</button>
-
-        <p class="dedication">Für Joanna, Helen, Mirjam, Melanie &amp; Dilek</p>
-           </div>
       </div>
     </div>
   </div>
@@ -59,7 +59,11 @@
   <!-- EIN EINZIGES STICKY / BLEIBT DURCH ALLE PHASEN -->
   <div id="prep-overlay" class="prep-overlay" style="display: none;">
     <div class="prep-backdrop"></div>
-   <img src="shadow.svg" class="prep-rest-shadow" alt="">
+
+    <!-- fester Rest-Schatten aus Figma -->
+    <img src="shadow.svg" class="prep-rest-shadow" alt="" />
+
+    <!-- optionaler Flugschatten -->
     <div class="prep-flight-shadow"></div>
 
     <div id="prep-note" class="prep-note-sheet">
@@ -73,7 +77,7 @@
     </div>
   </div>
 
-  <!-- TRANSITION SCREEN -->
+  <!-- TRANSITION / WAITING SCREEN -->
   <div id="waiting-screen" style="display: none;">
     <div class="screen-center">
       <h2 id="waiting-text">Deine nächste Pause ist um ...</h2>
@@ -112,28 +116,7 @@
     </div>
   </div>
 
-
-<script src="libs/gsap.js"></script>
-<script src="script.js"></script>
-
-  <script>
-gsap.fromTo(".prep-note-sheet",
-{
-x: 300,
-y: -200,
-rotation: 12,
-scale: 0.9
-},
-{
-x: 0,
-y: 0,
-rotation: -2,
-scale: 1,
-duration: 1.2,
-ease: "power3.out"
-}
-);
-</script>
-  
+  <script src="libs/gsap.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
