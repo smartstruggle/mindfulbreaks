@@ -1036,7 +1036,7 @@ animation: prepFlightShadowMove 1320ms cubic-bezier(0.22, 0.78, 0.22, 1) forward
 
 .prep-note-sheet.is-taking-away {
   animation: none;
-}
+} */
 
 @keyframes placeStickyTakeover {
   0% {
@@ -1215,7 +1215,7 @@ opacity: 0;
 opacity: 1;
 }
 }
-*/
+
 
 /* =========================
    PERSISTENT STICKY POSITION
