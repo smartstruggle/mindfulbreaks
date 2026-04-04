@@ -267,20 +267,68 @@ function showPrepNote() {
 
   const noteStart = isMobile
     ? {
-        x: 360,
-        y: -24,
-        rotation: 0.3,
-        skewX: -4,
-        scaleX: 1.56,
-        scaleY: 3.1
+        x: 320,
+        y: -36,
+        rotation: 7,
+        rotationX: -18,
+        rotationY: 10,
+        skewX: -8,
+        scaleX: 1.42,
+        scaleY: 2.7
       }
     : {
-        x: 640,
-        y: -34,
-        rotation: 2.4,
-        skewX: -1,
-        scaleX: 1.95,
-        scaleY: 4.15
+        x: 560,
+        y: -52,
+        rotation: 8,
+        rotationX: -18,
+        rotationY: 12,
+        skewX: -10,
+        scaleX: 1.68,
+        scaleY: 3.25
+      };
+
+  const noteMid = isMobile
+    ? {
+        x: 88,
+        y: 20,
+        rotation: 1.5,
+        rotationX: -10,
+        rotationY: 5,
+        skewX: -5,
+        scaleX: 1.12,
+        scaleY: 1.28
+      }
+    : {
+        x: 120,
+        y: 42,
+        rotation: 2,
+        rotationX: -10,
+        rotationY: 6,
+        skewX: -6,
+        scaleX: 1.16,
+        scaleY: 1.36
+      };
+
+  const notePress = isMobile
+    ? {
+        x: 0,
+        y: 50,
+        rotation: -3.6,
+        rotationX: 0,
+        rotationY: 0,
+        skewX: 0,
+        scaleX: 1,
+        scaleY: 1
+      }
+    : {
+        x: 0,
+        y: 112,
+        rotation: -3.6,
+        rotationX: 0,
+        rotationY: 0,
+        skewX: 0,
+        scaleX: 1,
+        scaleY: 1
       };
 
   const noteEnd = isMobile
@@ -288,6 +336,8 @@ function showPrepNote() {
         x: 0,
         y: 54,
         rotation: -3,
+        rotationX: 0,
+        rotationY: 0,
         skewX: 0,
         scaleX: 1,
         scaleY: 1
@@ -296,49 +346,11 @@ function showPrepNote() {
         x: 0,
         y: 118,
         rotation: -3,
+        rotationX: 0,
+        rotationY: 0,
         skewX: 0,
         scaleX: 1,
         scaleY: 1
-      };
-
-  const flightShadowStart = isMobile
-    ? {
-        x: 360,
-        y: 10,
-        skewX: -16,
-        scaleX: 1.6,
-        scaleY: 3.05,
-        opacity: 0.5,
-        filter: "blur(22px)"
-      }
-    : {
-        x: 640,
-        y: 8,
-        skewX: -16,
-        scaleX: 1.9,
-        scaleY: 3.9,
-        opacity: 0.56,
-        filter: "blur(24px)"
-      };
-
-  const flightShadowEnd = isMobile
-    ? {
-        x: 0,
-        y: 60,
-        skewX: 0,
-        scaleX: 1,
-        scaleY: 0.72,
-        opacity: 0,
-        filter: "blur(8px)"
-      }
-    : {
-        x: 0,
-        y: 126,
-        skewX: 0,
-        scaleX: 1,
-        scaleY: 0.72,
-        opacity: 0,
-        filter: "blur(8px)"
       };
 
   gsap.killTweensOf(prepNote);
@@ -347,21 +359,15 @@ function showPrepNote() {
 
   gsap.set(prepNote, {
     clearProps: "transform",
-    transformOrigin: "top right"
-  });
-
-  gsap.set(prepNote, {
+    transformOrigin: "22% 7%",
     ...noteStart
   });
 
   if (prepFlightShadow) {
     gsap.set(prepFlightShadow, {
       clearProps: "transform,opacity,filter",
-      transformOrigin: "top right"
-    });
-
-    gsap.set(prepFlightShadow, {
-      ...flightShadowStart
+      transformOrigin: "top right",
+      opacity: 0
     });
   }
 
@@ -373,40 +379,45 @@ function showPrepNote() {
 
   const tl = gsap.timeline();
 
-  tl.to(
-    prepNote,
-    {
-      ...noteEnd,
-      duration: 1.18,
-      ease: "power3.out"
-    },
-    0
-  );
+  tl.to(prepNote, {
+    ...noteMid,
+    duration: 0.72,
+    ease: "power2.out"
+  });
 
-  if (prepFlightShadow) {
-    tl.to(
-      prepFlightShadow,
-      {
-        ...flightShadowEnd,
-        duration: 1.22,
-        ease: "power3.out"
-      },
-      0
-    );
-  }
+  tl.to(prepNote, {
+    ...notePress,
+    duration: 0.34,
+    ease: "power2.inOut"
+  });
+
+  tl.to(prepNote, {
+    x: noteEnd.x + 4,
+    y: noteEnd.y - 2,
+    rotation: noteEnd.rotation + 0.35,
+    duration: 0.10,
+    ease: "power1.out"
+  });
+
+  tl.to(prepNote, {
+    ...noteEnd,
+    duration: 0.16,
+    ease: "power2.out"
+  });
 
   if (prepRestShadow) {
     tl.to(
       prepRestShadow,
       {
         opacity: 0.55,
-        duration: 0.28,
+        duration: 0.24,
         ease: "power2.out"
       },
-      0.88
+      0.82
     );
   }
 }
+
 function showConfirmButton() {
   if (!prepConfirmButton) return;
   prepConfirmButton.style.opacity = "1";
