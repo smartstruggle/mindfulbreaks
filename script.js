@@ -267,49 +267,46 @@ function showPrepNote() {
 
   // START: riesig, weit rechts draußen, untere Kante praktisch unsichtbar
   const startState = isMobile
+ const start = isMobile
   ? {
       x: 760,
-      y: -170,
-      scaleX: 3.6,
-      scaleY: 6.4,
-      rotation: -24,
-      rotationX: -20,
-      rotationY: -38,
-      skewX: -10
+      y: -150,
+      scale: 4.2,
+      rotation: -18,
+      rotationY: -42,
+      rotationX: -18,
+      skewX: -8
     }
   : {
-      x: 1480,
-      y: -330,
-      scaleX: 4.6,
-      scaleY: 8.2,
-      rotation: -26,
-      rotationX: -22,
-      rotationY: -42,
-      skewX: -12
+      x: 1500,
+      y: -260,
+      scale: 5.2,
+      rotation: -20,
+      rotationY: -46,
+      rotationX: -20,
+      skewX: -10
     };
 
   // MITTE: immer noch stark perspektivisch, jetzt trapezförmig
-  const midState = isMobile
-    ? {
-        x: 150,
-        y: -8,
-        scaleX: 1.7,
-        scaleY: 2.05,
-        rotation: -11,
-        rotationX: -10,
-        rotationY: -14,
-        skewX: -10
-      }
-    : {
-        x: 215,
-        y: 6,
-        scaleX: 1.92,
-        scaleY: 2.25,
-        rotation: -12,
-        rotationX: -12,
-        rotationY: -15,
-        skewX: -11
-      };
+ const mid = isMobile
+  ? {
+      x: 150,
+      y: 10,
+      scale: 1.7,
+      rotation: -10,
+      rotationY: -14,
+      rotationX: -8,
+      skewX: -4
+    }
+  : {
+      x: 220,
+      y: 24,
+      scale: 1.9,
+      rotation: -11,
+      rotationY: -16,
+      rotationX: -8,
+      skewX: -5
+    };
 
   // KONTAKT: linke Klebekante setzt zuerst auf
   const contactState = isMobile
