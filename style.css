@@ -758,6 +758,9 @@ STICKY SHEET (PAPER FIRST - TUNED)
 
   transform-origin: top right;
   will-change: transform, opacity;
+backface-visibility: hidden;
+transform-style: preserve-3d;
+clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 }
 
 /* =========================
