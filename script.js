@@ -265,54 +265,47 @@ function showPrepNote() {
 
   const isMobile = window.innerWidth <= 768;
 
-  // START: sehr weit rechts draußen, riesig, noch ohne richtigen Trapez-Druckmoment
-  const startState = isMobile
+  const start = isMobile
     ? {
-        x: 920,
-        y: -190,
-        scaleX: 3.6,
-        scaleY: 6.2,
-        rotation: -16,
-        rotationX: -18,
-        rotationY: -36,
-        skewX: -10
-      }
-    : {
-        x: 1680,
-        y: -320,
-        scaleX: 4.6,
-        scaleY: 7.6,
+        x: 1100,
+        y: -180,
+        scale: 4.4,
         rotation: -18,
-        rotationX: -20,
-        rotationY: -40,
-        skewX: -12
-      };
-
-  // MITTE: jetzt beginnt die Trapezform
-  const midState = isMobile
-    ? {
-        x: 220,
-        y: -6,
-        scaleX: 1.85,
-        scaleY: 2.18,
-        rotation: -10,
-        rotationX: -10,
-        rotationY: -14,
+        rotationY: -42,
+        rotationX: -18,
         skewX: -8
       }
     : {
-        x: 320,
-        y: 8,
-        scaleX: 2.02,
-        scaleY: 2.38,
-        rotation: -11,
-        rotationX: -11,
-        rotationY: -15,
-        skewX: -9
+        x: 2200,
+        y: -300,
+        scale: 5.4,
+        rotation: -20,
+        rotationY: -46,
+        rotationX: -20,
+        skewX: -10
       };
 
-  // DIESE BEIDEN BLEIBEN
-  const contactState = isMobile
+  const mid = isMobile
+    ? {
+        x: 320,
+        y: -6,
+        scale: 1.9,
+        rotation: -11,
+        rotationY: -14,
+        rotationX: -8,
+        skewX: -4
+      }
+    : {
+        x: 560,
+        y: 18,
+        scale: 2.0,
+        rotation: -12,
+        rotationY: -16,
+        rotationX: -8,
+        skewX: -5
+      };
+
+  const contact = isMobile
     ? {
         x: 18,
         y: 44,
@@ -334,7 +327,7 @@ function showPrepNote() {
         skewX: -1.5
       };
 
-  const endState = isMobile
+  const end = isMobile
     ? {
         x: 0,
         y: 54,
@@ -357,45 +350,50 @@ function showPrepNote() {
       };
 
   gsap.set(prepNote, {
-    clearProps: "transform",
+    position: "absolute",
+    left: "50%",
+    top: "50%",
+    margin: 0,
+    xPercent: -50,
+    yPercent: -50,
     transformOrigin: "8% 4%",
-    ...startState,
     clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-    force3D: true
+    force3D: true,
+    ...start
   });
 
   if (prepRestShadow) {
-    gsap.set(prepRestShadow, {
-      opacity: 0
-    });
+    gsap.set(prepRestShadow, { opacity: 0 });
   }
 
   const tl = gsap.timeline({
-    defaults: {
-      force3D: true
-    }
+    defaults: { force3D: true }
   });
 
-  // NUR DIESE ERSTE PHASE IST NEU
   tl.to(prepNote, {
-    ...midState,
+    xPercent: -50,
+    yPercent: -50,
+    ...mid,
     clipPath: "polygon(14% 0%, 100% 0%, 92% 100%, 18% 100%)",
     duration: 1.08,
     ease: "power3.out"
   });
 
-  // AB HIER BLEIBT DEIN GUTES ENDE
   tl.to(prepNote, {
-    ...contactState,
+    xPercent: -50,
+    yPercent: -50,
+    ...contact,
     clipPath: "polygon(2% 0%, 100% 0%, 98% 100%, 0% 100%)",
     duration: 0.42,
     ease: "power2.inOut"
   });
 
   tl.to(prepNote, {
-    x: endState.x + 8,
-    y: endState.y - 4,
-    rotation: endState.rotation + 0.7,
+    xPercent: -50,
+    yPercent: -50,
+    x: end.x + 8,
+    y: end.y - 4,
+    rotation: end.rotation + 0.7,
     scaleX: 1.01,
     scaleY: 0.99,
     clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
@@ -404,7 +402,9 @@ function showPrepNote() {
   });
 
   tl.to(prepNote, {
-    ...endState,
+    xPercent: -50,
+    yPercent: -50,
+    ...end,
     clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
     duration: 0.18,
     ease: "power2.out"
