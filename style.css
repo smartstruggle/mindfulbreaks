@@ -709,6 +709,9 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
   justify-content: center;
   pointer-events: auto;
   overflow: hidden;
+
+  perspective: 1400px;
+  transform-style: preserve-3d;
 }
 
 .prep-backdrop {
