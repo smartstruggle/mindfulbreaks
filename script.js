@@ -260,137 +260,169 @@ function showPrepNote() {
   prepOverlay.style.display = "flex";
   prepOverlay.classList.remove("prep-overlay-persistent");
 
+  gsap.killTweensOf(prepNote);
+  if (prepRestShadow) gsap.killTweensOf(prepRestShadow);
+
   const isMobile = window.innerWidth <= 768;
 
-  // 🔥 START: weit rechts, riesig, im Raum gekippt
-  const start = isMobile
+  // START: riesig, weit rechts draußen, untere Kante praktisch unsichtbar
+  const startState = isMobile
     ? {
-        x: 420,
-        y: -60,
-        scale: 2.4,
-        rotation: 6,
-        rotationY: 35,
-        rotationX: -18,
-        skewX: -12
-      }
-    : {
-        x: 900,
-        y: -120,
-        scale: 2.8,
-        rotation: 8,
-        rotationY: 40,
+        x: 520,
+        y: -150,
+        scaleX: 2.9,
+        scaleY: 5.4,
+        rotation: -18,
         rotationX: -20,
-        skewX: -14
-      };
-
-  // 🔹 Mitte: kommt rein, noch in der Luft
-  const mid = isMobile
-    ? {
-        x: 120,
-        y: 20,
-        scale: 1.3,
-        rotation: 2,
-        rotationY: 12,
-        rotationX: -10,
-        skewX: -6
+        rotationY: -32,
+        skewX: -18
       }
     : {
-        x: 180,
-        y: 40,
-        scale: 1.4,
-        rotation: 2.5,
-        rotationY: 14,
-        rotationX: -10,
-        skewX: -7
+        x: 1120,
+        y: -260,
+        scaleX: 3.6,
+        scaleY: 6.8,
+        rotation: -20,
+        rotationX: -22,
+        rotationY: -36,
+        skewX: -22
       };
 
-  // 🔹 Kontakt: linke Klebekante trifft zuerst
-  const contact = isMobile
+  // MITTE: immer noch stark perspektivisch, jetzt trapezförmig
+  const midState = isMobile
     ? {
-        x: 0,
-        y: 48,
-        scale: 1,
-        rotation: -4,
-        rotationY: 0,
+        x: 150,
+        y: -8,
+        scaleX: 1.7,
+        scaleY: 2.05,
+        rotation: -11,
+        rotationX: -10,
+        rotationY: -14,
+        skewX: -10
+      }
+    : {
+        x: 215,
+        y: 6,
+        scaleX: 1.92,
+        scaleY: 2.25,
+        rotation: -12,
+        rotationX: -12,
+        rotationY: -15,
+        skewX: -11
+      };
+
+  // KONTAKT: linke Klebekante setzt zuerst auf
+  const contactState = isMobile
+    ? {
+        x: 18,
+        y: 44,
+        scaleX: 1.04,
+        scaleY: 1.08,
+        rotation: -5.2,
         rotationX: 0,
-        skewX: 0
+        rotationY: 0,
+        skewX: -1.5
       }
     : {
-        x: 0,
+        x: 14,
         y: 108,
-        scale: 1,
-        rotation: -4,
-        rotationY: 0,
+        scaleX: 1.05,
+        scaleY: 1.08,
+        rotation: -5.4,
         rotationX: 0,
-        skewX: 0
+        rotationY: 0,
+        skewX: -1.5
       };
 
-  // 🔹 Endposition (dein bestehender Zustand)
-  const end = isMobile
+  // ENDSTATE = dein bestehender finaler Zustand
+  const endState = isMobile
     ? {
         x: 0,
         y: 54,
-        rotation: -3
+        scaleX: 1,
+        scaleY: 1,
+        rotation: -3,
+        rotationX: 0,
+        rotationY: 0,
+        skewX: 0
       }
     : {
         x: 0,
         y: 118,
-        rotation: -3
+        scaleX: 1,
+        scaleY: 1,
+        rotation: -3,
+        rotationX: 0,
+        rotationY: 0,
+        skewX: 0
       };
 
-  gsap.killTweensOf(prepNote);
-
-  // 🔥 WICHTIG: Klebekante = Transform Origin
   gsap.set(prepNote, {
-    transformOrigin: "12% 6%",
-    ...start
+    clearProps: "transform",
+    transformOrigin: "8% 4%",
+    ...startState,
+    clipPath: "polygon(24% 0%, 100% 0%, 90% 100%, 42% 100%)",
+    force3D: true
   });
 
   if (prepRestShadow) {
-    gsap.set(prepRestShadow, { opacity: 0 });
+    gsap.set(prepRestShadow, {
+      opacity: 0
+    });
   }
 
-  const tl = gsap.timeline();
+  const tl = gsap.timeline({
+    defaults: {
+      force3D: true
+    }
+  });
 
-  // 🚀 Phase 1 – von rechts rein (langsamer!)
+  // Phase 1: von rechts draußen rein, immer noch riesig und schräg
   tl.to(prepNote, {
-    ...mid,
-    duration: 1.0,
+    ...midState,
+    clipPath: "polygon(14% 0%, 100% 0%, 92% 100%, 18% 100%)",
+    duration: 0.95,
     ease: "power3.out"
   });
 
-  // 🧲 Phase 2 – Klebekante trifft
+  // Phase 2: Klebekante trifft zuerst, Form wird schmaler / gedrückter
   tl.to(prepNote, {
-    ...contact,
-    duration: 0.4,
+    ...contactState,
+    clipPath: "polygon(2% 0%, 100% 0%, 98% 100%, 0% 100%)",
+    duration: 0.42,
     ease: "power2.inOut"
   });
 
-  // ✋ Phase 3 – „aufstreichen“
+  // Phase 3: kleines Andrücken / Streichen
   tl.to(prepNote, {
-    x: end.x + 6,
-    y: end.y - 3,
-    rotation: end.rotation + 0.6,
+    x: endState.x + 8,
+    y: endState.y - 4,
+    rotation: endState.rotation + 0.7,
+    scaleX: 1.01,
+    scaleY: 0.99,
+    clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
     duration: 0.14,
     ease: "power1.out"
   });
 
-  // 🧘 Phase 4 – settle
+  // Phase 4: settle in finale Position
   tl.to(prepNote, {
-    ...end,
-    duration: 0.2,
+    ...endState,
+    clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+    duration: 0.18,
     ease: "power2.out"
   });
 
-  // 🌫 Schatten kommt erst am Ende
+  // Restschatten erst am Schluss sichtbar
   if (prepRestShadow) {
     tl.to(
       prepRestShadow,
       {
         opacity: 0.55,
-        duration: 0.25
+        duration: 0.22,
+        ease: "power2.out"
       },
-      1.2
+      1.05
     );
   }
 }
