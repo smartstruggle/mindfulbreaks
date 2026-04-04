@@ -13,6 +13,8 @@ const prepOverlay = document.getElementById("prep-overlay");
 const prepNote = document.getElementById("prep-note");
 const prepConfirmButton = document.getElementById("prep-confirm-button");
 const prepNoteContent = document.getElementById("prep-note-content");
+const prepFlightShadow = document.querySelector(".prep-flight-shadow");
+const prepRestShadow = document.querySelector(".prep-rest-shadow");
 
 const waitingText = document.getElementById("waiting-text");
 const timer = document.getElementById("timer");
@@ -261,10 +263,150 @@ function showPrepNote() {
   prepNote.classList.remove("is-taking-away");
   prepNote.classList.remove("is-placing");
 
-  void prepNote.offsetWidth;
-  prepNote.classList.add("is-placing");
-}
+  const isMobile = window.innerWidth <= 768;
 
+  const noteStart = isMobile
+    ? {
+        x: 360,
+        y: -24,
+        rotation: 0.3,
+        skewX: -4,
+        scaleX: 1.56,
+        scaleY: 3.1
+      }
+    : {
+        x: 640,
+        y: -34,
+        rotation: 2.4,
+        skewX: -1,
+        scaleX: 1.95,
+        scaleY: 4.15
+      };
+
+  const noteEnd = isMobile
+    ? {
+        x: 0,
+        y: 54,
+        rotation: -3,
+        skewX: 0,
+        scaleX: 1,
+        scaleY: 1
+      }
+    : {
+        x: 0,
+        y: 118,
+        rotation: -3,
+        skewX: 0,
+        scaleX: 1,
+        scaleY: 1
+      };
+
+  const flightShadowStart = isMobile
+    ? {
+        x: 360,
+        y: 10,
+        skewX: -16,
+        scaleX: 1.6,
+        scaleY: 3.05,
+        opacity: 0.5,
+        filter: "blur(22px)"
+      }
+    : {
+        x: 640,
+        y: 8,
+        skewX: -16,
+        scaleX: 1.9,
+        scaleY: 3.9,
+        opacity: 0.56,
+        filter: "blur(24px)"
+      };
+
+  const flightShadowEnd = isMobile
+    ? {
+        x: 0,
+        y: 60,
+        skewX: 0,
+        scaleX: 1,
+        scaleY: 0.72,
+        opacity: 0,
+        filter: "blur(8px)"
+      }
+    : {
+        x: 0,
+        y: 126,
+        skewX: 0,
+        scaleX: 1,
+        scaleY: 0.72,
+        opacity: 0,
+        filter: "blur(8px)"
+      };
+
+  gsap.killTweensOf(prepNote);
+  if (prepFlightShadow) gsap.killTweensOf(prepFlightShadow);
+  if (prepRestShadow) gsap.killTweensOf(prepRestShadow);
+
+  gsap.set(prepNote, {
+    clearProps: "transform",
+    transformOrigin: "top right"
+  });
+
+  gsap.set(prepNote, {
+    ...noteStart
+  });
+
+  if (prepFlightShadow) {
+    gsap.set(prepFlightShadow, {
+      clearProps: "transform,opacity,filter",
+      transformOrigin: "top right"
+    });
+
+    gsap.set(prepFlightShadow, {
+      ...flightShadowStart
+    });
+  }
+
+  if (prepRestShadow) {
+    gsap.set(prepRestShadow, {
+      opacity: 0
+    });
+  }
+
+  const tl = gsap.timeline();
+
+  tl.to(
+    prepNote,
+    {
+      ...noteEnd,
+      duration: 1.18,
+      ease: "power3.out"
+    },
+    0
+  );
+
+  if (prepFlightShadow) {
+    tl.to(
+      prepFlightShadow,
+      {
+        ...flightShadowEnd,
+        duration: 1.22,
+        ease: "power3.out"
+      },
+      0
+    );
+  }
+
+  if (prepRestShadow) {
+    tl.to(
+      prepRestShadow,
+      {
+        opacity: 0.55,
+        duration: 0.28,
+        ease: "power2.out"
+      },
+      0.88
+    );
+  }
+}
 function showConfirmButton() {
   if (!prepConfirmButton) return;
   prepConfirmButton.style.opacity = "1";
@@ -281,12 +423,29 @@ function hideConfirmButton() {
 function resetPrepNoteVisualState() {
   if (!prepOverlay || !prepNote) return;
 
+  gsap.killTweensOf(prepNote);
+  if (prepFlightShadow) gsap.killTweensOf(prepFlightShadow);
+  if (prepRestShadow) gsap.killTweensOf(prepRestShadow);
+
   prepOverlay.style.display = "none";
   prepOverlay.classList.remove("prep-overlay-persistent");
   prepNote.classList.remove("is-taking-away");
   prepNote.classList.remove("is-placing");
-}
 
+  gsap.set(prepNote, { clearProps: "transform" });
+
+  if (prepFlightShadow) {
+    gsap.set(prepFlightShadow, {
+      clearProps: "transform,opacity,filter"
+    });
+  }
+
+  if (prepRestShadow) {
+    gsap.set(prepRestShadow, {
+      opacity: 0.55
+    });
+  }
+}
 function renderPrepIntroNote() {
   if (!prepNoteContent) return;
 
@@ -439,12 +598,29 @@ function resetApp() {
   showConfirmButton();
 }
 
+
 async function confirmPrepNoteAndContinue() {
+  hideConfirmButton();
+
+  gsap.killTweensOf(prepNote);
+  if (prepFlightShadow) gsap.killTweensOf(prepFlightShadow);
+  if (prepRestShadow) gsap.killTweensOf(prepRestShadow);
+
   if (prepOverlay) {
     prepOverlay.classList.add("prep-overlay-persistent");
   }
 
-  hideConfirmButton();
+  if (prepNote) {
+    gsap.set(prepNote, { clearProps: "transform" });
+  }
+
+  if (prepFlightShadow) {
+    gsap.set(prepFlightShadow, { clearProps: "transform,opacity,filter" });
+  }
+
+  if (prepRestShadow) {
+    gsap.set(prepRestShadow, { opacity: 0.55 });
+  }
 
   if (activeStartTime && activeEndTime) {
     const now = new Date();
@@ -691,7 +867,6 @@ if (hour >= 6 && hour < 11) {
   body.classList.add("night");
 }
 
-console.log(gsap);
 
 /* =========================
    INIT
