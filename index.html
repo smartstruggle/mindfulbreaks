@@ -117,9 +117,19 @@
 <script src="script.js"></script>
 
 <script>
+gsap.from(".prep-note-sheet", {
+x: 250,
+y: -250,
+rotation: 10,
+duration: 1.2,
+ease: "power3.out"
+});
+
 gsap.to(".prep-note-sheet", {
-y: 80,
-duration: 1
+rotation: -2,
+duration: 0.4,
+delay: 1.2,
+ease: "power1.out"
 });
 </script>
   
