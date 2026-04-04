@@ -1029,7 +1029,7 @@ animation: prepFlightShadowMove 1320ms cubic-bezier(0.22, 0.78, 0.22, 1) forward
 /* =========================
    STICKY ANIMATION
 ========================= */
-
+/*
 .prep-note-sheet.is-placing {
   animation: placeStickyTakeover 1180ms cubic-bezier(0.18, 0.72, 0.2, 1) forwards;
 }
@@ -1144,7 +1144,7 @@ animation: prepFlightShadowMove 1320ms cubic-bezier(0.22, 0.78, 0.22, 1) forward
       inset 0 1px 0 rgba(255,255,255,0.24);
   }
 }
-
+*/
 @keyframes prepFlightShadowMove {
 0% {
 opacity: 0.56;
