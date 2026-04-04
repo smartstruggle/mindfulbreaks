@@ -260,160 +260,137 @@ function showPrepNote() {
   prepOverlay.style.display = "flex";
   prepOverlay.classList.remove("prep-overlay-persistent");
 
-  prepNote.classList.remove("is-taking-away");
-  prepNote.classList.remove("is-placing");
-
   const isMobile = window.innerWidth <= 768;
 
-  const noteStart = isMobile
+  // 🔥 START: weit rechts, riesig, im Raum gekippt
+  const start = isMobile
     ? {
-        x: 320,
-        y: -36,
-        rotation: 7,
+        x: 420,
+        y: -60,
+        scale: 2.4,
+        rotation: 6,
+        rotationY: 35,
         rotationX: -18,
-        rotationY: 10,
-        skewX: -8,
-        scaleX: 1.42,
-        scaleY: 2.7
+        skewX: -12
       }
     : {
-        x: 560,
-        y: -52,
+        x: 900,
+        y: -120,
+        scale: 2.8,
         rotation: 8,
-        rotationX: -18,
-        rotationY: 12,
-        skewX: -10,
-        scaleX: 1.68,
-        scaleY: 3.25
+        rotationY: 40,
+        rotationX: -20,
+        skewX: -14
       };
 
-  const noteMid = isMobile
+  // 🔹 Mitte: kommt rein, noch in der Luft
+  const mid = isMobile
     ? {
-        x: 88,
-        y: 20,
-        rotation: 1.5,
-        rotationX: -10,
-        rotationY: 5,
-        skewX: -5,
-        scaleX: 1.12,
-        scaleY: 1.28
-      }
-    : {
         x: 120,
-        y: 42,
+        y: 20,
+        scale: 1.3,
         rotation: 2,
+        rotationY: 12,
         rotationX: -10,
-        rotationY: 6,
-        skewX: -6,
-        scaleX: 1.16,
-        scaleY: 1.36
+        skewX: -6
+      }
+    : {
+        x: 180,
+        y: 40,
+        scale: 1.4,
+        rotation: 2.5,
+        rotationY: 14,
+        rotationX: -10,
+        skewX: -7
       };
 
-  const notePress = isMobile
+  // 🔹 Kontakt: linke Klebekante trifft zuerst
+  const contact = isMobile
     ? {
         x: 0,
-        y: 50,
-        rotation: -3.6,
-        rotationX: 0,
+        y: 48,
+        scale: 1,
+        rotation: -4,
         rotationY: 0,
-        skewX: 0,
-        scaleX: 1,
-        scaleY: 1
+        rotationX: 0,
+        skewX: 0
       }
     : {
         x: 0,
-        y: 112,
-        rotation: -3.6,
-        rotationX: 0,
+        y: 108,
+        scale: 1,
+        rotation: -4,
         rotationY: 0,
-        skewX: 0,
-        scaleX: 1,
-        scaleY: 1
+        rotationX: 0,
+        skewX: 0
       };
 
-  const noteEnd = isMobile
+  // 🔹 Endposition (dein bestehender Zustand)
+  const end = isMobile
     ? {
         x: 0,
         y: 54,
-        rotation: -3,
-        rotationX: 0,
-        rotationY: 0,
-        skewX: 0,
-        scaleX: 1,
-        scaleY: 1
+        rotation: -3
       }
     : {
         x: 0,
         y: 118,
-        rotation: -3,
-        rotationX: 0,
-        rotationY: 0,
-        skewX: 0,
-        scaleX: 1,
-        scaleY: 1
+        rotation: -3
       };
 
   gsap.killTweensOf(prepNote);
-  if (prepFlightShadow) gsap.killTweensOf(prepFlightShadow);
-  if (prepRestShadow) gsap.killTweensOf(prepRestShadow);
 
+  // 🔥 WICHTIG: Klebekante = Transform Origin
   gsap.set(prepNote, {
-    clearProps: "transform",
-    transformOrigin: "22% 7%",
-    ...noteStart
+    transformOrigin: "12% 6%",
+    ...start
   });
 
-  if (prepFlightShadow) {
-    gsap.set(prepFlightShadow, {
-      clearProps: "transform,opacity,filter",
-      transformOrigin: "top right",
-      opacity: 0
-    });
-  }
-
   if (prepRestShadow) {
-    gsap.set(prepRestShadow, {
-      opacity: 0
-    });
+    gsap.set(prepRestShadow, { opacity: 0 });
   }
 
   const tl = gsap.timeline();
 
+  // 🚀 Phase 1 – von rechts rein (langsamer!)
   tl.to(prepNote, {
-    ...noteMid,
-    duration: 0.72,
-    ease: "power2.out"
+    ...mid,
+    duration: 1.0,
+    ease: "power3.out"
   });
 
+  // 🧲 Phase 2 – Klebekante trifft
   tl.to(prepNote, {
-    ...notePress,
-    duration: 0.34,
+    ...contact,
+    duration: 0.4,
     ease: "power2.inOut"
   });
 
+  // ✋ Phase 3 – „aufstreichen“
   tl.to(prepNote, {
-    x: noteEnd.x + 4,
-    y: noteEnd.y - 2,
-    rotation: noteEnd.rotation + 0.35,
-    duration: 0.10,
+    x: end.x + 6,
+    y: end.y - 3,
+    rotation: end.rotation + 0.6,
+    duration: 0.14,
     ease: "power1.out"
   });
 
+  // 🧘 Phase 4 – settle
   tl.to(prepNote, {
-    ...noteEnd,
-    duration: 0.16,
+    ...end,
+    duration: 0.2,
     ease: "power2.out"
   });
 
+  // 🌫 Schatten kommt erst am Ende
   if (prepRestShadow) {
     tl.to(
       prepRestShadow,
       {
         opacity: 0.55,
-        duration: 0.24,
-        ease: "power2.out"
+        duration: 0.25
       },
-      0.82
+      1.2
     );
   }
 }
