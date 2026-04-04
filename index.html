@@ -115,6 +115,25 @@
 
 <script src="libs/gsap.js"></script>
 <script src="script.js"></script>
+
+  <script>
+gsap.fromTo(".prep-note-sheet",
+{
+x: 300,
+y: -200,
+rotation: 12,
+scale: 0.9
+},
+{
+x: 0,
+y: 0,
+rotation: -2,
+scale: 1,
+duration: 1.2,
+ease: "power3.out"
+}
+);
+</script>
   
 </body>
 </html>
