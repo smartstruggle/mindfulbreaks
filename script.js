@@ -265,51 +265,50 @@ function showPrepNote() {
 
   const isMobile = window.innerWidth <= 768;
 
-  // START: riesig, weit rechts draußen, untere Kante praktisch unsichtbar
-  const startState = isMobile
- const start = isMobile
-  ? {
-      x: 760,
-      y: -150,
-      scale: 4.2,
-      rotation: -18,
-      rotationY: -42,
-      rotationX: -18,
-      skewX: -8
-    }
-  : {
-      x: 1500,
-      y: -260,
-      scale: 5.2,
-      rotation: -20,
-      rotationY: -46,
-      rotationX: -20,
-      skewX: -10
-    };
+  // START: sehr weit rechts draußen, sehr groß, noch KEIN Trapez
+  const start = isMobile
+    ? {
+        x: 760,
+        y: -150,
+        scale: 4.2,
+        rotation: -18,
+        rotationY: -42,
+        rotationX: -18,
+        skewX: -8
+      }
+    : {
+        x: 1500,
+        y: -260,
+        scale: 5.2,
+        rotation: -20,
+        rotationY: -46,
+        rotationX: -20,
+        skewX: -10
+      };
 
-  // MITTE: immer noch stark perspektivisch, jetzt trapezförmig
- const mid = isMobile
-  ? {
-      x: 150,
-      y: 10,
-      scale: 1.7,
-      rotation: -10,
-      rotationY: -14,
-      rotationX: -8,
-      skewX: -4
-    }
-  : {
-      x: 220,
-      y: 24,
-      scale: 1.9,
-      rotation: -11,
-      rotationY: -16,
-      rotationX: -8,
-      skewX: -5
-    };
+  // MITTE: kommt von rechts rein, jetzt beginnt die trapezartige Phase
+  const mid = isMobile
+    ? {
+        x: 150,
+        y: 10,
+        scale: 1.7,
+        rotation: -10,
+        rotationY: -14,
+        rotationX: -8,
+        skewX: -4
+      }
+    : {
+        x: 220,
+        y: 24,
+        scale: 1.9,
+        rotation: -11,
+        rotationY: -16,
+        rotationX: -8,
+        skewX: -5
+      };
 
   // KONTAKT: linke Klebekante setzt zuerst auf
-  const contactState = isMobile
+  const contact = isMobile
     ? {
         x: 18,
         y: 44,
@@ -331,8 +330,8 @@ function showPrepNote() {
         skewX: -1.5
       };
 
-  // ENDSTATE = dein bestehender finaler Zustand
-  const endState = isMobile
+  // ENDSTATE: bleibt bewusst so
+  const end = isMobile
     ? {
         x: 0,
         y: 54,
@@ -355,12 +354,12 @@ function showPrepNote() {
       };
 
   gsap.set(prepNote, {
-  clearProps: "transform",
-  transformOrigin: "8% 4%",
-  ...startState,
-  clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-  force3D: true
-});
+    clearProps: "transform",
+    transformOrigin: "8% 4%",
+    ...start,
+    clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+    force3D: true
+  });
 
   if (prepRestShadow) {
     gsap.set(prepRestShadow, {
@@ -374,17 +373,17 @@ function showPrepNote() {
     }
   });
 
-  // Phase 1: von rechts draußen rein, immer noch riesig und schräg
- tl.to(prepNote, {
-  ...midState,
-  clipPath: "polygon(14% 0%, 100% 0%, 92% 100%, 18% 100%)",
-  duration: 1.08,
-  ease: "power3.out"
-});
-
-  // Phase 2: Klebekante trifft zuerst, Form wird schmaler / gedrückter
+  // Phase 1: von rechts rein, Trapez beginnt erst hier
   tl.to(prepNote, {
-    ...contactState,
+    ...mid,
+    clipPath: "polygon(14% 0%, 100% 0%, 92% 100%, 18% 100%)",
+    duration: 1.08,
+    ease: "power3.out"
+  });
+
+  // Phase 2: Klebekante trifft zuerst
+  tl.to(prepNote, {
+    ...contact,
     clipPath: "polygon(2% 0%, 100% 0%, 98% 100%, 0% 100%)",
     duration: 0.42,
     ease: "power2.inOut"
@@ -392,9 +391,9 @@ function showPrepNote() {
 
   // Phase 3: kleines Andrücken / Streichen
   tl.to(prepNote, {
-    x: endState.x + 8,
-    y: endState.y - 4,
-    rotation: endState.rotation + 0.7,
+    x: end.x + 8,
+    y: end.y - 4,
+    rotation: end.rotation + 0.7,
     scaleX: 1.01,
     scaleY: 0.99,
     clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
@@ -404,7 +403,7 @@ function showPrepNote() {
 
   // Phase 4: settle in finale Position
   tl.to(prepNote, {
-    ...endState,
+    ...end,
     clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
     duration: 0.18,
     ease: "power2.out"
@@ -423,6 +422,7 @@ function showPrepNote() {
     );
   }
 }
+
 
 function showConfirmButton() {
   if (!prepConfirmButton) return;
