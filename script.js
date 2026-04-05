@@ -229,7 +229,6 @@ function showWaitingScreen() {
 function showBreakScreen() {
   document.body.classList.add("break-active");
   document.body.classList.remove("waiting-active");
-  document.body.classList.add('in-break');
 
   setupScreen.style.display = "none";
   waitingScreen.style.display = "none";
@@ -254,191 +253,254 @@ async function blurSetupScreenBeforePrep() {
   await wait(420);
 }
 
-function getStickyPositions() {
-  const isMobile = window.innerWidth <= 768;
-  return {
-    // START: Riesig (scale 22) von rechts oben
-    start: isMobile
-      ? { x: 1000, y: -300, scale: 6, rotX: 40, rotY: -15 } 
-      : { x: 3500, y: -900, scale: 22, rotX: 65, rotY: -25 },
-    normal: { x: 0, y: 150, rotation: -3 },
-    break: { x: 0, y: 400, rotation: -2 }
-  };
-}
+/* ANIMATION NOTE SHEET */
 
 function showPrepNote() {
-  if (!prepOverlay || !prepNote || !prepRestShadow) return;
-
-  appState = "prep";
-  prepOverlay.style.display = "flex";
-
-  // Button reset
-  if (prepConfirmButton) {
-    gsap.set(prepConfirmButton, { display: "none", opacity: 0 });
-  }
-
-  const isBreak = document.body.classList.contains('in-break');
-  const pos = getStickyPositions();
-  const start = pos.start;
-  const end = isBreak ? pos.break : pos.normal;
-
-  // SETUP
-  gsap.set([prepNote, prepRestShadow], {
-    xPercent: -50,
-    x: start.x,
-    y: start.y,
-    scale: start.scale,
-    rotationX: start.rotX,
-    rotationY: start.rotY,
-    rotationZ: 15,
-    opacity: 0,
-    transformOrigin: "50% 0%"
-  });
-
-  const tl = gsap.timeline({
-    onComplete: () => {
-      // Button unter dem Zettel einblenden
-      if (prepConfirmButton) {
-        const buttonY = end.y + (isBreak ? 350 : 380); // Positioniert den Button unter dem Zettel
-        gsap.set(prepConfirmButton, { display: "inline-flex", top: buttonY });
-        gsap.to(prepConfirmButton, { opacity: 1, duration: 0.5 });
-      }
-    }
-  });
-
-  // Flug
-  tl.to([prepNote, prepRestShadow], {
-    x: 0, 
-    y: end.y,
-    opacity: 1,
-    scale: 1, 
-    rotationX: 0,
-    rotationY: 0,
-    rotationZ: end.rotation,
-    duration: 2.0,
-    ease: "power2.inOut"
-  });
-
-  // Schatten-Finishing
-  tl.to(prepRestShadow, {
-    y: end.y + 10,
-    opacity: 0.6,
-    filter: "blur(14px)",
-    duration: 0.8
-  }, "-=0.8");
-}
-
-
-/* ==========================================================================
-3. BUTTONS & UI LOGIK (Aus deinem Original-Code erhalten)
-========================================================================== */
-function showConfirmButton() {
-if (!prepConfirmButton) return;
-prepConfirmButton.style.opacity = "1";
-prepConfirmButton.style.pointerEvents = "auto";
-prepConfirmButton.style.display = "inline-flex";
-}
-
-function hideConfirmButton() {
-if (!prepConfirmButton) return;
-prepConfirmButton.style.opacity = "0";
-prepConfirmButton.style.pointerEvents = "none";
-}
-
-function resetPrepNoteVisualState() {
 if (!prepOverlay || !prepNote) return;
+
+appState = "prep";
+prepOverlay.style.display = "flex";
+prepOverlay.classList.remove("prep-overlay-persistent");
 
 gsap.killTweensOf([prepNote, prepRestShadow]);
 
-prepOverlay.style.display = "none";
-prepOverlay.classList.remove("prep-overlay-persistent");
+const isMobile = window.innerWidth <= 768;
 
-// Wichtig: Alles zurücksetzen für den nächsten Flug
-gsap.set([prepNote, prepRestShadow], { clearProps: "all" });
-hideConfirmButton();
+// --- FIX Startposition: Weiter RECHTS und weiter OBEN (Über-die-Schulter) ---
+// x: 4200 (statt 3200) schiebt ihn außerhalb der Mitte rechts
+const start = isMobile
+? { x: 1800, y: -450, scale: 10, rotation: -25, rotationX: 80, rotationY: -15, opacity: 0.9 }
+: { x: 4200, y: -800, scale: 20, rotation: -28, rotationX: 85, rotationY: -25, opacity: 0.8 };
+
+// --- FIX Endposition: Deutlich TIEFER für wahre Mittigkeit ---
+// y: 350 (statt 230) zieht den Zettel in die vertikale Mitte des Screens
+const end = isMobile
+? { x: 0, y: 160, scale: 1, rotation: -3, rotationX: 0, rotationY: 0 }
+: { x: 0, y: 350, scale: 1, rotation: -3, rotationX: 0, rotationY: 0 };
+
+// Setup Note (Initial setting)
+gsap.set(prepNote, {
+xPercent: -50,
+yPercent: 0, // Wichtig: yPercent auf 0 setzen, da transformOrigin top ist
+transformOrigin: "50% 0%",
+...start
+});
+
+// Setup Schatten (Deine diffuse Schatten-Evolution erhalten)
+if (prepRestShadow) {
+gsap.set(prepRestShadow, {
+opacity: 0,
+scale: 3,
+filter: "blur(50px)",
+x: 150,
+y: 250,
+overflow: "visible"
+});
 }
 
-/* ==========================================================================
-4. CONTENT RENDERING (Aus deinem Original-Code erhalten)
-========================================================================== */
+const tl = gsap.timeline();
+
+// PHASE 1: Der flüssige, verkürzte Flug (Timings kohärent)
+tl.to(prepNote, {
+x: end.x,
+y: end.y,
+scale: 1.15, // Kurzzeitig etwas größer für Impact
+rotation: end.rotation - 2, // Leichter Overshoot der Rotation
+rotationX: 25, // Trapezform bleibt bis zur Landung
+rotationY: -10,
+duration: 2.2, // Schnellerer Start
+ease: "power2.inOut"
+});
+
+// Schatten materialisiert sich parallel
+if (prepRestShadow) {
+tl.to(prepRestShadow, {
+opacity: 0.4,
+scale: 1.5,
+filter: "blur(20px)",
+x: 40,
+y: 80,
+duration: 2.2,
+ease: "power2.inOut"
+}, 0);
+}
+
+// PHASE 2: Der Impact (Haptisches Andrücken)
+tl.to(prepNote, {
+rotationX: 0, // Zettel wird flach
+rotationY: 0,
+rotation: end.rotation,
+scale: end.scale,
+duration: 0.7,
+ease: "back.out(1.1)", // Sehr subtiler snap
+onComplete: () => {
+prepOverlay.classList.add("prep-overlay-persistent");
+}
+});
+
+// Schatten-Finale
+if (prepRestShadow) {
+tl.to(prepRestShadow, {
+opacity: 0.6,
+scale: 1,
+filter: "blur(12px)",
+x: 0,
+y: 12,
+duration: 1.0
+}, "-=0.7");
+}
+}
+
+
+
+
+
+function showConfirmButton() {
+  if (!prepConfirmButton) return;
+  prepConfirmButton.style.opacity = "1";
+  prepConfirmButton.style.pointerEvents = "auto";
+  prepConfirmButton.style.display = "inline-flex";
+}
+
+function hideConfirmButton() {
+  if (!prepConfirmButton) return;
+  prepConfirmButton.style.opacity = "0";
+  prepConfirmButton.style.pointerEvents = "none";
+}
+
+function resetPrepNoteVisualState() {
+  if (!prepOverlay || !prepNote) return;
+
+  gsap.killTweensOf(prepNote);
+  if (prepFlightShadow) gsap.killTweensOf(prepFlightShadow);
+  if (prepRestShadow) gsap.killTweensOf(prepRestShadow);
+
+  prepOverlay.style.display = "none";
+  prepOverlay.classList.remove("prep-overlay-persistent");
+  prepNote.classList.remove("is-taking-away");
+  prepNote.classList.remove("is-placing");
+
+  gsap.set(prepNote, { clearProps: "transform" });
+
+  if (prepFlightShadow) {
+    gsap.set(prepFlightShadow, {
+      clearProps: "transform,opacity,filter"
+    });
+  }
+
+  if (prepRestShadow) {
+    gsap.set(prepRestShadow, {
+      opacity: 0.55
+    });
+  }
+}
 function renderPrepIntroNote() {
-if (!prepNoteContent) return;
-prepNoteContent.innerHTML = `
-<div class="note-copy note-copy-intro">
-<div class="note-main-text">Deine Pause ist<br>eingeplant 🌿🍵</div>
-<div class="note-checklist">
-<div class="note-check-item">✓ Erinnerung aktiv</div>
-<div class="note-check-item">✓ Gong ist an</div>
-</div>
-</div>`;
+  if (!prepNoteContent) return;
+
+  prepNoteContent.innerHTML = `
+    <div class="note-copy note-copy-intro">
+      <div class="note-main-text">
+        Deine Pause ist<br>
+        eingeplant 🌿🍵
+      </div>
+
+      <div class="note-checklist">
+        <div class="note-check-item">✓ Erinnerung aktiv</div>
+        <div class="note-check-item">✓ Gong ist an</div>
+      </div>
+    </div>
+  `;
 }
 
 function renderWaitingNote(startTime) {
-if (!prepNoteContent) return;
-prepNoteContent.innerHTML = `
-<div class="note-copy note-copy-waiting">
-<div id="note-handwriting-line-1" class="note-handwriting-line"></div>
-</div>`;
-const line1 = document.getElementById("note-handwriting-line-1");
-return typeText(line1, `Deine nächste Pause ist um ${startTime}.`, 52);
+  if (!prepNoteContent) return;
+
+  prepNoteContent.innerHTML = `
+    <div class="note-copy note-copy-waiting">
+      <div id="note-handwriting-line-1" class="note-handwriting-line"></div>
+    </div>
+  `;
+
+  const line1 = document.getElementById("note-handwriting-line-1");
+  return typeText(line1, `Deine nächste Pause ist um ${startTime}.`, 52);
 }
 
 function renderBreakNote() {
-if (!prepNoteContent) return;
-prepNoteContent.innerHTML = `
-<div class="note-copy note-copy-break">
-<div id="note-handwriting-line-1" class="note-handwriting-line"></div>
-</div>`;
-const line1 = document.getElementById("note-handwriting-line-1");
-return typeText(line1, "Schöne Pause", 48);
+  if (!prepNoteContent) return;
+
+  prepNoteContent.innerHTML = `
+    <div class="note-copy note-copy-break">
+      <div id="note-handwriting-line-1" class="note-handwriting-line"></div>
+    </div>
+  `;
+
+  const line1 = document.getElementById("note-handwriting-line-1");
+  return typeText(line1, "Schöne Pause", 48);
 }
 
 async function appendBreakClosingNote() {
-if (!prepNoteContent) return;
-let wrap = prepNoteContent.querySelector(".note-copy-break");
-if (!wrap) {
-wrap = document.createElement("div");
-wrap.className = "note-copy note-copy-break";
-prepNoteContent.innerHTML = "";
-prepNoteContent.appendChild(wrap);
-}
-let line2 = document.getElementById("note-handwriting-line-2");
-if (!line2) {
-line2 = document.createElement("div");
-line2.id = "note-handwriting-line-2";
-line2.className = "note-handwriting-line note-handwriting-line-secondary";
-wrap.appendChild(line2);
-}
-await typeText(line2, "Danke, dass du dir heute Zeit für dich genommen hast.", 38);
+  if (!prepNoteContent) return;
+
+  let wrap = prepNoteContent.querySelector(".note-copy-break");
+  if (!wrap) {
+    wrap = document.createElement("div");
+    wrap.className = "note-copy note-copy-break";
+    prepNoteContent.innerHTML = "";
+    prepNoteContent.appendChild(wrap);
+  }
+
+  let line2 = document.getElementById("note-handwriting-line-2");
+  if (!line2) {
+    line2 = document.createElement("div");
+    line2.id = "note-handwriting-line-2";
+    line2.className = "note-handwriting-line note-handwriting-line-secondary";
+    wrap.appendChild(line2);
+  }
+
+  await typeText(line2, "Danke, dass du dir heute Zeit für dich genommen hast.", 38);
 }
 
-/* ==========================================================================
-5. UTILS (Typing, Fading, Swap)
-========================================================================== */
-async function typeText(element, text, speed = 42) {
-if (!element) return;
-typingToken += 1;
-const currentToken = typingToken;
-element.textContent = "";
-for (let i = 0; i < text.length; i++) {
-if (currentToken !== typingToken) return;
-element.textContent += text[i];
-await wait(speed);
-}
+async function fadeNoteContentOut(duration = 380) {
+  if (!prepNoteContent) return;
+
+  prepNoteContent.style.transition = `opacity ${duration}ms ease`;
+  prepNoteContent.style.opacity = "0";
+  await wait(duration);
 }
 
 async function swapNoteContent(renderFn) {
-if (!prepNoteContent) return;
-prepNoteContent.style.transition = "opacity 320ms ease";
-prepNoteContent.style.opacity = "0";
-await wait(320);
-resetTypingToken();
-prepNoteContent.innerHTML = "";
-prepNoteContent.style.opacity = "1";
-const maybePromise = renderFn();
-if (maybePromise instanceof Promise) await maybePromise;
+  if (!prepNoteContent) return;
+
+  await fadeNoteContentOut(320);
+  resetTypingToken();
+  prepNoteContent.innerHTML = "";
+  prepNoteContent.style.transition = "none";
+  prepNoteContent.style.opacity = "1";
+
+  const maybePromise = renderFn();
+  if (maybePromise instanceof Promise) {
+    await maybePromise;
+  }
 }
 
+/* =========================
+   TYPING EFFECT
+========================= */
+
+async function typeText(element, text, speed = 42) {
+  if (!element) return;
+
+  typingToken += 1;
+  const currentToken = typingToken;
+
+  element.textContent = "";
+
+  for (let i = 0; i < text.length; i++) {
+    if (currentToken !== typingToken) return;
+    element.textContent += text[i];
+    await wait(speed);
+  }
+}
 
 /* =========================
    APP STATE / FLOW
@@ -630,7 +692,7 @@ async function triggerBreakEnd() {
   if (endingSequenceRunning) return;
   endingSequenceRunning = true;
   appState = "ending";
-document.body.classList.remove('in-break');
+
   clearIntervals();
   updateFlipClock(0);
 
