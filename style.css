@@ -696,17 +696,16 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
     inset 0 -1px 1px rgba(0, 0, 0, 0.35);
 }
 
-/* =========================
-   PREP OVERLAY & STICKY SYSTEM 
-   ========================= */
+/* ==========================================================================
+   PREP OVERLAY & STICKY SYSTEM (FINALE OPTIK)
+   ========================================================================== */
 .prep-overlay {
   position: fixed;
   inset: 0;
   z-index: 999;
-  display: none; /* Wird per JS auf flex gesetzt */
-  align-items: flex-start; 
+  display: none;
+  align-items: flex-start;
   justify-content: center;
-  pointer-events: auto;
   perspective: 2000px;
   transform-style: preserve-3d;
 }
@@ -715,16 +714,16 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: rgba(28, 30, 36, 0.2); /* Etwas dunkler für Fokus */
+  background: rgba(0, 0, 0, 0.1);
   pointer-events: none;
 }
 
-/* STICKY SHEET */
+/* DER ZETTEL (MIT TEXTUR) */
 .prep-note-sheet {
   position: absolute;
   z-index: 2;
-  left: 50%; /* Horizontaler Anker */
-  top: 0;    /* Vertikaler Anker */
+  left: 50%;
+  top: 0;
   width: 387px;
   min-height: 363px;
   padding: 80px 26px 24px;
@@ -736,25 +735,32 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
   display: flex;
   flex-direction: column;
   align-items: center;
+  backface-visibility: hidden;
 }
 
-/* Der Button (Muss innerhalb des Overlays, aber außerhalb des Zettels oder darunter sein) */
-#prep-confirm-button {
-  margin-top: 500px; /* Platzhalter, wird von GSAP animiert */
-  z-index: 10;
-  display: none;
-  opacity: 0;
-  pointer-events: auto;
-  cursor: pointer;
+/* DIE KLEBEKANTE & TEXTUR */
+.prep-note-sheet::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(to bottom, rgba(214, 137, 14, 0.82) 0px, rgba(208, 131, 10, 0.78) 22px, rgba(201, 124, 7, 0.64) 38px, rgba(190, 116, 5, 0.42) 52px, rgba(255, 236, 170, 0.18) 52px, rgba(255, 255, 255, 0.00) 68px),
+    linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 22%, rgba(0,0,0,0.018) 58%, rgba(255,255,255,0.02) 100%),
+    radial-gradient(rgba(118, 88, 18, 0.11) 0.45px, transparent 0.95px),
+    radial-gradient(circle at 18% 26%, rgba(255,255,255,0.08) 0%, transparent 16%),
+    radial-gradient(circle at 72% 68%, rgba(120,90,20,0.05) 0%, transparent 18%);
+  background-size: 100% 100%, 100% 100%, 5px 5px, 100% 100%, 100% 100%;
+  opacity: 0.92;
 }
 
-/* REST SHADOW */
+/* DER SCHATTEN */
 .prep-rest-shadow {
   position: absolute;
   z-index: 1;
   width: 387px;
   height: 363px;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0,0,0,0.45);
   filter: blur(12px);
   left: 50%;
   top: 0;
@@ -764,10 +770,21 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
   -webkit-mask-image: linear-gradient(to bottom right, transparent 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.6) 70%, black 100%);
 }
 
-/* Text-Klassen erhalten */
-.note-main-text { font-family: "Caveat", cursive; font-size: 28px; color: #2e2210; text-align: center; }
-.note-handwriting-line { font-family: "Caveat", cursive; font-size: 32px; color: #2e2210; text-align: center; }
+/* SCHRIFT-STYLING */
+.note-main-text, .note-handwriting-line {
+  font-family: "Caveat", cursive !important;
+  color: rgba(46, 34, 16, 0.92);
+  position: relative;
+  z-index: 5;
+}
 
-@media (max-width: 768px) {
-  .prep-note-sheet, .prep-rest-shadow { width: 280px; min-height: 260px; }
+/* DER BUTTON UNTER DEM ZETTEL */
+#prep-confirm-button {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: none;
+  opacity: 0;
+  cursor: pointer;
 }
