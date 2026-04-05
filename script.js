@@ -266,92 +266,92 @@ gsap.killTweensOf([prepNote, prepRestShadow]);
 
 const isMobile = window.innerWidth <= 768;
 
-// --- START: Riesig, von rechts oben "über die Schulter" ---
+// --- FIX Startposition: Weiter RECHTS und weiter OBEN (Über-die-Schulter) ---
+// x: 4200 (statt 3200) schiebt ihn außerhalb der Mitte rechts
 const start = isMobile
-? { x: 1200, y: -300, scale: 10, rotation: -20, rotationX: 75, opacity: 0.8 }
-: { x: 3500, y: -600, scale: 22, rotation: -25, rotationX: 85, opacity: 0.7 };
+? { x: 1800, y: -450, scale: 10, rotation: -25, rotationX: 80, rotationY: -15, opacity: 0.9 }
+: { x: 4200, y: -800, scale: 20, rotation: -28, rotationX: 85, rotationY: -25, opacity: 0.8 };
 
-// --- CONTACT: Klebekante oben trifft auf (TIEFER & MITTIGER) ---
-const contact = isMobile
-? { x: 0, y: 150, scale: 1.1, rotation: -5, rotationX: 20 }
-: { x: 0, y: 220, scale: 1.15, rotation: -5, rotationX: 25 };
-
-// --- END: Exakte Endposition ---
+// --- FIX Endposition: Deutlich TIEFER für wahre Mittigkeit ---
+// y: 350 (statt 230) zieht den Zettel in die vertikale Mitte des Screens
 const end = isMobile
-? { x: 0, y: 160, scale: 1, rotation: -3, rotationX: 0 }
-: { x: 0, y: 230, scale: 1, rotation: -3, rotationX: 0 };
+? { x: 0, y: 160, scale: 1, rotation: -3, rotationX: 0, rotationY: 0 }
+: { x: 0, y: 350, scale: 1, rotation: -3, rotationX: 0, rotationY: 0 };
 
-// Setup Note
+// Setup Note (Initial setting)
 gsap.set(prepNote, {
-xPercent: -50, yPercent: -50,
+xPercent: -50,
+yPercent: 0, // Wichtig: yPercent auf 0 setzen, da transformOrigin top ist
 transformOrigin: "50% 0%",
 ...start
 });
 
-// Setup Schatten (Riesig & weich)
+// Setup Schatten (Deine diffuse Schatten-Evolution erhalten)
 if (prepRestShadow) {
 gsap.set(prepRestShadow, {
-opacity: 0.1,
+opacity: 0,
 scale: 3,
-filter: "blur(60px)",
-x: 100,
-y: 150
+filter: "blur(50px)",
+x: 150,
+y: 250,
+overflow: "visible"
 });
 }
 
 const tl = gsap.timeline();
 
-// PHASE 1: Der zügige Flug (Kohärentes Easing)
+// PHASE 1: Der flüssige, verkürzte Flug (Timings kohärent)
 tl.to(prepNote, {
-x: contact.x,
-y: contact.y,
-scale: contact.scale,
-rotation: contact.rotation,
-rotationX: contact.rotationX,
-opacity: 1,
+x: end.x,
+y: end.y,
+scale: 1.15, // Kurzzeitig etwas größer für Impact
+rotation: end.rotation - 2, // Leichter Overshoot der Rotation
+rotationX: 25, // Trapezform bleibt bis zur Landung
+rotationY: -10,
 duration: 2.2, // Schnellerer Start
 ease: "power2.inOut"
 });
 
+// Schatten materialisiert sich parallel
 if (prepRestShadow) {
 tl.to(prepRestShadow, {
-opacity: 0.6,
-scale: 1.1,
-filter: "blur(15px)",
-x: 15,
-y: 30,
+opacity: 0.4,
+scale: 1.5,
+filter: "blur(20px)",
+x: 40,
+y: 80,
 duration: 2.2,
 ease: "power2.inOut"
 }, 0);
 }
 
-// PHASE 2: Das Andrücken (Die "Trapez-zu-Rechteck" Bewegung)
+// PHASE 2: Der Impact (Haptisches Andrücken)
 tl.to(prepNote, {
-rotationX: -10, // Kurz gegendrücken
-duration: 0.4,
-ease: "sine.inOut"
-});
-
-// PHASE 3: Settle & Endposition
-tl.to(prepNote, {
-...end,
-duration: 0.8,
-ease: "elastic.out(1, 0.85)",
+rotationX: 0, // Zettel wird flach
+rotationY: 0,
+rotation: end.rotation,
+scale: end.scale,
+duration: 0.7,
+ease: "back.out(1.1)", // Sehr subtiler snap
 onComplete: () => {
 prepOverlay.classList.add("prep-overlay-persistent");
 }
 });
 
+// Schatten-Finale
 if (prepRestShadow) {
 tl.to(prepRestShadow, {
-opacity: 0.5,
-filter: "blur(8px)",
-x: 10,
-y: 15,
-duration: 0.8
-}, "-=0.8");
+opacity: 0.6,
+scale: 1,
+filter: "blur(12px)",
+x: 0,
+y: 12,
+duration: 1.0
+}, "-=0.7");
 }
 }
+
+
 
 
 
