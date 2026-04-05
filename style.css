@@ -700,36 +700,34 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
    PREP OVERLAY
 ========================= */
 
+/* =========================
+PREP OVERLAY (The 3D Stage)
+========================= */
 .prep-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: auto;
-  overflow: hidden;
+position: fixed;
+inset: 0;
+z-index: 999;
+display: flex;
+align-items: center;
+justify-content: center;
+pointer-events: auto;
 
-  perspective: 1400px;
-  transform-style: preserve-3d;
+/* WICHTIG: Damit der riesige Zettel am Anfang nicht abgeschnitten wird */
+overflow: visible;
+
+/* Deine Kameralinse */
+perspective: 1400px;
+transform-style: preserve-3d;
 }
 
 .prep-backdrop {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background: rgba(28, 30, 36, 0.015);
-  transition: opacity 0.35s ease;
+position: absolute;
+inset: 0;
+z-index: 0;
+background: rgba(28, 30, 36, 0.015);
+transition: opacity 0.35s ease;
+pointer-events: none; /* Klicks gehen durch den Hintergrund durch */
 }
-
-.prep-overlay.prep-overlay-persistent {
-  pointer-events: none;
-}
-
-.prep-overlay.prep-overlay-persistent .prep-backdrop {
-  opacity: 0;
-}
-
 
 /* =========================
 STICKY SHEET (PAPER FIRST - TUNED)
@@ -1005,43 +1003,31 @@ FLIGHT SHADOW
 
 
 /* =========================
-   PERSISTENT STICKY POSITION
+PERSISTENT STICKY POSITION
+Hier definieren wir NUR die Endposition.
 ========================= */
 
+/* Desktop Endposition */
 .prep-overlay.prep-overlay-persistent .prep-note-sheet {
-  transform:
-    translateX(0)
-    translateY(118px)
-    rotate(-3deg)
-    skewX(0deg)
-    scaleX(1)
-    scaleY(1);
+/* Wir nutzen hier transform-Werte, die zu deinem JS 'end' passen */
+transform: translate3d(0, 118px, 0) rotate(-3deg);
 }
 
-/*.prep-overlay.prep-overlay-persistent .prep-rest-shadow {
-opacity: 0.6; /* Weniger ist mehr für Realismus */
-filter: blur(18px);
-transform:
-translateX(45px)
-translateY(165px)
-skewX(-6deg)
-rotate(1deg)
-scale(1.02); /* Minimal größer als der Zettel wirken lassen */
-}*/
+/* Mobile Endposition (Angenommen dein Media Query fängt hier an) */
+@media (max-width: 768px) {
+.prep-overlay.prep-overlay-persistent .prep-note-sheet {
+transform: translate3d(0, 54px, 0) rotate(-3deg);
+}
+}
 
-
-
-
-
-
+/* Schatten-Handling */
 .prep-overlay.prep-overlay-persistent .prep-flight-shadow {
-  opacity: 0;
-  transform:
-    translateX(0)
-    translateY(126px)
-    skewX(0deg)
-    scaleX(1)
-    scaleY(0.72);
+display: none; /* Flugschatten weg, wenn fixiert */
+}
+
+.prep-overlay.prep-overlay-persistent .prep-rest-shadow {
+opacity: 0.55;
+/* Dein Schatten-Style hier */
 }
 
 /* =========================
