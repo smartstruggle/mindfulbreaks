@@ -253,6 +253,8 @@ async function blurSetupScreenBeforePrep() {
   await wait(420);
 }
 
+/* ANIMATION NOTE SHEET */
+
 function showPrepNote() {
 if (!prepOverlay || !prepNote) return;
 
@@ -260,94 +262,115 @@ appState = "prep";
 prepOverlay.style.display = "flex";
 prepOverlay.classList.remove("prep-overlay-persistent");
 
-// Altes stoppen, um Überlappungen zu vermeiden
-gsap.killTweensOf(prepNote);
-if (prepRestShadow) gsap.killTweensOf(prepRestShadow);
+gsap.killTweensOf([prepNote, prepRestShadow]);
 
 const isMobile = window.innerWidth <= 768;
 
-// 1. START: Riesig, rechts außen, fast flach (als würde man ihn gerade halten)
+// --- 1. START: Extrem nah am Auge (Riesig) ---
 const start = isMobile
-? { x: 1300, y: -200, scale: 7.0, rotation: -20, rotationY: 0, rotationX: 0 }
-: { x: 2800, y: -350, scale: 9.5, rotation: -22, rotationY: 0, rotationX: 0 };
+? { x: 1500, y: -300, scale: 12, rotation: -25, rotationX: 75, rotationY: -20, opacity: 0.8 }
+: { x: 3500, y: -500, scale: 22, rotation: -30, rotationX: 85, rotationY: -30, opacity: 0.7 };
 
-// 2. MID (FLUG): Kippt nach hinten -> Trapezform entsteht durch rotationX/Y
+// --- 2. MID: Der Flug (Trapez wird sichtbar, nähert sich an) ---
 const mid = isMobile
-? { x: 400, y: 0, scale: 2.5, rotation: -12, rotationY: -35, rotationX: -25 }
-: { x: 800, y: 40, scale: 3.2, rotation: -15, rotationY: -45, rotationX: -30 };
+? { x: 500, y: -50, scale: 4.5, rotation: -15, rotationX: 55, rotationY: -15, opacity: 1 }
+: { x: 1000, y: 0, scale: 6.5, rotation: -18, rotationX: 60, rotationY: -20, opacity: 1 };
 
-// 3. CONTACT (LANDUNG): Die Klebekante trifft auf, Druck wird simuliert
+// --- 3. CONTACT: Klebekante oben tippt auf ---
 const contact = isMobile
-? { x: 20, y: 60, scale: 1.15, rotation: -6, rotationY: -5, rotationX: 5 }
-: { x: 15, y: 135, scale: 1.18, rotation: -6, rotationY: -8, rotationX: 8 };
+? { x: 10, y: 60, scale: 1.1, rotation: -6, rotationX: 25, rotationY: -5 }
+: { x: 10, y: 130, scale: 1.15, rotation: -6, rotationX: 30, rotationY: -8 };
 
-// 4. END (SETTLE): Zettel liegt flach und entspannt
-const end = isMobile
-? { x: 0, y: 65, scale: 1, rotation: -3, rotationY: 0, rotationX: 0 }
-: { x: 0, y: 145, scale: 1, rotation: -3, rotationY: 0, rotationX: 0 };
+// --- 4. END: Flach angeklebt ---
+const end = { x: 0, y: isMobile ? 75 : 155, scale: 1, rotation: -3, rotationX: 0, rotationY: 0 };
 
-// Setup: Wir setzen den Zettel auf die Startposition
+// Initiales Setup Sticky Note
 gsap.set(prepNote, {
-position: "absolute",
-left: "50%",
-top: "50%",
-xPercent: -50,
-yPercent: -50,
-transformOrigin: "50% 0%", // Wichtig für das "Andrücken" oben
-force3D: true,
+xPercent: -50, yPercent: -50,
+transformOrigin: "50% 0%",
 ...start
 });
 
+// Initiales Setup Schatten (Riesig, hell, sehr blurrig)
+if (prepRestShadow) {
+gsap.set(prepRestShadow, {
+opacity: 0.1,
+scale: 2.5,
+filter: "blur(60px)",
+x: 100,
+y: 200
+});
+}
+
 const tl = gsap.timeline();
 
-// --- PHASE 1: DER FLUG (Vom Riesen-Rechteck zum Trapez) ---
+// PHASE 1: Der langsame, majestätische Flug aus dem Nichts
 tl.to(prepNote, {
 ...mid,
-duration: 1.4,
-ease: "power2.inOut" // Geschmeidiger Start und Flug
+duration: 3.5,
+ease: "power1.inOut"
 });
 
-// --- PHASE 2: DER IMPACT (Das Andrücken) ---
+// Schatten bewegt sich mit: Wird dunkler, kleiner, schärfer
+if (prepRestShadow) {
+tl.to(prepRestShadow, {
+opacity: 0.5,
+scale: 1.2,
+filter: "blur(15px)",
+x: 30,
+y: 60,
+duration: 3.5,
+ease: "power1.inOut"
+}, 0);
+}
+
+// PHASE 2: Landung der Klebekante (Ankleben beginnt)
 tl.to(prepNote, {
 ...contact,
-duration: 0.3,
-ease: "back.out(1.2)", // Kleiner "Snap" beim Aufprall
-onStart: () => {
-// Wir wechseln den Origin auf die linke obere Ecke für den Druck-Effekt
-gsap.set(prepNote, { transformOrigin: "0% 0%" });
-}
+duration: 1.2,
+ease: "power2.out"
 });
 
-// --- PHASE 3: DER DRUCK-SCHUBS (Von links nach rechts) ---
+if (prepRestShadow) {
+tl.to(prepRestShadow, {
+opacity: 0.7,
+scale: 1.0,
+filter: "blur(8px)",
+x: 10,
+y: 20,
+duration: 1.2
+}, "-=1.2");
+}
+
+// PHASE 3: Der Druck-Effekt (Oberkante fixiert, Unterkante drückt flach)
 tl.to(prepNote, {
-x: end.x + 10, // Minimaler Schubs nach rechts während des Drückens
-skewX: 3, // Verformt das Papier kurzzeitig durch den Druck
-duration: 0.15,
+rotationX: -15, // Kurz "überdrücken" für haptisches Feedback
+scaleY: 0.98,
+duration: 0.4,
 ease: "sine.inOut"
 });
 
-// --- PHASE 4: SETTLE (Entspannung in die Endform) ---
+// PHASE 4: Settle (Papier entspannt sich)
 tl.to(prepNote, {
 ...end,
-skewX: 0,
-duration: 0.7,
-ease: "elastic.out(1, 0.75)", // Sanftes Nachschwingen der unteren Kante
+scaleY: 1,
+duration: 1.5,
+ease: "elastic.out(1, 0.85)",
 onComplete: () => {
 prepOverlay.classList.add("prep-overlay-persistent");
 }
 });
 
-// Schatten-Steuerung synchron zum Flug
 if (prepRestShadow) {
-gsap.set(prepRestShadow, { opacity: 0 });
 tl.to(prepRestShadow, {
-opacity: 0.55,
-duration: 0.4,
-ease: "power2.out"
-}, "-=0.6"); // Startet kurz vor dem Settle
+opacity: 0.6,
+filter: "blur(12px)",
+x: 0,
+y: 10,
+duration: 1.5
+}, "-=1.5");
 }
 }
-
 
 
 function showConfirmButton() {
