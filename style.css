@@ -700,6 +700,11 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
 PREP OVERLAY & STICKY SYSTEM
 ========================= */
 
+
+Natalie Weskamp <natalie.weskamp@googlemail.com>
+17:50 (vor 0 Minuten)
+an mich
+
 /* =========================
 PREP OVERLAY (Optimiert für GSAP)
 ========================= */
@@ -711,7 +716,7 @@ display: flex;
 align-items: center;
 justify-content: center;
 pointer-events: auto;
-overflow: visible; /* Wichtig für den riesigen Schatten */
+overflow: visible;
 perspective: 1400px;
 transform-style: preserve-3d;
 }
@@ -724,74 +729,32 @@ background: rgba(28, 30, 36, 0.015);
 pointer-events: none;
 }
 
-/* STICKY SHEET */
+/* STICKY SHEET - Kombinierte Version mit deiner Textur */
 .prep-note-sheet {
 position: relative;
 z-index: 2;
 isolation: isolate;
 width: 387px;
 min-height: 363px;
-padding: 46px 26px 24px;
+/* Padding-Top 80px für den Klebestreifen-Abstand */
+padding: 80px 26px 24px;
 box-sizing: border-box;
 border-radius: 1px;
-
-/* FIX 1: Clip-Path entfernt, damit der Schatten nicht abgeschnitten wird */
 overflow: visible;
 
 background: linear-gradient(180deg, #f6e548 0%, #f2de2f 54%, #e6cb1e 100%);
 border: 1px solid rgba(126, 98, 18, 0.20);
 box-shadow: none;
 
-/* Ankerpunkt für GSAP-Andrücken */
+/* Dynamische Basis */
+left: 50%;
 transform-origin: 50% 0%;
 will-change: transform, opacity;
 backface-visibility: hidden;
 transform-style: preserve-3d;
 }
 
-/* REST SHADOW (Deine SVG-Logik erhalten) */
-.prep-rest-shadow {
-position: absolute;
-z-index: 1;
-pointer-events: none;
-width: 440px;
-height: auto;
-background: rgba(0,0,0,0.4); /* Fallback */
-border-radius: 2px;
-will-change: transform, opacity, filter;
-filter: blur(3px);
-
-mask-image: linear-gradient(to bottom right, transparent 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.6) 70%, black 100%);
--webkit-mask-image: linear-gradient(to bottom right, transparent 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.6) 70%, black 100%);
-
-/* Transform-Werte entfernt, damit GSAP volle Kontrolle hat */
-}
-
-/* FIX 2: Wir leeren die CSS-Fallback-Koordinaten komplett!
-Damit verhindern wir das Springen am Ende der Animation. */
-.prep-overlay.prep-overlay-persistent .prep-note-sheet {
-/* Keine transform-Werte hier! */
-}
-
-/* Der Zettel-Container */
-.prep-note-sheet {
-position: relative;
-z-index: 2;
-width: 387px;
-min-height: 363px;
-/* Padding-Top erhöht, damit Text SICHER unter dem Klebestreifen (68px) startet */
-padding: 80px 26px 24px;
-box-sizing: border-box;
-border-radius: 1px;
-overflow: visible;
-background: linear-gradient(180deg, #f6e548 0%, #f2de2f 54%, #e6cb1e 100%);
-border: 1px solid rgba(126, 98, 18, 0.20);
-transform-origin: 50% 0%;
-will-change: transform, opacity;
-transform-style: preserve-3d;
-}
-
-/* Klebestreifen & Textur (unverändert) */
+/* Klebestreifen & Textur (Deine Logik komplett erhalten) */
 .prep-note-sheet::before {
 content: "";
 position: absolute;
@@ -808,7 +771,7 @@ background-size: 100% 100%, 100% 100%, 5px 5px, 100% 100%, 100% 100%, 100% 100%;
 opacity: 0.92;
 }
 
-/* Der Schatten (exakt unter dem Zettel) */
+/* DER SCHATTEN (Synchron zum Zettel) */
 .prep-rest-shadow {
 position: absolute;
 z-index: 1;
@@ -816,37 +779,33 @@ width: 387px;
 height: 363px;
 background: rgba(0,0,0,0.4);
 filter: blur(12px);
+left: 50%;
 transform-origin: 50% 0%;
 mask-image: linear-gradient(to bottom right, transparent 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.6) 70%, black 100%);
 -webkit-mask-image: linear-gradient(to bottom right, transparent 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.6) 70%, black 100%);
 pointer-events: none;
+will-change: transform, opacity, filter;
 }
 
-/* --- PERSISTENTE POSITIONEN --- */
+/* --- PERSISTENTE POSITIONEN ---
+Wir entfernen hier die harten 'transform' Werte,
+damit GSAP nach der Landung nicht überschrieben wird. */
 
-/* 1. Standard (Start & Transition): Schön mittig und hoch */
 .prep-overlay.prep-overlay-persistent .prep-note-sheet,
 .prep-overlay.prep-overlay-persistent .prep-rest-shadow {
-  left: 50%;
-  top: 0;
+left: 50%;
+top: 0;
+/* transform wird jetzt rein von GSAP gesteuert */
 }
 
-/* 2. Break-Screen: Zettel rutscht tiefer, um Platz für die Uhr zu machen */
-body.in-break .prep-overlay.prep-overlay-persistent .prep-note-sheet,
-body.in-break .prep-overlay.prep-overlay-persistent .prep-rest-shadow {
-/* y von 118px auf 420px erhöht -> Abstand zur Flip-Clock */
-transform: translate3d(-50%, 420px, 0) rotate(-2deg) !important;
-}
-
-/* --- CONTENT KONSISTENZ --- */
-
+/* --- CONTENT KONSISTENZ (Unverändert) --- */
 .prep-note-inner {
 position: relative;
 z-index: 2;
 display: flex;
 flex-direction: column;
 align-items: center;
-justify-content: flex-start; /* Oben ausrichten */
+justify-content: flex-start;
 gap: 20px;
 width: 100%;
 }
@@ -857,7 +816,6 @@ color: rgba(46, 34, 16, 0.92);
 font-family: "Caveat", cursive;
 }
 
-/* Fixierte Schriftgrößen - Kein Switchen mehr! */
 .note-main-text {
 font-size: 26px !important;
 line-height: 1.1;
@@ -881,16 +839,10 @@ margin-top: 10px;
 width: 280px;
 min-height: 260px;
 }
-.prep-overlay.prep-overlay-persistent .prep-note-sheet,
-.prep-overlay.prep-overlay-persistent .prep-rest-shadow {
-transform: translate3d(-50%, 80px, 0) rotate(-3deg) !important;
-}
-body.in-break .prep-overlay.prep-overlay-persistent .prep-note-sheet {
-transform: translate3d(-50%, 350px, 0) rotate(-2deg) !important;
-}
 }
 
 body.night .prep-rest-shadow {
 opacity: 0.45;
 filter: blur(4px) brightness(0.3);
 }
+
