@@ -255,36 +255,26 @@ async function blurSetupScreenBeforePrep() {
 }
 
 /* ==========================================================================
-STICKY NOTE ENGINE - FINAL VERSION (SYNCED & RESPONSIVE)
+1. DAS STEUERPULT (Positions-Konfiguration)
 ========================================================================== */
-
-/**
-* 1. DAS STEUERPULT (Positions-Konfiguration)
-* x: 0 bedeutet exakte Mitte (dank xPercent: -50 im Motor).
-*/
 function getStickyPositions() {
 const isMobile = window.innerWidth <= 768;
 return {
-// START: Kommt gigantisch von weit oben rechts
 start: isMobile
 ? { x: 1500, y: -600, scale: 10, rotX: 70, rotY: -15 }
 : { x: 5000, y: -1500, scale: 30, rotX: 85, rotY: -35 },
-
-// NORMAL: Start- & Waiting-Screen (Mittig & Mutig oben)
 normal: isMobile
 ? { x: 0, y: 80, rotation: -3 }
 : { x: 0, y: 120, rotation: -3 },
-
-// BREAK: Unter der Uhr mittig platziert
 break: isMobile
 ? { x: 0, y: 350, rotation: -2 }
 : { x: 0, y: 420, rotation: -2 }
 };
 }
 
-/**
-* 2. DIE ANIMATIONS-ENGINE
-*/
+/* ==========================================================================
+2. DIE HAUPT-ANIMATION (showPrepNote) - AKTUALISIERT & SYNCED
+========================================================================== */
 function showPrepNote() {
 if (!prepOverlay || !prepNote || !prepRestShadow) return;
 
@@ -299,7 +289,7 @@ prepOverlay.classList.remove("prep-overlay-persistent");
 
 gsap.killTweensOf([prepNote, prepRestShadow]);
 
-// INITIAL SETUP: Zettel und Schatten absolut identisch deckungsgleich
+// INITIAL SETUP: Zettel und Schatten absolut deckungsgleich
 const sharedSetup = {
 left: "50%",
 top: 0,
@@ -319,10 +309,12 @@ gsap.set(prepRestShadow, { filter: "blur(60px)", opacity: 0 });
 const tl = gsap.timeline({
 onComplete: () => {
 prepOverlay.classList.add("prep-overlay-persistent");
+// Zeigt den Bestätigen-Button erst nach der Landung
+showConfirmButton();
 }
 });
 
-// PHASE 1: Der Flug (Zettel & Schatten als Einheit)
+// PHASE 1: Der Flug
 tl.to([prepNote, prepRestShadow], {
 x: end.x,
 y: end.y + 100,
@@ -341,7 +333,7 @@ duration: 2.2,
 ease: "power2.inOut"
 }, 0);
 
-// PHASE 2: Die Landung (Hier wird das 3D-Objekt "flach" gedrückt)
+// PHASE 2: Die Landung
 tl.to([prepNote, prepRestShadow], {
 y: end.y,
 rotationX: 0,
@@ -352,8 +344,7 @@ duration: 0.7,
 ease: "back.out(1.15)"
 });
 
-// FINALE: Schatten-Versatz für den 3D-Effekt
-// Der Schatten rutscht minimal tiefer (y + 12), bleibt aber auf der X-Achse (Mitte)
+// FINALE: Schatten-Versatz für Tiefe
 tl.to(prepRestShadow, {
 y: end.y + 12,
 opacity: 0.55,
@@ -364,17 +355,37 @@ ease: "power3.out"
 }
 
 /* ==========================================================================
-CONTENT RENDERING & UTILS
+3. BUTTONS & UI LOGIK (Aus deinem Original-Code erhalten)
 ========================================================================== */
+function showConfirmButton() {
+if (!prepConfirmButton) return;
+prepConfirmButton.style.opacity = "1";
+prepConfirmButton.style.pointerEvents = "auto";
+prepConfirmButton.style.display = "inline-flex";
+}
+
+function hideConfirmButton() {
+if (!prepConfirmButton) return;
+prepConfirmButton.style.opacity = "0";
+prepConfirmButton.style.pointerEvents = "none";
+}
 
 function resetPrepNoteVisualState() {
 if (!prepOverlay || !prepNote) return;
+
 gsap.killTweensOf([prepNote, prepRestShadow]);
+
 prepOverlay.style.display = "none";
 prepOverlay.classList.remove("prep-overlay-persistent");
+
+// Wichtig: Alles zurücksetzen für den nächsten Flug
 gsap.set([prepNote, prepRestShadow], { clearProps: "all" });
+hideConfirmButton();
 }
 
+/* ==========================================================================
+4. CONTENT RENDERING (Aus deinem Original-Code erhalten)
+========================================================================== */
 function renderPrepIntroNote() {
 if (!prepNoteContent) return;
 prepNoteContent.innerHTML = `
@@ -407,6 +418,28 @@ const line1 = document.getElementById("note-handwriting-line-1");
 return typeText(line1, "Schöne Pause", 48);
 }
 
+async function appendBreakClosingNote() {
+if (!prepNoteContent) return;
+let wrap = prepNoteContent.querySelector(".note-copy-break");
+if (!wrap) {
+wrap = document.createElement("div");
+wrap.className = "note-copy note-copy-break";
+prepNoteContent.innerHTML = "";
+prepNoteContent.appendChild(wrap);
+}
+let line2 = document.getElementById("note-handwriting-line-2");
+if (!line2) {
+line2 = document.createElement("div");
+line2.id = "note-handwriting-line-2";
+line2.className = "note-handwriting-line note-handwriting-line-secondary";
+wrap.appendChild(line2);
+}
+await typeText(line2, "Danke, dass du dir heute Zeit für dich genommen hast.", 38);
+}
+
+/* ==========================================================================
+5. UTILS (Typing, Fading, Swap)
+========================================================================== */
 async function typeText(element, text, speed = 42) {
 if (!element) return;
 typingToken += 1;
@@ -419,6 +452,17 @@ await wait(speed);
 }
 }
 
+async function swapNoteContent(renderFn) {
+if (!prepNoteContent) return;
+prepNoteContent.style.transition = "opacity 320ms ease";
+prepNoteContent.style.opacity = "0";
+await wait(320);
+resetTypingToken();
+prepNoteContent.innerHTML = "";
+prepNoteContent.style.opacity = "1";
+const maybePromise = renderFn();
+if (maybePromise instanceof Promise) await maybePromise;
+}
 
 
 /* =========================
