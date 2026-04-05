@@ -704,140 +704,144 @@ PREP OVERLAY & STICKY SYSTEM
 PREP OVERLAY (Optimiert für GSAP)
 ========================= */
 .prep-overlay {
-position: fixed;
-inset: 0;
-z-index: 999;
-display: flex;
-align-items: center;
-justify-content: center;
-pointer-events: auto;
-overflow: visible;
-perspective: 1400px;
-transform-style: preserve-3d;
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: flex;
+  align-items: flex-start; /* Geändert von center auf flex-start für die Top-Verankerung */
+  justify-content: center;
+  pointer-events: auto;
+  overflow: visible;
+  perspective: 1400px;
+  transform-style: preserve-3d;
 }
 
 .prep-backdrop {
-position: absolute;
-inset: 0;
-z-index: 0;
-background: rgba(28, 30, 36, 0.015);
-pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: rgba(28, 30, 36, 0.015);
+  pointer-events: none;
 }
 
-/* STICKY SHEET - Kombinierte Version mit deiner Textur */
+/* STICKY SHEET - ZENTRAL FIXIEREN */
 .prep-note-sheet {
-position: relative;
-z-index: 2;
-isolation: isolate;
-width: 387px;
-min-height: 363px;
-/* Padding-Top 80px für den Klebestreifen-Abstand */
-padding: 80px 26px 24px;
-box-sizing: border-box;
-border-radius: 1px;
-overflow: visible;
-
-background: linear-gradient(180deg, #f6e548 0%, #f2de2f 54%, #e6cb1e 100%);
-border: 1px solid rgba(126, 98, 18, 0.20);
-box-shadow: none;
-
-/* Dynamische Basis */
-left: 50%;
-transform-origin: 50% 0%;
-will-change: transform, opacity;
-backface-visibility: hidden;
-transform-style: preserve-3d;
+  position: relative;
+  z-index: 2;
+  isolation: isolate;
+  
+  /* POSITIONIERUNG & ANKER */
+  left: 50%;
+  top: 0; 
+  transform: translateX(-50%); /* Zentrierung bei Top: 0 */
+  transform-origin: 50% 0%;
+  
+  /* OPTIK (Unverändert) */
+  width: 387px;
+  min-height: 363px;
+  padding: 80px 26px 24px;
+  box-sizing: border-box;
+  border-radius: 1px;
+  overflow: visible;
+  background: linear-gradient(180deg, #f6e548 0%, #f2de2f 54%, #e6cb1e 100%);
+  border: 1px solid rgba(126, 98, 18, 0.20);
+  box-shadow: none;
+  
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
 }
 
-/* Klebestreifen & Textur (Deine Logik komplett erhalten) */
+/* Klebestreifen & Textur (Logik komplett erhalten) */
 .prep-note-sheet::before {
-content: "";
-position: absolute;
-inset: 0;
-pointer-events: none;
-background:
-linear-gradient(to bottom, rgba(214, 137, 14, 0.82) 0px, rgba(208, 131, 10, 0.78) 22px, rgba(201, 124, 7, 0.64) 38px, rgba(190, 116, 5, 0.42) 52px, rgba(255, 236, 170, 0.18) 52px, rgba(255, 255, 255, 0.00) 68px),
-linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 22%, rgba(0,0,0,0.018) 58%, rgba(255,255,255,0.02) 100%),
-radial-gradient(rgba(118, 88, 18, 0.11) 0.45px, transparent 0.95px),
-radial-gradient(circle at 18% 26%, rgba(255,255,255,0.08) 0%, transparent 16%),
-radial-gradient(circle at 72% 68%, rgba(120,90,20,0.05) 0%, transparent 18%),
-radial-gradient(circle at 48% 52%, rgba(255,255,255,0.05) 0%, transparent 22%);
-background-size: 100% 100%, 100% 100%, 5px 5px, 100% 100%, 100% 100%, 100% 100%;
-opacity: 0.92;
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(to bottom, rgba(214, 137, 14, 0.82) 0px, rgba(208, 131, 10, 0.78) 22px, rgba(201, 124, 7, 0.64) 38px, rgba(190, 116, 5, 0.42) 52px, rgba(255, 236, 170, 0.18) 52px, rgba(255, 255, 255, 0.00) 68px),
+    linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 22%, rgba(0,0,0,0.018) 58%, rgba(255,255,255,0.02) 100%),
+    radial-gradient(rgba(118, 88, 18, 0.11) 0.45px, transparent 0.95px),
+    radial-gradient(circle at 18% 26%, rgba(255,255,255,0.08) 0%, transparent 16%),
+    radial-gradient(circle at 72% 68%, rgba(120,90,20,0.05) 0%, transparent 18%),
+    radial-gradient(circle at 48% 52%, rgba(255,255,255,0.05) 0%, transparent 22%);
+  background-size: 100% 100%, 100% 100%, 5px 5px, 100% 100%, 100% 100%, 100% 100%;
+  opacity: 0.92;
 }
 
-/* DER SCHATTEN (Synchron zum Zettel) */
+/* REST SHADOW - ZENTRAL FIXIEREN */
 .prep-rest-shadow {
-position: absolute;
-z-index: 1;
-width: 387px;
-height: 363px;
-background: rgba(0,0,0,0.4);
-filter: blur(12px);
-left: 50%;
-transform-origin: 50% 0%;
-mask-image: linear-gradient(to bottom right, transparent 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.6) 70%, black 100%);
--webkit-mask-image: linear-gradient(to bottom right, transparent 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.6) 70%, black 100%);
-pointer-events: none;
-will-change: transform, opacity, filter;
+  position: absolute;
+  z-index: 1;
+  
+  /* POSITIONIERUNG & ANKER */
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  transform-origin: 50% 0%;
+
+  /* OPTIK (Unverändert) */
+  width: 440px; /* Deine gewünschte Breite */
+  height: 363px;
+  background: rgba(0,0,0,0.4);
+  filter: blur(12px);
+  mask-image: linear-gradient(to bottom right, transparent 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.6) 70%, black 100%);
+  -webkit-mask-image: linear-gradient(to bottom right, transparent 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.6) 70%, black 100%);
+  pointer-events: none;
+  will-change: transform, opacity, filter;
 }
 
-/* --- PERSISTENTE POSITIONEN ---
-Wir entfernen hier die harten 'transform' Werte,
-damit GSAP nach der Landung nicht überschrieben wird. */
-
+/* --- PERSISTENTE POSITIONEN --- */
 .prep-overlay.prep-overlay-persistent .prep-note-sheet,
 .prep-overlay.prep-overlay-persistent .prep-rest-shadow {
-left: 50%;
-top: 0;
-/* transform wird jetzt rein von GSAP gesteuert */
+  left: 50%;
+  top: 0;
 }
 
 /* --- CONTENT KONSISTENZ (Unverändert) --- */
 .prep-note-inner {
-position: relative;
-z-index: 2;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: flex-start;
-gap: 20px;
-width: 100%;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 20px;
+  width: 100%;
 }
 
 .note-copy {
-width: 100%;
-color: rgba(46, 34, 16, 0.92);
-font-family: "Caveat", cursive;
+  width: 100%;
+  color: rgba(46, 34, 16, 0.92);
+  font-family: "Caveat", cursive;
 }
 
 .note-main-text {
-font-size: 26px !important;
-line-height: 1.1;
-text-align: center;
+  font-size: 26px !important;
+  line-height: 1.1;
+  text-align: center;
 }
 
 .note-handwriting-line {
-font-size: 32px !important;
-line-height: 1.1;
-text-align: center;
+  font-size: 32px !important;
+  line-height: 1.1;
+  text-align: center;
 }
 
 .note-handwriting-line-secondary {
-font-size: 24px !important;
-margin-top: 10px;
+  font-size: 24px !important;
+  margin-top: 10px;
 }
 
 /* Mobile Anpassung */
 @media (max-width: 768px) {
-.prep-note-sheet, .prep-rest-shadow {
-width: 280px;
-min-height: 260px;
-}
+  .prep-note-sheet, .prep-rest-shadow {
+    width: 280px;
+    min-height: 260px;
+  }
 }
 
 body.night .prep-rest-shadow {
-opacity: 0.45;
-filter: blur(4px) brightness(0.3);
+  opacity: 0.45;
+  filter: blur(4px) brightness(0.3);
 }
-
