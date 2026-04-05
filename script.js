@@ -254,174 +254,101 @@ async function blurSetupScreenBeforePrep() {
 }
 
 function showPrepNote() {
-  if (!prepOverlay || !prepNote) return;
+if (!prepOverlay || !prepNote) return;
 
-  appState = "prep";
-  prepOverlay.style.display = "flex";
-  prepOverlay.classList.remove("prep-overlay-persistent");
+appState = "prep";
+prepOverlay.style.display = "flex";
+prepOverlay.classList.remove("prep-overlay-persistent");
 
-  gsap.killTweensOf(prepNote);
-  if (prepRestShadow) gsap.killTweensOf(prepRestShadow);
+// Altes stoppen, um Überlappungen zu vermeiden
+gsap.killTweensOf(prepNote);
+if (prepRestShadow) gsap.killTweensOf(prepRestShadow);
 
-  const isMobile = window.innerWidth <= 768;
+const isMobile = window.innerWidth <= 768;
 
-  const start = isMobile
-    ? {
-        x: 1100,
-        y: -180,
-        scale: 4.4,
-        rotation: -18,
-        rotationY: -42,
-        rotationX: -18,
-        skewX: -8
-      }
-    : {
-        x: 2200,
-        y: -300,
-        scale: 5.4,
-        rotation: -20,
-        rotationY: -46,
-        rotationX: -20,
-        skewX: -10
-      };
+// 1. START: Riesig, rechts außen, fast flach (als würde man ihn gerade halten)
+const start = isMobile
+? { x: 1300, y: -200, scale: 7.0, rotation: -20, rotationY: 0, rotationX: 0 }
+: { x: 2800, y: -350, scale: 9.5, rotation: -22, rotationY: 0, rotationX: 0 };
 
-  const mid = isMobile
-    ? {
-        x: 320,
-        y: -6,
-        scale: 1.9,
-        rotation: -11,
-        rotationY: -14,
-        rotationX: -8,
-        skewX: -4
-      }
-    : {
-        x: 560,
-        y: 18,
-        scale: 2.0,
-        rotation: -12,
-        rotationY: -16,
-        rotationX: -8,
-        skewX: -5
-      };
+// 2. MID (FLUG): Kippt nach hinten -> Trapezform entsteht durch rotationX/Y
+const mid = isMobile
+? { x: 400, y: 0, scale: 2.5, rotation: -12, rotationY: -35, rotationX: -25 }
+: { x: 800, y: 40, scale: 3.2, rotation: -15, rotationY: -45, rotationX: -30 };
 
-  const contact = isMobile
-    ? {
-        x: 18,
-        y: 44,
-        scaleX: 1.04,
-        scaleY: 1.08,
-        rotation: -5.2,
-        rotationX: 0,
-        rotationY: 0,
-        skewX: -1.5
-      }
-    : {
-        x: 14,
-        y: 108,
-        scaleX: 1.05,
-        scaleY: 1.08,
-        rotation: -5.4,
-        rotationX: 0,
-        rotationY: 0,
-        skewX: -1.5
-      };
+// 3. CONTACT (LANDUNG): Die Klebekante trifft auf, Druck wird simuliert
+const contact = isMobile
+? { x: 20, y: 60, scale: 1.15, rotation: -6, rotationY: -5, rotationX: 5 }
+: { x: 15, y: 135, scale: 1.18, rotation: -6, rotationY: -8, rotationX: 8 };
 
-  const end = isMobile
-    ? {
-        x: 0,
-        y: 54,
-        scaleX: 1,
-        scaleY: 1,
-        rotation: -3,
-        rotationX: 0,
-        rotationY: 0,
-        skewX: 0
-      }
-    : {
-        x: 0,
-        y: 118,
-        scaleX: 1,
-        scaleY: 1,
-        rotation: -3,
-        rotationX: 0,
-        rotationY: 0,
-        skewX: 0
-      };
+// 4. END (SETTLE): Zettel liegt flach und entspannt
+const end = isMobile
+? { x: 0, y: 65, scale: 1, rotation: -3, rotationY: 0, rotationX: 0 }
+: { x: 0, y: 145, scale: 1, rotation: -3, rotationY: 0, rotationX: 0 };
 
-  gsap.set(prepNote, {
-    position: "absolute",
-    left: "50%",
-    top: "50%",
-    margin: 0,
-    xPercent: -50,
-    yPercent: -50,
-    transformOrigin: "8% 4%",
-    clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-    force3D: true,
-    ...start
-  });
+// Setup: Wir setzen den Zettel auf die Startposition
+gsap.set(prepNote, {
+position: "absolute",
+left: "50%",
+top: "50%",
+xPercent: -50,
+yPercent: -50,
+transformOrigin: "50% 0%", // Wichtig für das "Andrücken" oben
+force3D: true,
+...start
+});
 
-  if (prepRestShadow) {
-    gsap.set(prepRestShadow, { opacity: 0 });
-  }
+const tl = gsap.timeline();
 
-  const tl = gsap.timeline({
-    defaults: { force3D: true }
-  });
+// --- PHASE 1: DER FLUG (Vom Riesen-Rechteck zum Trapez) ---
+tl.to(prepNote, {
+...mid,
+duration: 1.4,
+ease: "power2.inOut" // Geschmeidiger Start und Flug
+});
 
-  tl.to(prepNote, {
-    xPercent: -50,
-    yPercent: -50,
-    ...mid,
-    clipPath: "polygon(14% 0%, 100% 0%, 92% 100%, 18% 100%)",
-    duration: 1.08,
-    ease: "power3.out"
-  });
-
-  tl.to(prepNote, {
-    xPercent: -50,
-    yPercent: -50,
-    ...contact,
-    clipPath: "polygon(2% 0%, 100% 0%, 98% 100%, 0% 100%)",
-    duration: 0.42,
-    ease: "power2.inOut"
-  });
-
-  tl.to(prepNote, {
-    xPercent: -50,
-    yPercent: -50,
-    x: end.x + 8,
-    y: end.y - 4,
-    rotation: end.rotation + 0.7,
-    scaleX: 1.01,
-    scaleY: 0.99,
-    clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-    duration: 0.14,
-    ease: "power1.out"
-  });
-
-  tl.to(prepNote, {
-    xPercent: -50,
-    yPercent: -50,
-    ...end,
-    clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-    duration: 0.18,
-    ease: "power2.out"
-  });
-
-  if (prepRestShadow) {
-    tl.to(
-      prepRestShadow,
-      {
-        opacity: 0.55,
-        duration: 0.22,
-        ease: "power2.out"
-      },
-      1.05
-    );
-  }
+// --- PHASE 2: DER IMPACT (Das Andrücken) ---
+tl.to(prepNote, {
+...contact,
+duration: 0.3,
+ease: "back.out(1.2)", // Kleiner "Snap" beim Aufprall
+onStart: () => {
+// Wir wechseln den Origin auf die linke obere Ecke für den Druck-Effekt
+gsap.set(prepNote, { transformOrigin: "0% 0%" });
 }
+});
+
+// --- PHASE 3: DER DRUCK-SCHUBS (Von links nach rechts) ---
+tl.to(prepNote, {
+x: end.x + 10, // Minimaler Schubs nach rechts während des Drückens
+skewX: 3, // Verformt das Papier kurzzeitig durch den Druck
+duration: 0.15,
+ease: "sine.inOut"
+});
+
+// --- PHASE 4: SETTLE (Entspannung in die Endform) ---
+tl.to(prepNote, {
+...end,
+skewX: 0,
+duration: 0.7,
+ease: "elastic.out(1, 0.75)", // Sanftes Nachschwingen der unteren Kante
+onComplete: () => {
+prepOverlay.classList.add("prep-overlay-persistent");
+}
+});
+
+// Schatten-Steuerung synchron zum Flug
+if (prepRestShadow) {
+gsap.set(prepRestShadow, { opacity: 0 });
+tl.to(prepRestShadow, {
+opacity: 0.55,
+duration: 0.4,
+ease: "power2.out"
+}, "-=0.6"); // Startet kurz vor dem Settle
+}
+}
+
+
 
 function showConfirmButton() {
   if (!prepConfirmButton) return;
