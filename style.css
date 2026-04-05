@@ -827,10 +827,8 @@ pointer-events: none;
 /* 1. Standard (Start & Transition): Schön mittig und hoch */
 .prep-overlay.prep-overlay-persistent .prep-note-sheet,
 .prep-overlay.prep-overlay-persistent .prep-rest-shadow {
-left: 50%;
-top: 0;
-/* x: -50% für echte horizontale Mitte */
-transform: translate3d(-50%, 118px, 0) rotate(-3deg) !important;
+  left: 50%;
+  top: 0;
 }
 
 /* 2. Break-Screen: Zettel rutscht tiefer, um Platz für die Uhr zu machen */
