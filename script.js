@@ -278,47 +278,47 @@ break: isMobile
 function showPrepNote() {
 if (!prepOverlay || !prepNote || !prepRestShadow) return;
 
-const isBreak = document.body.classList.contains('in-break');
-const pos = getStickyPositions();
-const start = pos.start;
-const end = isBreak ? pos.break : pos.normal;
-
 appState = "prep";
 prepOverlay.style.display = "flex";
 prepOverlay.classList.remove("prep-overlay-persistent");
 
 gsap.killTweensOf([prepNote, prepRestShadow]);
 
-// INITIAL SETUP: Zettel und Schatten absolut deckungsgleich
-const sharedSetup = {
+const isMobile = window.innerWidth <= 768;
+
+// 1. START: Gigantisch weit rechts (außerhalb des Bildschirms)
+const start = isMobile
+? { x: 1500, y: -450, scale: 8, rotation: -20, rotationX: 80, rotationY: -15, opacity: 0 }
+: { x: 5000, y: -1200, scale: 25, rotation: -25, rotationX: 85, rotationY: -25, opacity: 0 };
+
+// 2. ENDE: Perfekt mittig (x: 0)
+const end = isMobile
+? { x: 0, y: 80, rotation: -3 }
+: { x: 0, y: 118, rotation: -3 };
+
+// Setup: Beide auf die Startposition beamen
+const setup = {
 left: "50%",
 top: 0,
 xPercent: -50,
-x: start.x,
-y: start.y,
-scale: start.scale,
-rotationX: start.rotX,
-rotationY: start.rotY,
-opacity: 0,
-transformOrigin: "50% 0%"
+transformOrigin: "50% 0%",
+...start
 };
 
-gsap.set([prepNote, prepRestShadow], sharedSetup);
-gsap.set(prepRestShadow, { filter: "blur(60px)", opacity: 0 });
+gsap.set([prepNote, prepRestShadow], setup);
+gsap.set(prepRestShadow, { filter: "blur(50px)", opacity: 0 });
 
 const tl = gsap.timeline({
 onComplete: () => {
 prepOverlay.classList.add("prep-overlay-persistent");
-// Zeigt den Bestätigen-Button erst nach der Landung
-showConfirmButton();
+if (typeof showConfirmButton === "function") showConfirmButton();
 }
 });
 
-// PHASE 1: Der Flug
+// Flugphase
 tl.to([prepNote, prepRestShadow], {
 x: end.x,
-y: end.y + 100,
-xPercent: -50,
+y: end.y + 80,
 opacity: 1,
 rotationX: 25,
 rotationY: -15,
@@ -326,32 +326,29 @@ duration: 2.2,
 ease: "power2.inOut"
 });
 
-tl.to(prepRestShadow, {
-opacity: 0.4,
-filter: "blur(25px)",
-duration: 2.2,
-ease: "power2.inOut"
-}, 0);
-
-// PHASE 2: Die Landung
-tl.to([prepNote, prepRestShadow], {
+// Landung (Zettel wird flach)
+tl.to(prepNote, {
 y: end.y,
 rotationX: 0,
 rotationY: 0,
 rotation: end.rotation,
 scale: 1,
 duration: 0.7,
-ease: "back.out(1.15)"
+ease: "back.out(1.1)"
 });
 
-// FINALE: Schatten-Versatz für Tiefe
+// Schatten-Finale (Klebt sich unter den Zettel)
 tl.to(prepRestShadow, {
-y: end.y + 12,
-opacity: 0.55,
+y: end.y + 10,
+rotationX: 0,
+rotationY: 0,
+rotation: end.rotation,
+scale: 1,
+opacity: 0.5,
 filter: "blur(12px)",
-duration: 0.6,
-ease: "power3.out"
-}, "-=0.6");
+duration: 0.7,
+ease: "power2.out"
+}, "-=0.7");
 }
 
 /* ==========================================================================
