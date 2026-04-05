@@ -254,252 +254,172 @@ async function blurSetupScreenBeforePrep() {
   await wait(420);
 }
 
+/* ==========================================================================
+STICKY NOTE ENGINE - FINAL VERSION (SYNCED & RESPONSIVE)
+========================================================================== */
+
+/**
+* 1. DAS STEUERPULT (Positions-Konfiguration)
+* x: 0 bedeutet exakte Mitte (dank xPercent: -50 im Motor).
+*/
+function getStickyPositions() {
+const isMobile = window.innerWidth <= 768;
+return {
+// START: Kommt gigantisch von weit oben rechts
+start: isMobile
+? { x: 1500, y: -600, scale: 10, rotX: 70, rotY: -15 }
+: { x: 5000, y: -1500, scale: 30, rotX: 85, rotY: -35 },
+
+// NORMAL: Start- & Waiting-Screen (Mittig & Mutig oben)
+normal: isMobile
+? { x: 0, y: 80, rotation: -3 }
+: { x: 0, y: 120, rotation: -3 },
+
+// BREAK: Unter der Uhr mittig platziert
+break: isMobile
+? { x: 0, y: 350, rotation: -2 }
+: { x: 0, y: 420, rotation: -2 }
+};
+}
+
+/**
+* 2. DIE ANIMATIONS-ENGINE
+*/
 function showPrepNote() {
-  if (!prepOverlay || !prepNote) return;
+if (!prepOverlay || !prepNote || !prepRestShadow) return;
 
-  appState = "prep";
-  prepOverlay.style.display = "flex";
-  prepOverlay.classList.remove("prep-overlay-persistent");
+const isBreak = document.body.classList.contains('in-break');
+const pos = getStickyPositions();
+const start = pos.start;
+const end = isBreak ? pos.break : pos.normal;
 
-  gsap.killTweensOf([prepNote, prepRestShadow]);
+appState = "prep";
+prepOverlay.style.display = "flex";
+prepOverlay.classList.remove("prep-overlay-persistent");
 
-  const isMobile = window.innerWidth <= 768;
+gsap.killTweensOf([prepNote, prepRestShadow]);
 
-  const start = isMobile
-    ? { x: 1400, y: -450, scale: 10, rotation: -22, rotationX: 80, rotationY: -15, opacity: 0.9 }
-    : { x: 4200, y: -1500, scale: 30, rotation: -28, rotationX: 85, rotationY: -25, opacity: 0.8 };
+// INITIAL SETUP: Zettel und Schatten absolut identisch deckungsgleich
+const sharedSetup = {
+left: "50%",
+top: 0,
+xPercent: -50,
+x: start.x,
+y: start.y,
+scale: start.scale,
+rotationX: start.rotX,
+rotationY: start.rotY,
+opacity: 0,
+transformOrigin: "50% 0%"
+};
 
-  const end = isMobile
-    ? { x: 0, y: 80, rotation: -3 }
-    : { x: 0, y: 118, rotation: -3 };
+gsap.set([prepNote, prepRestShadow], sharedSetup);
+gsap.set(prepRestShadow, { filter: "blur(60px)", opacity: 0 });
 
-  // NOTE: immer gleiche Basislogik
-  gsap.set(prepNote, {
-    left: "50%",
-    top: 0,
-    xPercent: -50,
-    yPercent: 0,
-    transformOrigin: "50% 0%",
-    ...start
-  });
+const tl = gsap.timeline({
+onComplete: () => {
+prepOverlay.classList.add("prep-overlay-persistent");
+}
+});
 
-  if (prepRestShadow) {
-    gsap.set(prepRestShadow, {
-      left: "50%",
-      top: 0,
-      xPercent: -50,
-      yPercent: 0,
-      transformOrigin: "50% 0%",
-      x: start.x + 40,
-      y: start.y + 90,
-      scale: 2.2,
-      rotation: start.rotation,
-      opacity: 0,
-      filter: "blur(42px)"
-    });
-  }
+// PHASE 1: Der Flug (Zettel & Schatten als Einheit)
+tl.to([prepNote, prepRestShadow], {
+x: end.x,
+y: end.y + 100,
+xPercent: -50,
+opacity: 1,
+rotationX: 25,
+rotationY: -15,
+duration: 2.2,
+ease: "power2.inOut"
+});
 
-  const tl = gsap.timeline();
+tl.to(prepRestShadow, {
+opacity: 0.4,
+filter: "blur(25px)",
+duration: 2.2,
+ease: "power2.inOut"
+}, 0);
 
-  tl.to(prepNote, {
-    x: end.x,
-    y: end.y,
-    scale: 1.12,
-    rotation: end.rotation,
-    rotationX: 28,
-    rotationY: -12,
-    opacity: 1,
-    duration: 2.1,
-    ease: "power2.inOut"
-  });
+// PHASE 2: Die Landung (Hier wird das 3D-Objekt "flach" gedrückt)
+tl.to([prepNote, prepRestShadow], {
+y: end.y,
+rotationX: 0,
+rotationY: 0,
+rotation: end.rotation,
+scale: 1,
+duration: 0.7,
+ease: "back.out(1.15)"
+});
 
-  if (prepRestShadow) {
-    tl.to(prepRestShadow, {
-      x: end.x + 18,
-      y: end.y + 22,
-      scale: 1.22,
-      rotation: end.rotation,
-      opacity: 0.42,
-      filter: "blur(22px)",
-      duration: 2.1,
-      ease: "power2.inOut"
-    }, 0);
-  }
-
-  tl.to(prepNote, {
-    x: end.x,
-    y: end.y,
-    scale: 1,
-    rotation: end.rotation,
-    rotationX: 0,
-    rotationY: 0,
-    duration: 0.72,
-    ease: "back.out(1.15)"
-  });
-
-  if (prepRestShadow) {
-    tl.to(prepRestShadow, {
-      x: end.x + 10,
-      y: end.y + 14,
-      scale: 1,
-      rotation: end.rotation,
-      opacity: 0.55,
-      filter: "blur(12px)",
-      duration: 0.72,
-      ease: "power3.out",
-      onComplete: () => {
-        prepOverlay.classList.add("prep-overlay-persistent");
-      }
-    }, "-=0.72");
-  }
+// FINALE: Schatten-Versatz für den 3D-Effekt
+// Der Schatten rutscht minimal tiefer (y + 12), bleibt aber auf der X-Achse (Mitte)
+tl.to(prepRestShadow, {
+y: end.y + 12,
+opacity: 0.55,
+filter: "blur(12px)",
+duration: 0.6,
+ease: "power3.out"
+}, "-=0.6");
 }
 
-function showConfirmButton() {
-  if (!prepConfirmButton) return;
-  prepConfirmButton.style.opacity = "1";
-  prepConfirmButton.style.pointerEvents = "auto";
-  prepConfirmButton.style.display = "inline-flex";
-}
-
-function hideConfirmButton() {
-  if (!prepConfirmButton) return;
-  prepConfirmButton.style.opacity = "0";
-  prepConfirmButton.style.pointerEvents = "none";
-}
+/* ==========================================================================
+CONTENT RENDERING & UTILS
+========================================================================== */
 
 function resetPrepNoteVisualState() {
-  if (!prepOverlay || !prepNote) return;
-
-  gsap.killTweensOf(prepNote);
-  if (prepFlightShadow) gsap.killTweensOf(prepFlightShadow);
-  if (prepRestShadow) gsap.killTweensOf(prepRestShadow);
-
-  prepOverlay.style.display = "none";
-  prepOverlay.classList.remove("prep-overlay-persistent");
-  prepNote.classList.remove("is-taking-away");
-  prepNote.classList.remove("is-placing");
-
-  gsap.set(prepNote, { clearProps: "transform" });
-
-  if (prepFlightShadow) {
-    gsap.set(prepFlightShadow, {
-      clearProps: "transform,opacity,filter"
-    });
-  }
-
-  if (prepRestShadow) {
-    gsap.set(prepRestShadow, {
-      opacity: 0.55
-    });
-  }
+if (!prepOverlay || !prepNote) return;
+gsap.killTweensOf([prepNote, prepRestShadow]);
+prepOverlay.style.display = "none";
+prepOverlay.classList.remove("prep-overlay-persistent");
+gsap.set([prepNote, prepRestShadow], { clearProps: "all" });
 }
+
 function renderPrepIntroNote() {
-  if (!prepNoteContent) return;
-
-  prepNoteContent.innerHTML = `
-    <div class="note-copy note-copy-intro">
-      <div class="note-main-text">
-        Deine Pause ist<br>
-        eingeplant 🌿🍵
-      </div>
-
-      <div class="note-checklist">
-        <div class="note-check-item">✓ Erinnerung aktiv</div>
-        <div class="note-check-item">✓ Gong ist an</div>
-      </div>
-    </div>
-  `;
+if (!prepNoteContent) return;
+prepNoteContent.innerHTML = `
+<div class="note-copy note-copy-intro">
+<div class="note-main-text">Deine Pause ist<br>eingeplant 🌿🍵</div>
+<div class="note-checklist">
+<div class="note-check-item">✓ Erinnerung aktiv</div>
+<div class="note-check-item">✓ Gong ist an</div>
+</div>
+</div>`;
 }
 
 function renderWaitingNote(startTime) {
-  if (!prepNoteContent) return;
-
-  prepNoteContent.innerHTML = `
-    <div class="note-copy note-copy-waiting">
-      <div id="note-handwriting-line-1" class="note-handwriting-line"></div>
-    </div>
-  `;
-
-  const line1 = document.getElementById("note-handwriting-line-1");
-  return typeText(line1, `Deine nächste Pause ist um ${startTime}.`, 52);
+if (!prepNoteContent) return;
+prepNoteContent.innerHTML = `
+<div class="note-copy note-copy-waiting">
+<div id="note-handwriting-line-1" class="note-handwriting-line"></div>
+</div>`;
+const line1 = document.getElementById("note-handwriting-line-1");
+return typeText(line1, `Deine nächste Pause ist um ${startTime}.`, 52);
 }
 
 function renderBreakNote() {
-  if (!prepNoteContent) return;
-
-  prepNoteContent.innerHTML = `
-    <div class="note-copy note-copy-break">
-      <div id="note-handwriting-line-1" class="note-handwriting-line"></div>
-    </div>
-  `;
-
-  const line1 = document.getElementById("note-handwriting-line-1");
-  return typeText(line1, "Schöne Pause", 48);
+if (!prepNoteContent) return;
+prepNoteContent.innerHTML = `
+<div class="note-copy note-copy-break">
+<div id="note-handwriting-line-1" class="note-handwriting-line"></div>
+</div>`;
+const line1 = document.getElementById("note-handwriting-line-1");
+return typeText(line1, "Schöne Pause", 48);
 }
-
-async function appendBreakClosingNote() {
-  if (!prepNoteContent) return;
-
-  let wrap = prepNoteContent.querySelector(".note-copy-break");
-  if (!wrap) {
-    wrap = document.createElement("div");
-    wrap.className = "note-copy note-copy-break";
-    prepNoteContent.innerHTML = "";
-    prepNoteContent.appendChild(wrap);
-  }
-
-  let line2 = document.getElementById("note-handwriting-line-2");
-  if (!line2) {
-    line2 = document.createElement("div");
-    line2.id = "note-handwriting-line-2";
-    line2.className = "note-handwriting-line note-handwriting-line-secondary";
-    wrap.appendChild(line2);
-  }
-
-  await typeText(line2, "Danke, dass du dir heute Zeit für dich genommen hast.", 38);
-}
-
-async function fadeNoteContentOut(duration = 380) {
-  if (!prepNoteContent) return;
-
-  prepNoteContent.style.transition = `opacity ${duration}ms ease`;
-  prepNoteContent.style.opacity = "0";
-  await wait(duration);
-}
-
-async function swapNoteContent(renderFn) {
-  if (!prepNoteContent) return;
-
-  await fadeNoteContentOut(320);
-  resetTypingToken();
-  prepNoteContent.innerHTML = "";
-  prepNoteContent.style.transition = "none";
-  prepNoteContent.style.opacity = "1";
-
-  const maybePromise = renderFn();
-  if (maybePromise instanceof Promise) {
-    await maybePromise;
-  }
-}
-
-/* =========================
-   TYPING EFFECT
-========================= */
 
 async function typeText(element, text, speed = 42) {
-  if (!element) return;
-
-  typingToken += 1;
-  const currentToken = typingToken;
-
-  element.textContent = "";
-
-  for (let i = 0; i < text.length; i++) {
-    if (currentToken !== typingToken) return;
-    element.textContent += text[i];
-    await wait(speed);
-  }
+if (!element) return;
+typingToken += 1;
+const currentToken = typingToken;
+element.textContent = "";
+for (let i = 0; i < text.length; i++) {
+if (currentToken !== typingToken) return;
+element.textContent += text[i];
+await wait(speed);
 }
+}
+
+
 
 /* =========================
    APP STATE / FLOW
