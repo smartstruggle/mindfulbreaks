@@ -229,6 +229,7 @@ function showWaitingScreen() {
 function showBreakScreen() {
   document.body.classList.add("break-active");
   document.body.classList.remove("waiting-active");
+  document.body.classList.add('in-break');
 
   setupScreen.style.display = "none";
   waitingScreen.style.display = "none";
@@ -266,92 +267,95 @@ gsap.killTweensOf([prepNote, prepRestShadow]);
 
 const isMobile = window.innerWidth <= 768;
 
-// --- FIX Startposition: Weiter RECHTS und weiter OBEN (Über-die-Schulter) ---
-// x: 4200 (statt 3200) schiebt ihn außerhalb der Mitte rechts
+// HIER DIE ABFRAGE: Ist die Pause aktiv?
+const isBreak = document.body.classList.contains('in-break');
+
+// --- 1. STARTPOSITION (Riesig & Rechts Oben) ---
 const start = isMobile
 ? { x: 1800, y: -450, scale: 10, rotation: -25, rotationX: 80, rotationY: -15, opacity: 0.9 }
-: { x: 4200, y: -800, scale: 20, rotation: -28, rotationX: 85, rotationY: -25, opacity: 0.8 };
+: { x: 4800, y: -900, scale: 24, rotation: -30, rotationX: 85, rotationY: -30, opacity: 0.7 };
 
-// --- FIX Endposition: Deutlich TIEFER für wahre Mittigkeit ---
-// y: 350 (statt 230) zieht den Zettel in die vertikale Mitte des Screens
+// --- 2. ENDPOSITION (Dynamisch je nach Modus) ---
+// Wenn isBreak wahr ist, nutzt er die höheren y-Werte (Abstand zur Uhr)
 const end = isMobile
-? { x: 0, y: 160, scale: 1, rotation: -3, rotationX: 0, rotationY: 0 }
-: { x: 0, y: 350, scale: 1, rotation: -3, rotationX: 0, rotationY: 0 };
+? { x: 0, y: isBreak ? 350 : 54, scale: 1, rotation: -3, rotationX: 0, rotationY: 0 }
+: { x: 0, y: isBreak ? 420 : 118, scale: 1, rotation: -3, rotationX: 0, rotationY: 0 };
 
 // Setup Note (Initial setting)
 gsap.set(prepNote, {
 xPercent: -50,
-yPercent: 0, // Wichtig: yPercent auf 0 setzen, da transformOrigin top ist
+yPercent: 0,
 transformOrigin: "50% 0%",
 ...start
 });
 
-// Setup Schatten (Deine diffuse Schatten-Evolution erhalten)
+// Setup Schatten
 if (prepRestShadow) {
 gsap.set(prepRestShadow, {
-opacity: 0,
+opacity: 0.1,
 scale: 3,
-filter: "blur(50px)",
-x: 150,
-y: 250,
-overflow: "visible"
+filter: "blur(60px)",
+xPercent: -50,
+yPercent: 0,
+transformOrigin: "50% 0%",
+...start
 });
 }
 
 const tl = gsap.timeline();
 
-// PHASE 1: Der flüssige, verkürzte Flug (Timings kohärent)
-tl.to(prepNote, {
+// PHASE 1: Der Flug
+tl.to([prepNote, prepRestShadow], {
 x: end.x,
-y: end.y,
-scale: 1.15, // Kurzzeitig etwas größer für Impact
-rotation: end.rotation - 2, // Leichter Overshoot der Rotation
-rotationX: 25, // Trapezform bleibt bis zur Landung
-rotationY: -10,
-duration: 2.2, // Schnellerer Start
+y: end.y + 100, // Fliegt erst kurz über die Zielposition
+scale: 1.18,
+rotation: end.rotation - 3,
+rotationX: 25,
+rotationY: -15,
+opacity: 1,
+duration: 2.2,
 ease: "power2.inOut"
 });
 
-// Schatten materialisiert sich parallel
+// Schatten wird schärfer während des Flugs
 if (prepRestShadow) {
 tl.to(prepRestShadow, {
-opacity: 0.4,
-scale: 1.5,
+opacity: 0.7,
+scale: 1.1,
 filter: "blur(20px)",
-x: 40,
-y: 80,
 duration: 2.2,
 ease: "power2.inOut"
 }, 0);
 }
 
-// PHASE 2: Der Impact (Haptisches Andrücken)
+// PHASE 2: Der Impact (Landung auf end.y)
 tl.to(prepNote, {
-rotationX: 0, // Zettel wird flach
+y: end.y,
+rotationX: 0,
 rotationY: 0,
 rotation: end.rotation,
 scale: end.scale,
 duration: 0.7,
-ease: "back.out(1.1)", // Sehr subtiler snap
-onComplete: () => {
-prepOverlay.classList.add("prep-overlay-persistent");
-}
+ease: "back.out(1.1)"
 });
 
 // Schatten-Finale
 if (prepRestShadow) {
 tl.to(prepRestShadow, {
-opacity: 0.6,
+y: end.y + 12, // Minimaler Versatz für Tiefe
+rotationX: 0,
+rotationY: 0,
 scale: 1,
+opacity: 0.6,
 filter: "blur(12px)",
-x: 0,
-y: 12,
-duration: 1.0
+duration: 1.0,
+ease: "back.out(1.1)",
+onComplete: () => {
+prepOverlay.classList.add("prep-overlay-persistent");
+}
 }, "-=0.7");
 }
 }
-
-
 
 
 
@@ -692,7 +696,7 @@ async function triggerBreakEnd() {
   if (endingSequenceRunning) return;
   endingSequenceRunning = true;
   appState = "ending";
-
+document.body.classList.remove('in-break');
   clearIntervals();
   updateFlipClock(0);
 
