@@ -267,95 +267,96 @@ gsap.killTweensOf([prepNote, prepRestShadow]);
 
 const isMobile = window.innerWidth <= 768;
 
-// HIER DIE ABFRAGE: Ist die Pause aktiv?
-const isBreak = document.body.classList.contains('in-break');
-
-// --- 1. STARTPOSITION (Riesig & Rechts Oben) ---
+// --- FIX Startposition: Extrem HOCH, GIGANTISCH & Rechts ---
+// y: -1500 schiebt ihn hoch. x: 4200 (statt 3200) schiebt ihn ganz rechts außen.
 const start = isMobile
-? { x: 1800, y: -450, scale: 10, rotation: -25, rotationX: 80, rotationY: -15, opacity: 0.9 }
-: { x: 4800, y: -900, scale: 24, rotation: -30, rotationX: 85, rotationY: -30, opacity: 0.7 };
+? { x: 1400, y: -450, scale: 10, rotation: -22, rotationX: 80, rotationY: -15, opacity: 0.9 }
+: { x: 4200, y: -1500, scale: 30, rotation: -28, rotationX: 85, rotationY: -25, opacity: 0.8 };
 
-// --- 2. ENDPOSITION (Dynamisch je nach Modus) ---
-// Wenn isBreak wahr ist, nutzt er die höheren y-Werte (Abstand zur Uhr)
+// --- FIX Endposition: RECHTS (3cm) und HOCH (3cm) ---
+// y: -200 ( Desktop) bzw -150 (Mobile) zieht den Zettel wieder hoch.
+// x: 200 ( Desktop) bzw 150 (Mobile) schiebt ihn nach rechts.
 const end = isMobile
-? { x: 0, y: isBreak ? 350 : 54, scale: 1, rotation: -3, rotationX: 0, rotationY: 0 }
-: { x: 0, y: isBreak ? 420 : 118, scale: 1, rotation: -3, rotationX: 0, rotationY: 0 };
+? { x: 150, y: -150, scale: 1, rotation: -3, rotationX: 0, rotationY: 0 }
+: { x: 200, y: -200, scale: 1, rotation: -3, rotationX: 0, rotationY: 0 };
 
 // Setup Note (Initial setting)
 gsap.set(prepNote, {
-xPercent: -50,
-yPercent: 0,
+xPercent: -50, yPercent: -50,
 transformOrigin: "50% 0%",
 ...start
 });
 
-// Setup Schatten
+// Setup Schatten (Deine diffuse Schatten-Evolution erhalten)
 if (prepRestShadow) {
 gsap.set(prepRestShadow, {
-opacity: 0.1,
+opacity: 0,
 scale: 3,
-filter: "blur(60px)",
-xPercent: -50,
-yPercent: 0,
-transformOrigin: "50% 0%",
-...start
+filter: "blur(50px)",
+x: 150,
+y: 250,
+overflow: "visible"
 });
 }
 
 const tl = gsap.timeline();
 
-// PHASE 1: Der Flug
-tl.to([prepNote, prepRestShadow], {
+// PHASE 1: Der flüssige, verkürzte Flug (Zettel UND Schatten synchron)
+tl.to(prepNote, {
 x: end.x,
-y: end.y + 100, // Fliegt erst kurz über die Zielposition
-scale: 1.18,
-rotation: end.rotation - 3,
-rotationX: 25,
+y: end.y,
+scale: 1.15, // Kurzzeitig etwas größer für Impact
+rotation: end.rotation,
+rotationX: 30, // Trapezform bleibt bis zur Landung
 rotationY: -15,
 opacity: 1,
-duration: 2.2,
+duration: 2.2, // Schnellerer Start
 ease: "power2.inOut"
 });
 
-// Schatten wird schärfer während des Flugs
+// Schatten materialisiert sich parallel
 if (prepRestShadow) {
 tl.to(prepRestShadow, {
-opacity: 0.7,
-scale: 1.1,
+opacity: 0.4,
+scale: 1.5,
 filter: "blur(20px)",
+x: end.x + 40, // Schatten folgt der End-X Position
+y: end.y + 80, // Schatten folgt der End-Y Position
 duration: 2.2,
 ease: "power2.inOut"
 }, 0);
 }
 
-// PHASE 2: Der Impact (Landung auf end.y)
+// PHASE 2: Der Impact (Haptisches Andrücken)
+// Wir nutzen yPercent: 0, um die Oberkante auf end.y zu fixieren.
 tl.to(prepNote, {
+yPercent: 0,
 y: end.y,
-rotationX: 0,
+rotationX: 0, // Zettel wird flach
 rotationY: 0,
-rotation: end.rotation,
-scale: end.scale,
 duration: 0.7,
-ease: "back.out(1.1)"
+ease: "back.out(1.1)" // Sehr subtiler snap
 });
 
-// Schatten-Finale
+// Schatten-Finale (Sync zur Landung)
 if (prepRestShadow) {
 tl.to(prepRestShadow, {
-y: end.y + 12, // Minimaler Versatz für Tiefe
+yPercent: 0,
+y: end.y + 12, // Zieht den Schatten mit dem Zettel hoch, minimaler Versatz
 rotationX: 0,
 rotationY: 0,
-scale: 1,
 opacity: 0.6,
+scale: 1,
 filter: "blur(12px)",
 duration: 1.0,
-ease: "back.out(1.1)",
+ease: "elastic.out(1, 0.9)",
 onComplete: () => {
 prepOverlay.classList.add("prep-overlay-persistent");
 }
-}, "-=0.7");
+}, "-=0.7"); // Startet zeitgleich mit dem Note-Impact
 }
 }
+
 
 
 
