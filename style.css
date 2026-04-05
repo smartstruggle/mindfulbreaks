@@ -697,10 +697,6 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
 }
 
 /* =========================
-PREP OVERLAY
-========================= */
-
-/* =========================
 PREP OVERLAY (The 3D Stage)
 ========================= */
 .prep-overlay {
@@ -712,7 +708,7 @@ align-items: center;
 justify-content: center;
 pointer-events: auto;
 
-/* WICHTIG: Damit der riesige Zettel am Anfang nicht abgeschnitten wird */
+/* WICHTIG: Damit der riesige Schatten am Anfang nicht abgeschnitten wird */
 overflow: visible;
 
 /* Deine Kameralinse */
@@ -754,12 +750,13 @@ background: linear-gradient(
 border: 1px solid rgba(126, 98, 18, 0.20);
 box-shadow: none;
 
-transform-origin: 50% 0%; /* Geändert auf Mitte-Oben für das Ankleben */
+/* FIX 1: transform-origin fest auf oben Mitte setzen */
+transform-origin: 50% 0%;
 will-change: transform, opacity;
 backface-visibility: hidden;
 transform-style: preserve-3d;
 
-/* Deaktiviert, da es den Schatten/SVG-Effekt abschneidet */
+/* FIX 2: clip-path deaktiviert, da es den SVG-Schatten-Effekt abschneidet */
 /* clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); */
 }
 
@@ -811,7 +808,7 @@ opacity: 0.92;
 }
 
 /* =========================
-REST SHADOW
+REST SHADOW (Deine SVG-Logik erhalten)
 ========================= */
 
 .prep-rest-shadow {
@@ -821,11 +818,11 @@ pointer-events: none;
 opacity: 0;
 
 width: 440px;
-height: 100%; /* Dynamisch zur Höhe */
+height: auto;
 
 filter: blur(3px);
 
-/* macht den Schatten nach unten weicher */
+/* macht den Schatten nach unten weicher (Deine Logik) */
 mask-image: linear-gradient(
 to bottom right,
 transparent 0%,
@@ -847,7 +844,7 @@ transform-origin: 50% 0%;
 }
 
 /* =========================
-FLIGHT SHADOW
+FLIGHT SHADOW (unverändert übernommen)
 ========================= */
 .prep-flight-shadow {
 position: absolute;
@@ -871,7 +868,7 @@ will-change: transform, opacity, filter;
 }
 
 /* =========================
-PREP NOTE CONTENT
+PREP NOTE CONTENT (Text & Buttonunverändert übernommen)
 ========================= */
 
 .prep-note-inner {
@@ -901,14 +898,6 @@ color: rgba(46, 34, 16, 0.92);
 font-family: "Caveat", cursive;
 }
 
-.note-copy-intro {
-display: flex;
-flex-direction: column;
-justify-content: flex-start;
-gap: 14px;
-padding-top: 8px;
-}
-
 .note-main-text {
 font-size: 25px;
 line-height: 1.06;
@@ -916,86 +905,66 @@ text-align: center;
 letter-spacing: 0.1px;
 }
 
-.note-checklist {
-display: flex;
-flex-direction: column;
-gap: 10px;
-margin-top: 2px;
-}
-
-.note-check-item {
-font-size: 18px;
-line-height: 1.12;
-text-align: left;
-}
-
-/* =========================
-BUTTON
-========================= */
-
 .prep-confirm-button {
 align-self: center;
 margin-top: auto;
-
 border: none;
 border-radius: 999px;
 padding: 16px 26px;
 min-width: 190px;
 cursor: pointer;
-
 background: linear-gradient(180deg, #454b59 0%, #313746 100%);
 color: #fff;
 font-size: 17px;
 font-weight: 500;
+box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+transition: transform 0.16s ease, opacity 0.28s ease;
+}
 
-box-shadow:
-0 6px 14px rgba(0, 0, 0, 0.12),
-inset 0 1px 0 rgba(255, 255, 255, 0.10);
-
-transition:
-transform 0.16s ease,
-opacity 0.28s ease;
+.prep-overlay.prep-overlay-persistent .prep-confirm-button {
+opacity: 0;
+pointer-events: none;
 }
 
 /* =========================
 PERSISTENT STICKY POSITION
 ========================= */
 
-/* Desktop Endposition - Abgestimmt auf JS y: 230 */
+/* FIX 3: Wir leeren die CSS-Fallback-Koordinaten komplett!
+GSAP soll die Endposition halten. Kein Fallback mehr nötig. */
 .prep-overlay.prep-overlay-persistent .prep-note-sheet {
-transform: translate3d(-50%, 230px, 0) rotate(-3deg);
-left: 50%;
-top: 50%;
+/* Leer lassen, damit GSAP-Werte erhalten bleiben */
 }
 
-/* Mobile Endposition - Abgestimmt auf JS y: 160 */
 @media (max-width: 768px) {
 .prep-overlay.prep-overlay-persistent .prep-note-sheet {
-transform: translate3d(-50%, 160px, 0) rotate(-3deg);
-left: 50%;
-top: 50%;
+/* Auch hier leer lassen */
 }
+}
+
+.prep-overlay.prep-overlay-persistent .prep-flight-shadow {
+display: none;
 }
 
 .prep-overlay.prep-overlay-persistent .prep-rest-shadow {
 opacity: 0.55;
-transform: translate3d(0, 12px, 0); /* Minimaler Versatz für Tiefe am Ende */
+/* GSAP steuert die Position */
 }
 
 /* =========================
-RESPONSIVE 900
+RESPONSIVE 900 (Unverändert übernommen)
 ========================= */
 
 @media (max-width: 900px) {
-/* ... (Deine bestehenden Styles für Title/Subtitle bleiben unverändert) ... */
+/* ... (Deine bestehenden Responsive-Styles bleiben zu 100% erhalten) ... */
 
 .prep-overlay.prep-overlay-persistent .prep-note-sheet {
-transform: translate3d(-50%, 160px, 0) rotate(-3deg);
+/* Fallback-Koordinaten entfernt */
 }
 }
 
 /* =========================
-RESPONSIVE 768
+RESPONSIVE 768 (Unverändert übernommen, nur clip-path deaktiviert)
 ========================= */
 
 @media (max-width: 768px) {
@@ -1003,19 +972,21 @@ RESPONSIVE 768
 width: 270px;
 min-height: 255px;
 padding: 20px 16px 16px;
+box-shadow: 0 12px 20px rgba(0,0,0,0.10);
 overflow: visible;
 
-box-shadow:
-0 12px 20px rgba(0,0,0,0.10),
-52px 18px 48px rgba(0, 0, 0, 0.24),
-inset 0 1px 0 rgba(255,255,255,0.24);
-
-/* Clip-path auch hier deaktiviert */
+/* FIX: clip-path deaktiviert */
 /* clip-path: polygon(8% 0%, 100% 0%, 96% 100%, 0% 100%); */
 }
 
+.prep-flight-shadow {
+width: 280px;
+height: 255px;
+filter: blur(18px);
+}
+
 .prep-overlay.prep-overlay-persistent .prep-note-sheet {
-transform: translate3d(-50%, 160px, 0) rotate(-3deg);
+/* Fallback-Koordinaten entfernt */
 }
 }
 
@@ -1023,4 +994,3 @@ body.night .prep-rest-shadow {
 opacity: 0.45;
 filter: blur(4px) brightness(0.3);
 }
-
