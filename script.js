@@ -266,109 +266,104 @@ gsap.killTweensOf([prepNote, prepRestShadow]);
 
 const isMobile = window.innerWidth <= 768;
 
-// --- 1. START: Extrem nah am Auge (Riesig) ---
+// --- START: Riesig (Skalierung leicht angepasst für Performance) ---
 const start = isMobile
-? { x: 1500, y: -300, scale: 12, rotation: -25, rotationX: 75, rotationY: -20, opacity: 0.8 }
-: { x: 3500, y: -500, scale: 22, rotation: -30, rotationX: 85, rotationY: -30, opacity: 0.7 };
+? { x: 1400, y: -280, scale: 10, rotation: -22, rotationX: 80, rotationY: -15, opacity: 0.9 }
+: { x: 3200, y: -450, scale: 20, rotation: -28, rotationX: 85, rotationY: -25, opacity: 0.8 };
 
-// --- 2. MID: Der Flug (Trapez wird sichtbar, nähert sich an) ---
+// --- MID: Flug (Etwas zügiger als vorher) ---
 const mid = isMobile
-? { x: 500, y: -50, scale: 4.5, rotation: -15, rotationX: 55, rotationY: -15, opacity: 1 }
-: { x: 1000, y: 0, scale: 6.5, rotation: -18, rotationX: 60, rotationY: -20, opacity: 1 };
+? { x: 450, y: 0, scale: 3.8, rotation: -14, rotationX: 50, rotationY: -12 }
+: { x: 850, y: 30, scale: 5.5, rotation: -16, rotationX: 55, rotationY: -18 };
 
-// --- 3. CONTACT: Klebekante oben tippt auf ---
+// --- CONTACT: Klebekante oben (Deine exakte End-X/Y Positionierung) ---
 const contact = isMobile
-? { x: 10, y: 60, scale: 1.1, rotation: -6, rotationX: 25, rotationY: -5 }
-: { x: 10, y: 130, scale: 1.15, rotation: -6, rotationX: 30, rotationY: -8 };
+? { x: 12, y: 55, scale: 1.12, rotation: -5, rotationX: 20, rotationY: -4 }
+: { x: 8, y: 115, scale: 1.15, rotation: -5, rotationX: 25, rotationY: -6 };
 
-// --- 4. END: Flach angeklebt ---
-const end = { x: 0, y: isMobile ? 75 : 155, scale: 1, rotation: -3, rotationX: 0, rotationY: 0 };
+// --- END: Zurück auf deine Original-Mitte ---
+const end = isMobile
+? { x: 0, y: 54, scale: 1, rotation: -3, rotationX: 0, rotationY: 0 }
+: { x: 0, y: 118, scale: 1, rotation: -3, rotationX: 0, rotationY: 0 };
 
-// Initiales Setup Sticky Note
 gsap.set(prepNote, {
 xPercent: -50, yPercent: -50,
 transformOrigin: "50% 0%",
 ...start
 });
 
-// Initiales Setup Schatten (Riesig, hell, sehr blurrig)
+// Schatten-Setup: Wir geben ihm "overflow: visible" via JS sicherheitshalber mit
 if (prepRestShadow) {
 gsap.set(prepRestShadow, {
-opacity: 0.1,
-scale: 2.5,
-filter: "blur(60px)",
-x: 100,
-y: 200
+opacity: 0,
+scale: 3,
+filter: "blur(50px)",
+x: 150,
+y: 250,
+overflow: "visible"
 });
 }
 
 const tl = gsap.timeline();
 
-// PHASE 1: Der langsame, majestätische Flug aus dem Nichts
+// PHASE 1: Der Flug (Jetzt 2.4s statt 3.5s -> spürbar flotter aber smooth)
 tl.to(prepNote, {
 ...mid,
-duration: 3.5,
-ease: "power1.inOut"
+duration: 2.4,
+ease: "power2.inOut"
 });
 
-// Schatten bewegt sich mit: Wird dunkler, kleiner, schärfer
 if (prepRestShadow) {
 tl.to(prepRestShadow, {
-opacity: 0.5,
-scale: 1.2,
-filter: "blur(15px)",
-x: 30,
-y: 60,
-duration: 3.5,
-ease: "power1.inOut"
+opacity: 0.4,
+scale: 1.5,
+filter: "blur(20px)",
+x: 40,
+y: 80,
+duration: 2.4,
+ease: "power2.inOut"
 }, 0);
 }
 
-// PHASE 2: Landung der Klebekante (Ankleben beginnt)
+// PHASE 2: Landung (0.7s für ein knackiges, aber weiches Aufsetzen)
 tl.to(prepNote, {
 ...contact,
-duration: 1.2,
-ease: "power2.out"
+duration: 0.7,
+ease: "back.out(1.1)"
 });
 
-if (prepRestShadow) {
-tl.to(prepRestShadow, {
-opacity: 0.7,
-scale: 1.0,
-filter: "blur(8px)",
-x: 10,
-y: 20,
-duration: 1.2
-}, "-=1.2");
-}
-
-// PHASE 3: Der Druck-Effekt (Oberkante fixiert, Unterkante drückt flach)
+// PHASE 3: Der Druck (Hier wird der Zettel flach "gebügelt")
 tl.to(prepNote, {
-rotationX: -15, // Kurz "überdrücken" für haptisches Feedback
-scaleY: 0.98,
-duration: 0.4,
+rotationX: 0,
+rotationY: 0,
+x: end.x,
+y: end.y,
+duration: 0.5,
 ease: "sine.inOut"
 });
 
-// PHASE 4: Settle (Papier entspannt sich)
+// PHASE 4: Settle (Das finale Auspendeln)
 tl.to(prepNote, {
 ...end,
-scaleY: 1,
-duration: 1.5,
-ease: "elastic.out(1, 0.85)",
+duration: 1.0,
+ease: "elastic.out(1, 0.9)",
 onComplete: () => {
 prepOverlay.classList.add("prep-overlay-persistent");
+// Falls die Positionierung danach springt, nimm diese Zeile rein:
+// gsap.set(prepNote, { clearProps: "transform" });
 }
 });
 
+// Schatten-Finale
 if (prepRestShadow) {
 tl.to(prepRestShadow, {
 opacity: 0.6,
+scale: 1,
 filter: "blur(12px)",
 x: 0,
-y: 10,
-duration: 1.5
-}, "-=1.5");
+y: 12,
+duration: 1.0
+}, "-=1.0");
 }
 }
 
