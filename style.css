@@ -696,19 +696,15 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
     inset 0 -1px 1px rgba(0, 0, 0, 0.35);
 }
 
-/* =========================
-PREP OVERLAY & STICKY SYSTEM
-========================= */
-
-/* =========================
-PREP OVERLAY (Optimiert für GSAP)
-========================= */
+/* ==========================================================================
+PREP OVERLAY & STICKY SYSTEM (Optimiert für GSAP Flug-Animation)
+========================================================================== */
 .prep-overlay {
   position: fixed;
   inset: 0;
   z-index: 999;
   display: flex;
-  align-items: flex-start; /* Geändert von center auf flex-start für die Top-Verankerung */
+  align-items: flex-start; 
   justify-content: center;
   pointer-events: auto;
   overflow: visible;
@@ -733,10 +729,10 @@ PREP OVERLAY (Optimiert für GSAP)
   /* POSITIONIERUNG & ANKER */
   left: 50%;
   top: 0; 
-  transform: translateX(-50%); /* Zentrierung bei Top: 0 */
+  /* WICHTIG: Kein transform: translateX(-50%) mehr hier, das macht GSAP via xPercent */
   transform-origin: 50% 0%;
   
-  /* OPTIK (Unverändert) */
+  /* OPTIK (Deine Original-Werte) */
   width: 387px;
   min-height: 363px;
   padding: 80px 26px 24px;
@@ -745,14 +741,13 @@ PREP OVERLAY (Optimiert für GSAP)
   overflow: visible;
   background: linear-gradient(180deg, #f6e548 0%, #f2de2f 54%, #e6cb1e 100%);
   border: 1px solid rgba(126, 98, 18, 0.20);
-  box-shadow: none;
   
   will-change: transform, opacity;
   backface-visibility: hidden;
   transform-style: preserve-3d;
 }
 
-/* Klebestreifen & Textur (Logik komplett erhalten) */
+/* Klebestreifen & Textur (Deine Logik komplett erhalten) */
 .prep-note-sheet::before {
   content: "";
   position: absolute;
@@ -773,15 +768,12 @@ PREP OVERLAY (Optimiert für GSAP)
 .prep-rest-shadow {
   position: absolute;
   z-index: 1;
-  
-  /* POSITIONIERUNG & ANKER */
   left: 50%;
   top: 0;
-  transform: translateX(-50%);
   transform-origin: 50% 0%;
 
   /* OPTIK (Unverändert) */
-  width: 440px; /* Deine gewünschte Breite */
+  width: 440px; 
   height: 363px;
   background: rgba(0,0,0,0.4);
   filter: blur(12px);
@@ -791,57 +783,10 @@ PREP OVERLAY (Optimiert für GSAP)
   will-change: transform, opacity, filter;
 }
 
-/* --- PERSISTENTE POSITIONEN --- */
-.prep-overlay.prep-overlay-persistent .prep-note-sheet,
-.prep-overlay.prep-overlay-persistent .prep-rest-shadow {
-  left: 50%;
-  top: 0;
-}
-
-/* --- CONTENT KONSISTENZ (Unverändert) --- */
-.prep-note-inner {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 20px;
-  width: 100%;
-}
-
-.note-copy {
-  width: 100%;
-  color: rgba(46, 34, 16, 0.92);
-  font-family: "Caveat", cursive;
-}
-
-.note-main-text {
-  font-size: 26px !important;
-  line-height: 1.1;
-  text-align: center;
-}
-
-.note-handwriting-line {
-  font-size: 32px !important;
-  line-height: 1.1;
-  text-align: center;
-}
-
-.note-handwriting-line-secondary {
-  font-size: 24px !important;
-  margin-top: 10px;
-}
-
 /* Mobile Anpassung */
 @media (max-width: 768px) {
   .prep-note-sheet, .prep-rest-shadow {
     width: 280px;
     min-height: 260px;
   }
-}
-
-body.night .prep-rest-shadow {
-  opacity: 0.45;
-  filter: blur(4px) brightness(0.3);
 }
