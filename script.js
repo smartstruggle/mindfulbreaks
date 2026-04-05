@@ -255,22 +255,22 @@ async function blurSetupScreenBeforePrep() {
 }
 
 /* ==========================================================================
-1. DAS STEUERPULT (Positions-Konfiguration) - FIXED Y-WERTEN
+1. DAS STEUERPULT - ÜBER DIE SCHULTER OPTIK
 ========================================================================== */
 function getStickyPositions() {
   const isMobile = window.innerWidth <= 768;
   return {
-    // START: Kommt gigantisch von rechts-oben reingeschossen
+    // START: Kommt von rechts oben (über die Schulter), nicht mehr so extrem riesig
     start: isMobile
-      ? { x: 1800, y: -600, scale: 10, rotX: 70, rotY: -15 }
-      : { x: 5000, y: -1500, scale: 30, rotX: 85, rotY: -35 },
+      ? { x: 800, y: -400, scale: 3, rotX: 40, rotY: -10 } 
+      : { x: 2000, y: -800, scale: 5, rotX: 60, rotY: -20 },
 
-    // NORMAL: Startscreen & Waiting Screen (Gleiche Höhe!)
+    // NORMAL: Exakt Zentriert (x: 0)
     normal: isMobile
       ? { x: 0, y: 120, rotation: -3 }
       : { x: 0, y: 150, rotation: -3 },
 
-    // BREAK: Pause mit Flip-Clock (Tiefer)
+    // BREAK: Exakt Zentriert (x: 0)
     break: isMobile
       ? { x: 0, y: 350, rotation: -2 }
       : { x: 0, y: 420, rotation: -2 }
@@ -278,7 +278,7 @@ function getStickyPositions() {
 }
 
 /* ==========================================================================
-2. DIE HAUPT-ANIMATION (showPrepNote) - FINAL SYNC
+2. DIE HAUPT-ANIMATION - FIXIERTE ZENTRIERUNG & SCHATTEN
 ========================================================================== */
 function showPrepNote() {
   if (!prepOverlay || !prepNote || !prepRestShadow) return;
@@ -294,67 +294,65 @@ function showPrepNote() {
   const start = pos.start;
   const end = isBreak ? pos.break : pos.normal;
 
-  // SETUP: Beide absolut deckungsgleich
+  // SETUP: xPercent -50 sorgt dafür, dass x:0 IMMER die Mitte ist
   const setup = {
     left: "50%",
     top: 0,
-    xPercent: -50, // Mitte fixieren
+    xPercent: -50, 
     x: start.x,
-    y: start.y,    // WICHTIG: Rein absoluter y-Wert
+    y: start.y,
     scale: start.scale,
     rotationX: start.rotX,
     rotationY: start.rotY,
+    rotationZ: 15, // Leichter Neigungswinkel beim Einflug
     opacity: 0,
     transformOrigin: "50% 0%"
   };
 
   gsap.set([prepNote, prepRestShadow], setup);
-  gsap.set(prepRestShadow, { filter: "blur(60px)", opacity: 0 });
+  // Schatten startet extrem weich und fast unsichtbar
+  gsap.set(prepRestShadow, { filter: "blur(80px)", opacity: 0 });
 
   const tl = gsap.timeline();
 
-  // PHASE 1: Der Flug
+  // PHASE 1: Der Flug "Über die Schulter" zur Mitte
   tl.to([prepNote, prepRestShadow], {
-    x: end.x,
+    x: 0,            // RADIKAL: Ziel ist immer die Mitte des Screens
     y: end.y,
     xPercent: -50,
     opacity: 1,
-    rotationX: 25,
-    rotationY: -15,
-    duration: 2.2,
-    ease: "power2.inOut"
+    scale: 1.2,      // Zettel wird beim Näherkommen kleiner (da er von "nah" nach "fern" an den Screen klatscht)
+    rotationX: 20,
+    rotationY: -10,
+    rotationZ: end.rotation,
+    duration: 1.8,
+    ease: "power3.out" // Schnellerer Einflug, sanfteres Auslaufen
   });
 
-  tl.to(prepRestShadow, {
-    opacity: 0.4,
-    filter: "blur(25px)",
-    duration: 2.2,
-    ease: "power2.inOut"
-  }, 0);
-
-  // PHASE 2: Die Landung
-  tl.to([prepNote, prepRestShadow], {
+  // PHASE 2: Das "Anklatschen" (Landung)
+  tl.to(prepNote, {
     rotationX: 0,
     rotationY: 0,
-    rotation: end.rotation,
     scale: 1,
-    y: end.y, // Exakt auf der Landeposition
-    duration: 0.7,
-    ease: "back.out(1.15)"
-  });
+    duration: 0.5,
+    ease: "back.out(1.5)" // Kleiner Bounce-Effekt beim Kleben
+  }, "-=0.3");
 
-  // FINALE: Den Schatten minimal unter den Zettel schieben für Tiefe
+  // PHASE 3: Schatten-Logik (Präzise unter den Zettel)
   tl.to(prepRestShadow, {
-    y: end.y + 12,
-    opacity: 0.55,
-    filter: "blur(12px)",
-    duration: 0.6,
+    x: 0,
+    xPercent: -50,
+    y: end.y + 8,     // Minimaler Versatz für Tiefe
+    scale: 1,
+    rotationX: 0,
+    rotationY: 0,
+    opacity: 0.5,
+    filter: "blur(10px)",
+    duration: 0.5,
     onComplete: () => {
       prepOverlay.classList.add("prep-overlay-persistent");
-      // Falls ein Confirm-Button eingeblendet werden soll:
-      if (typeof showConfirmButton === "function") showConfirmButton();
     }
-  }, "-=0.6");
+  }, "-=0.5");
 }
 
 /* ==========================================================================
