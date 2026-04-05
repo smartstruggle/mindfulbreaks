@@ -255,22 +255,22 @@ async function blurSetupScreenBeforePrep() {
 }
 
 /* ==========================================================================
-1. DAS STEUERPULT - GIGANTISCHER EINFLUG VON RECHTS
+1. DAS STEUERPULT - ÜBER DIE SCHULTER (Screengrab-Optimiert)
 ========================================================================== */
 function getStickyPositions() {
   const isMobile = window.innerWidth <= 768;
   return {
-    // START: Fast screen-hoch (scale: 12-15) und weit rechts außen
+    // START: Wie auf dem Foto - extrem nah (scale 15-20) und rechts oben
     start: isMobile
-      ? { x: 1500, y: -200, scale: 6, rotX: 30, rotY: -20 } 
-      : { x: 3500, y: -400, scale: 12, rotX: 45, rotY: -30 },
+      ? { x: 1200, y: -300, scale: 8, rotX: 30, rotY: -15 } 
+      : { x: 2500, y: -600, scale: 18, rotX: 45, rotY: -25 },
 
-    // NORMAL: Zentrale Landung (x: 0 ist die Mitte durch xPercent -50)
+    // NORMAL: Landet exakt zentriert auf dem Screen
     normal: isMobile
       ? { x: 0, y: 120, rotation: -3 }
       : { x: 0, y: 150, rotation: -3 },
 
-    // BREAK: Zentrale Landung (Tiefer)
+    // BREAK: Landet tiefer (Flip-Clock Bereich)
     break: isMobile
       ? { x: 0, y: 350, rotation: -2 }
       : { x: 0, y: 420, rotation: -2 }
@@ -278,7 +278,7 @@ function getStickyPositions() {
 }
 
 /* ==========================================================================
-2. DIE HAUPT-ANIMATION - FLUG & FIXIERUNG
+2. DIE HAUPT-ANIMATION - DER FLUG ZUM SCREEN
 ========================================================================== */
 function showPrepNote() {
   if (!prepOverlay || !prepNote || !prepRestShadow) return;
@@ -294,54 +294,54 @@ function showPrepNote() {
   const start = pos.start;
   const end = isBreak ? pos.break : pos.normal;
 
-  // SETUP: Beams den Zettel nach rechts außen, riesig skaliert
+  // SETUP: Beams den Zettel nach rechts oben (wie auf dem Foto)
   const setup = {
     left: "50%",
     top: 0,
-    xPercent: -50, // Das ist der Ankerpunkt (Mitte des Zettels)
-    x: start.x,    // Startposition weit rechts
+    xPercent: -50, 
+    x: start.x,
     y: start.y,
     scale: start.scale,
     rotationX: start.rotX,
     rotationY: start.rotY,
-    rotationZ: 10,
+    rotationZ: 15, // Schräger Einflugwinkel
     opacity: 0,
     transformOrigin: "50% 0%"
   };
 
   gsap.set([prepNote, prepRestShadow], setup);
+  // Schatten ist zu Beginn fast unsichtbar und sehr diffus (weit weg vom Glas)
   gsap.set(prepRestShadow, { filter: "blur(100px)", opacity: 0 });
 
   const tl = gsap.timeline();
 
-  // PHASE 1: Der massive Flug zur Mitte
-  // Wir animieren x auf 0, damit er exakt bei left: 50% landet
+  // PHASE 1: Der Flug von "nah am Auge" zu "klebend am Screen"
   tl.to([prepNote, prepRestShadow], {
-    x: 0, 
+    x: 0,            // Ziel: Absolute Mitte
     y: end.y,
     opacity: 1,
-    scale: 1, // Schrumpft auf Normalgröße während er "an den Screen" fliegt
+    scale: 1,        // Schrumpft auf Normalgröße (Entfernung vom Auge zum Monitor)
     rotationX: 0,
     rotationY: 0,
     rotationZ: end.rotation,
-    duration: 1.8,
-    ease: "expo.out" // Wirkt sehr hochwertig und glatt
+    duration: 2.0,   // Etwas langsamer für die schwere Kurve
+    ease: "power2.inOut" 
   });
 
-  // PHASE 2: Schatten-Feinschliff (Tiefe erzeugen)
-  // Der Schatten muss exakt unter dem Zettel liegen
+  // PHASE 2: Schatten-Landung
+  // Sobald der Zettel "klebt", zieht der Schatten scharf nach
   tl.to(prepRestShadow, {
-    y: end.y + 10, // Minimal tiefer für den 3D-Effekt
-    opacity: 0.5,
+    y: end.y + 12,   // Tiefe unter dem Zettel
+    opacity: 0.55,
     filter: "blur(12px)",
-    duration: 0.6,
+    duration: 0.8,
+    ease: "power2.out",
     onComplete: () => {
       prepOverlay.classList.add("prep-overlay-persistent");
       if (typeof showConfirmButton === "function") showConfirmButton();
     }
-  }, "-=0.8");
+  }, "-=1.0"); // Beginnt schon während der Zettel landet
 }
-
 
 /* ==========================================================================
 3. BUTTONS & UI LOGIK (Aus deinem Original-Code erhalten)
