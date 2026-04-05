@@ -696,19 +696,18 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
     inset 0 -1px 1px rgba(0, 0, 0, 0.35);
 }
 
-/* ==========================================================================
-PREP OVERLAY & STICKY SYSTEM (Optimiert für GSAP Flug-Animation)
-========================================================================== */
+/* =========================
+   PREP OVERLAY & STICKY SYSTEM 
+   ========================= */
 .prep-overlay {
   position: fixed;
   inset: 0;
   z-index: 999;
-  display: flex;
+  display: none; /* Wird per JS auf flex gesetzt */
   align-items: flex-start; 
   justify-content: center;
   pointer-events: auto;
-  overflow: visible;
-  perspective: 1400px;
+  perspective: 2000px;
   transform-style: preserve-3d;
 }
 
@@ -716,77 +715,59 @@ PREP OVERLAY & STICKY SYSTEM (Optimiert für GSAP Flug-Animation)
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: rgba(28, 30, 36, 0.015);
+  background: rgba(28, 30, 36, 0.2); /* Etwas dunkler für Fokus */
   pointer-events: none;
 }
 
-/* STICKY SHEET - ZENTRAL FIXIEREN */
+/* STICKY SHEET */
 .prep-note-sheet {
-  position: relative;
+  position: absolute;
   z-index: 2;
-  isolation: isolate;
-  
-  /* POSITIONIERUNG & ANKER */
-  left: 50%;
-  top: 0; 
-  /* WICHTIG: Kein transform: translateX(-50%) mehr hier, das macht GSAP via xPercent */
-  transform-origin: 50% 0%;
-  
-  /* OPTIK (Deine Original-Werte) */
+  left: 50%; /* Horizontaler Anker */
+  top: 0;    /* Vertikaler Anker */
   width: 387px;
   min-height: 363px;
   padding: 80px 26px 24px;
   box-sizing: border-box;
-  border-radius: 1px;
-  overflow: visible;
   background: linear-gradient(180deg, #f6e548 0%, #f2de2f 54%, #e6cb1e 100%);
   border: 1px solid rgba(126, 98, 18, 0.20);
-  
+  transform-origin: 50% 0%;
   will-change: transform, opacity;
-  backface-visibility: hidden;
-  transform-style: preserve-3d;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* Klebestreifen & Textur (Deine Logik komplett erhalten) */
-.prep-note-sheet::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(to bottom, rgba(214, 137, 14, 0.82) 0px, rgba(208, 131, 10, 0.78) 22px, rgba(201, 124, 7, 0.64) 38px, rgba(190, 116, 5, 0.42) 52px, rgba(255, 236, 170, 0.18) 52px, rgba(255, 255, 255, 0.00) 68px),
-    linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 22%, rgba(0,0,0,0.018) 58%, rgba(255,255,255,0.02) 100%),
-    radial-gradient(rgba(118, 88, 18, 0.11) 0.45px, transparent 0.95px),
-    radial-gradient(circle at 18% 26%, rgba(255,255,255,0.08) 0%, transparent 16%),
-    radial-gradient(circle at 72% 68%, rgba(120,90,20,0.05) 0%, transparent 18%),
-    radial-gradient(circle at 48% 52%, rgba(255,255,255,0.05) 0%, transparent 22%);
-  background-size: 100% 100%, 100% 100%, 5px 5px, 100% 100%, 100% 100%, 100% 100%;
-  opacity: 0.92;
+/* Der Button (Muss innerhalb des Overlays, aber außerhalb des Zettels oder darunter sein) */
+#prep-confirm-button {
+  margin-top: 500px; /* Platzhalter, wird von GSAP animiert */
+  z-index: 10;
+  display: none;
+  opacity: 0;
+  pointer-events: auto;
+  cursor: pointer;
 }
 
-/* REST SHADOW - ZENTRAL FIXIEREN */
+/* REST SHADOW */
 .prep-rest-shadow {
   position: absolute;
   z-index: 1;
-  left: 50%;
-  top: 0;
-  transform-origin: 50% 0%;
-
-  /* OPTIK (Unverändert) */
-  width: 440px; 
+  width: 387px;
   height: 363px;
   background: rgba(0,0,0,0.4);
   filter: blur(12px);
+  left: 50%;
+  top: 0;
+  transform-origin: 50% 0%;
+  pointer-events: none;
   mask-image: linear-gradient(to bottom right, transparent 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.6) 70%, black 100%);
   -webkit-mask-image: linear-gradient(to bottom right, transparent 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.6) 70%, black 100%);
-  pointer-events: none;
-  will-change: transform, opacity, filter;
 }
 
-/* Mobile Anpassung */
+/* Text-Klassen erhalten */
+.note-main-text { font-family: "Caveat", cursive; font-size: 28px; color: #2e2210; text-align: center; }
+.note-handwriting-line { font-family: "Caveat", cursive; font-size: 32px; color: #2e2210; text-align: center; }
+
 @media (max-width: 768px) {
-  .prep-note-sheet, .prep-rest-shadow {
-    width: 280px;
-    min-height: 260px;
-  }
+  .prep-note-sheet, .prep-rest-shadow { width: 280px; min-height: 260px; }
 }
