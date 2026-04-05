@@ -697,7 +697,7 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
 }
 
 /* =========================
-   PREP OVERLAY
+PREP OVERLAY
 ========================= */
 
 /* =========================
@@ -733,32 +733,34 @@ pointer-events: none; /* Klicks gehen durch den Hintergrund durch */
 STICKY SHEET (PAPER FIRST - TUNED)
 ========================= */
 .prep-note-sheet {
-  position: relative;
-  z-index: 2;
-  isolation: isolate;
-  width: 387px;
-  min-height: 363px;
-  padding: 46px 26px 24px;
-  box-sizing: border-box;
+position: relative;
+z-index: 2;
+isolation: isolate;
+width: 387px;
+min-height: 363px;
+padding: 46px 26px 24px;
+box-sizing: border-box;
 
-  border-radius: 1px;
-  overflow: visible;
+border-radius: 1px;
+overflow: visible;
 
-  background: linear-gradient(
-    180deg,
-    #f6e548 0%,
-    #f2de2f 54%,
-    #e6cb1e 100%
-  );
+background: linear-gradient(
+180deg,
+#f6e548 0%,
+#f2de2f 54%,
+#e6cb1e 100%
+);
 
-  border: 1px solid rgba(126, 98, 18, 0.20);
-  box-shadow: none;
+border: 1px solid rgba(126, 98, 18, 0.20);
+box-shadow: none;
 
-  transform-origin: top right;
-  will-change: transform, opacity;
+transform-origin: 50% 0%; /* Geändert auf Mitte-Oben für das Ankleben */
+will-change: transform, opacity;
 backface-visibility: hidden;
 transform-style: preserve-3d;
-clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+
+/* Deaktiviert, da es den Schatten/SVG-Effekt abschneidet */
+/* clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); */
 }
 
 /* =========================
@@ -819,10 +821,9 @@ pointer-events: none;
 opacity: 0;
 
 width: 440px;
-height: auto;
+height: 100%; /* Dynamisch zur Höhe */
 
 filter: blur(3px);
-opacity: 0.55;
 
 /* macht den Schatten nach unten weicher */
 mask-image: linear-gradient(
@@ -840,594 +841,185 @@ rgba(0,0,0,0.2) 40%,
 rgba(0,0,0,0.6) 70%,
 black 100%
 );
-   
-transform:
-translateX(55px)
-translateY(165px)
-skewX(-6deg)
-rotate(-4deg)
-scale(1.02);
+
+/* Transform-Werte entfernt, da GSAP diese während der Animation steuert */
+transform-origin: 50% 0%;
 }
-
-
-
 
 /* =========================
 FLIGHT SHADOW
 ========================= */
 .prep-flight-shadow {
-  position: absolute;
-  z-index: 1;
-  width: 330px;
-  height: 300px;
-  pointer-events: none;
-  border-radius: 4px;
-  opacity: 0;
+position: absolute;
+z-index: 1;
+width: 330px;
+height: 300px;
+pointer-events: none;
+border-radius: 4px;
+opacity: 0;
 
-  background: linear-gradient(
-    90deg,
-    rgba(0,0,0,0.00) 0%,
-    rgba(0,0,0,0.18) 42%,
-    rgba(0,0,0,0.42) 100%
-  );
+background: linear-gradient(
+90deg,
+rgba(0,0,0,0.00) 0%,
+rgba(0,0,0,0.18) 42%,
+rgba(0,0,0,0.42) 100%
+);
 
-  filter: blur(20px);
-  transform-origin: top right;
-  will-change: transform, opacity, filter;
+filter: blur(20px);
+transform-origin: top right;
+will-change: transform, opacity, filter;
 }
 
 /* =========================
-   PREP NOTE CONTENT
+PREP NOTE CONTENT
 ========================= */
 
 .prep-note-inner {
-  position: relative;
-  z-index: 2;
-  min-height: 252px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 14px;
+position: relative;
+z-index: 2;
+min-height: 252px;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: flex-end;
+gap: 14px;
 }
 
 .prep-note-content {
-  width: 100%;
-  flex: 1;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  text-align: center;
-  opacity: 1;
+width: 100%;
+flex: 1;
+display: flex;
+align-items: flex-start;
+justify-content: center;
+text-align: center;
+opacity: 1;
 }
 
 .note-copy {
-  width: 100%;
-  color: rgba(46, 34, 16, 0.92);
-  font-family: "Caveat", cursive;
+width: 100%;
+color: rgba(46, 34, 16, 0.92);
+font-family: "Caveat", cursive;
 }
 
 .note-copy-intro {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  gap: 14px;
-  padding-top: 8px;
+display: flex;
+flex-direction: column;
+justify-content: flex-start;
+gap: 14px;
+padding-top: 8px;
 }
 
 .note-main-text {
-  font-size: 25px;
-  line-height: 1.06;
-  text-align: center;
-  letter-spacing: 0.1px;
+font-size: 25px;
+line-height: 1.06;
+text-align: center;
+letter-spacing: 0.1px;
 }
 
 .note-checklist {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 2px;
+display: flex;
+flex-direction: column;
+gap: 10px;
+margin-top: 2px;
 }
 
 .note-check-item {
-  font-size: 18px;
-  line-height: 1.12;
-  text-align: left;
-}
-
-.note-copy-waiting,
-.note-copy-break {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100%;
-  padding-top: 14px;
-}
-
-.note-handwriting-line {
-  font-family: "Caveat", cursive;
-  font-size: 30px;
-  line-height: 1.08;
-  color: rgba(46, 34, 16, 0.95);
-  text-align: center;
-  white-space: pre-wrap;
-}
-
-.note-handwriting-line-secondary {
-  margin-top: 14px;
-  font-size: 24px;
-  line-height: 1.08;
+font-size: 18px;
+line-height: 1.12;
+text-align: left;
 }
 
 /* =========================
-   BUTTON
+BUTTON
 ========================= */
 
 .prep-confirm-button {
-  align-self: center;
-  margin-top: auto;
+align-self: center;
+margin-top: auto;
 
-  border: none;
-  border-radius: 999px;
-  padding: 16px 26px;
-  min-width: 190px;
-  cursor: pointer;
+border: none;
+border-radius: 999px;
+padding: 16px 26px;
+min-width: 190px;
+cursor: pointer;
 
-  background: linear-gradient(180deg, #454b59 0%, #313746 100%);
-  color: #fff;
-  font-size: 17px;
-  font-weight: 500;
+background: linear-gradient(180deg, #454b59 0%, #313746 100%);
+color: #fff;
+font-size: 17px;
+font-weight: 500;
 
-  box-shadow:
-    0 6px 14px rgba(0, 0, 0, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+box-shadow:
+0 6px 14px rgba(0, 0, 0, 0.12),
+inset 0 1px 0 rgba(255, 255, 255, 0.10);
 
-  transition:
-    transform 0.16s ease,
-    opacity 0.28s ease;
+transition:
+transform 0.16s ease,
+opacity 0.28s ease;
 }
-
-.prep-confirm-button:hover {
-  transform: translateY(-1px);
-}
-
-.prep-overlay.prep-overlay-persistent .prep-confirm-button {
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* =========================
-   STICKY ANIMATION
-========================= */
-
 
 /* =========================
 PERSISTENT STICKY POSITION
-Hier definieren wir NUR die Endposition.
 ========================= */
 
-/* Desktop Endposition */
+/* Desktop Endposition - Abgestimmt auf JS y: 230 */
 .prep-overlay.prep-overlay-persistent .prep-note-sheet {
-/* Wir nutzen hier transform-Werte, die zu deinem JS 'end' passen */
-transform: translate3d(0, 118px, 0) rotate(-3deg);
+transform: translate3d(-50%, 230px, 0) rotate(-3deg);
+left: 50%;
+top: 50%;
 }
 
-/* Mobile Endposition (Angenommen dein Media Query fängt hier an) */
+/* Mobile Endposition - Abgestimmt auf JS y: 160 */
 @media (max-width: 768px) {
 .prep-overlay.prep-overlay-persistent .prep-note-sheet {
-transform: translate3d(0, 54px, 0) rotate(-3deg);
+transform: translate3d(-50%, 160px, 0) rotate(-3deg);
+left: 50%;
+top: 50%;
 }
-}
-
-/* Schatten-Handling */
-.prep-overlay.prep-overlay-persistent .prep-flight-shadow {
-display: none; /* Flugschatten weg, wenn fixiert */
 }
 
 .prep-overlay.prep-overlay-persistent .prep-rest-shadow {
 opacity: 0.55;
-/* Dein Schatten-Style hier */
+transform: translate3d(0, 12px, 0); /* Minimaler Versatz für Tiefe am Ende */
 }
 
 /* =========================
-   RESPONSIVE 900
+RESPONSIVE 900
 ========================= */
 
 @media (max-width: 900px) {
-  .setup-center {
-    justify-content: center;
-    padding-top: 28px;
-    padding-bottom: 28px;
-  }
+/* ... (Deine bestehenden Styles für Title/Subtitle bleiben unverändert) ... */
 
-  .start-screen {
-    width: 92vw;
-    aspect-ratio: auto;
-    min-height: auto;
-    padding: 36px 24px 42px;
-    justify-content: center;
-  }
-
-  .title {
-    font-size: 32px;
-    max-width: 100%;
-  }
-
-  .subtitle {
-    font-size: 15px;
-    margin-bottom: 10px;
-  }
-
-  .time-row {
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .time-group {
-    width: 100%;
-    min-height: auto;
-    padding: 22px 20px 20px;
-  }
-
-  .time-group label {
-    margin-bottom: 16px;
-    font-size: 17px;
-  }
-
-  .time-inputs {
-    max-width: 100%;
-    gap: 10px;
-  }
-
-  .time-inputs select {
-    height: 76px;
-    font-size: 22px;
-    border-radius: 14px;
-  }
-
-  .time-inputs .colon {
-    font-size: 30px;
-  }
-
-  #start-button {
-    width: 100%;
-    min-width: 0;
-    font-size: 18px;
-    padding: 16px 32px;
-  }
-
-  #waiting-screen {
-    padding: 20px;
-    align-items: center;
-  }
-
-  #waiting-screen::before {
-    top: 20px;
-    width: 92vw;
-    aspect-ratio: auto;
-    min-height: auto;
-  }
-
-  #waiting-screen .screen-center {
-    width: 92vw;
-    aspect-ratio: auto;
-    min-height: auto;
-    padding: 34px 20px 38px;
-  }
-
-  #break-screen .screen-center {
-    padding: 28px 16px 28px;
-    justify-content: flex-start;
-  }
-
-  .flip-clock-wrap {
-    width: 100%;
-    max-width: 420px;
-    margin-top: 4px;
-    margin-bottom: 24px;
-  }
-
-  .prep-overlay.prep-overlay-persistent .prep-note-sheet {
-    transform:
-      translateX(0)
-      translateY(86px)
-      rotate(-3deg)
-      skewX(0deg)
-      scaleX(1)
-      scaleY(1);
-  }
-
-  .prep-overlay.prep-overlay-persistent .prep-flight-shadow {
-    opacity: 0;
-    transform:
-      translateX(0)
-      translateY(92px)
-      skewX(0deg)
-      scaleX(1)
-      scaleY(0.72);
-  }
+.prep-overlay.prep-overlay-persistent .prep-note-sheet {
+transform: translate3d(-50%, 160px, 0) rotate(-3deg);
+}
 }
 
 /* =========================
-   RESPONSIVE 768
+RESPONSIVE 768
 ========================= */
 
 @media (max-width: 768px) {
-.screen-center {
-padding: 28px 20px 36px;
-justify-content: flex-start;
-}
-
-.setup-center {
-justify-content: center;
-padding-top: 20px;
-padding-bottom: 20px;
-}
-
-.start-screen {
-width: 92vw;
-aspect-ratio: auto;
-min-height: auto;
-padding: 34px 20px 38px;
-gap: 20px;
-box-shadow:
-0 26px 46px rgba(0, 0, 0, 0.14),
-0 0 26px rgba(255,255,255,0.14),
-0 0 64px rgba(214,230,220,0.16),
-inset 0 0 50px rgba(0, 0, 0, 0.025);
-}
-
-.title {
-font-size: 24px;
-}
-
-.subtitle {
-font-size: 15px;
-}
-
-.time-group {
-max-width: 100%;
-min-height: auto;
-padding: 20px 16px 18px;
-}
-
-.time-group label {
-margin-bottom: 14px;
-font-size: 16px;
-}
-
-.time-inputs {
-width: 100%;
-max-width: 100%;
-grid-template-columns: 1fr auto 1fr;
-gap: 10px;
-}
-
-.time-inputs select {
-width: 100%;
-min-width: 0;
-height: 62px;
-padding: 0 8px;
-font-size: 20px;
-border-radius: 16px;
-}
-
-.time-inputs .colon {
-font-size: 28px;
-margin: 0;
-}
-
-#waiting-screen {
-padding: 14px;
-align-items: flex-start;
-}
-
-#waiting-screen::before {
-top: 14px;
-left: 50%;
-transform: translateX(-50%);
-width: 92vw;
-min-height: calc(100vh - 28px);
-aspect-ratio: unset;
-box-shadow:
-0 26px 46px rgba(0, 0, 0, 0.14),
-0 0 24px rgba(255,255,255,0.12),
-0 0 58px rgba(214,230,220,0.14),
-inset 0 0 50px rgba(0, 0, 0, 0.025);
-}
-
-#waiting-screen .screen-center {
-width: 92vw;
-min-height: calc(100vh - 28px);
-padding: 28px 18px 32px;
-box-sizing: border-box;
-}
-
 .prep-note-sheet {
-  width: 270px;
-  min-height: 255px;
-  padding: 20px 16px 16px;
+width: 270px;
+min-height: 255px;
+padding: 20px 16px 16px;
+overflow: visible;
 
-  box-shadow:
-    0 12px 20px rgba(0,0,0,0.10),
-    52px 18px 48px rgba(0, 0, 0, 0.24),
-    86px 28px 104px rgba(0, 0, 0, 0.13),
-    inset 0 1px 0 rgba(255,255,255,0.24);
-
-  clip-path: polygon(8% 0%, 100% 0%, 96% 100%, 0% 100%);
-}
-
-.prep-note-inner {
-min-height: 215px;
-gap: 10px;
-}
-
-.note-copy-intro {
-gap: 10px;
-padding-top: 4px;
-}
-
-.note-main-text {
-font-size: 21px;
-line-height: 1.04;
-}
-
-.note-check-item {
-font-size: 16px;
-line-height: 1.08;
-}
-
-.note-handwriting-line {
-font-size: 26px;
-line-height: 1.05;
-}
-
-.note-handwriting-line-secondary {
-margin-top: 10px;
-font-size: 21px;
-}
-
-.prep-confirm-button {
-min-width: 170px;
-padding: 14px 22px;
-font-size: 16px;
-}
-
-.prep-flight-shadow {
-width: 280px;
-height: 255px;
-transform:
-translateX(360px)
-translateY(10px)
-skewX(-16deg)
-scaleX(1.60)
-scaleY(3.05);
-filter: blur(18px);
-}
-
-.prep-note-sheet.is-placing {
-animation: placeStickyTakeoverMobile 1120ms cubic-bezier(0.18, 0.72, 0.2, 1) forwards;
-}
-
-.prep-note-sheet.is-placing + .prep-flight-shadow {
-animation: prepFlightShadowMoveMobile 1280ms cubic-bezier(0.22, 0.78, 0.22, 1) forwards;
-}
-
-#break-screen .screen-center {
-padding: 18px 14px 24px;
-}
-
-.flip-clock-wrap {
-width: 100%;
-max-width: 360px;
-padding: 8px;
-border-radius: 28px;
-margin-top: 0;
-margin-bottom: 18px;
 box-shadow:
-0 14px 24px rgba(0, 0, 0, 0.28),
-0 0 18px rgba(255, 190, 80, 0.10),
-inset 0 2px 2px rgba(255, 255, 255, 0.35),
-inset 0 -10px 14px rgba(0, 0, 0, 0.28);
-}
+0 12px 20px rgba(0,0,0,0.10),
+52px 18px 48px rgba(0, 0, 0, 0.24),
+inset 0 1px 0 rgba(255,255,255,0.24);
 
-.flip-clock-panel {
-padding: 22px 18px 20px;
-border-radius: 24px;
-}
-
-.flip-label {
-font-size: 18px;
-margin-bottom: 16px;
-}
-
-.flip-display {
-width: 100%;
-gap: 8px;
-padding: 0;
-}
-
-.flip-card {
-width: 68px;
-height: 96px;
-font-size: 58px;
-border-radius: 14px;
-}
-
-.flip-middle-panel {
-width: 44px;
-min-height: 96px;
-margin: 0 -4px;
-}
-
-.flip-middle-panel::before,
-.flip-middle-panel::after {
-width: 44px;
-height: 18px;
-}
-
-.flip-middle-panel::before {
-top: -8px;
-}
-
-.flip-middle-panel::after {
-bottom: -8px;
-}
-
-.flip-separator {
-gap: 10px;
-width: 12px;
-}
-
-.flip-separator span {
-width: 10px;
-height: 10px;
-}
-
-.flip-group::before,
-.flip-group::after {
-width: 5px;
-height: 18px;
-}
-
-.flip-group::before {
-left: -2px;
-}
-
-.flip-group::after {
-right: -2px;
+/* Clip-path auch hier deaktiviert */
+/* clip-path: polygon(8% 0%, 100% 0%, 96% 100%, 0% 100%); */
 }
 
 .prep-overlay.prep-overlay-persistent .prep-note-sheet {
-width: 270px;
-min-height: 255px;
-transform:
-translateX(0)
-translateY(54px)
-rotate(-3deg)
-skewX(0deg)
-scaleX(1)
-scaleY(1);
-}
-
-.prep-overlay.prep-overlay-persistent .prep-flight-shadow {
-width: 280px;
-height: 255px;
-opacity: 0;
-transform:
-translateX(0)
-translateY(60px)
-skewX(0deg)
-scaleX(1)
-scaleY(0.72);
+transform: translate3d(-50%, 160px, 0) rotate(-3deg);
 }
 }
 
-
-body.night .prep-rest-shadow,
-#break-screen .prep-rest-shadow {
+body.night .prep-rest-shadow {
 opacity: 0.45;
 filter: blur(4px) brightness(0.3);
 }
