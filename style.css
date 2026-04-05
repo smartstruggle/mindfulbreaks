@@ -700,6 +700,9 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
 PREP OVERLAY & STICKY SYSTEM
 ========================= */
 
+/* =========================
+PREP OVERLAY (Optimiert für GSAP)
+========================= */
 .prep-overlay {
 position: fixed;
 inset: 0;
@@ -707,9 +710,67 @@ z-index: 999;
 display: flex;
 align-items: center;
 justify-content: center;
-overflow: visible;
+pointer-events: auto;
+overflow: visible; /* Wichtig für den riesigen Schatten */
 perspective: 1400px;
 transform-style: preserve-3d;
+}
+
+.prep-backdrop {
+position: absolute;
+inset: 0;
+z-index: 0;
+background: rgba(28, 30, 36, 0.015);
+pointer-events: none;
+}
+
+/* STICKY SHEET */
+.prep-note-sheet {
+position: relative;
+z-index: 2;
+isolation: isolate;
+width: 387px;
+min-height: 363px;
+padding: 46px 26px 24px;
+box-sizing: border-box;
+border-radius: 1px;
+
+/* FIX 1: Clip-Path entfernt, damit der Schatten nicht abgeschnitten wird */
+overflow: visible;
+
+background: linear-gradient(180deg, #f6e548 0%, #f2de2f 54%, #e6cb1e 100%);
+border: 1px solid rgba(126, 98, 18, 0.20);
+box-shadow: none;
+
+/* Ankerpunkt für GSAP-Andrücken */
+transform-origin: 50% 0%;
+will-change: transform, opacity;
+backface-visibility: hidden;
+transform-style: preserve-3d;
+}
+
+/* REST SHADOW (Deine SVG-Logik erhalten) */
+.prep-rest-shadow {
+position: absolute;
+z-index: 1;
+pointer-events: none;
+width: 440px;
+height: auto;
+background: rgba(0,0,0,0.4); /* Fallback */
+border-radius: 2px;
+will-change: transform, opacity, filter;
+filter: blur(3px);
+
+mask-image: linear-gradient(to bottom right, transparent 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.6) 70%, black 100%);
+-webkit-mask-image: linear-gradient(to bottom right, transparent 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.6) 70%, black 100%);
+
+/* Transform-Werte entfernt, damit GSAP volle Kontrolle hat */
+}
+
+/* FIX 2: Wir leeren die CSS-Fallback-Koordinaten komplett!
+Damit verhindern wir das Springen am Ende der Animation. */
+.prep-overlay.prep-overlay-persistent .prep-note-sheet {
+/* Keine transform-Werte hier! */
 }
 
 /* Der Zettel-Container */
