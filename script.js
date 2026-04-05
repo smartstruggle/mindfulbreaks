@@ -254,48 +254,35 @@ async function blurSetupScreenBeforePrep() {
   await wait(420);
 }
 
-/* ==========================================================================
-   1. DAS STEUERPULT - ÜBER DIE SCHULTER (BILD-SYNC)
-   ========================================================================== */
 function getStickyPositions() {
   const isMobile = window.innerWidth <= 768;
   return {
-    // START: Riesig von rechts oben (kommt "über die Schulter")
+    // START: Riesig (scale 22) von rechts oben
     start: isMobile
       ? { x: 1000, y: -300, scale: 6, rotX: 40, rotY: -15 } 
-      : { x: 3000, y: -800, scale: 18, rotX: 60, rotY: -25 },
-
-    // NORMAL: Landet exakt mittig (x: 0)
+      : { x: 3500, y: -900, scale: 22, rotX: 65, rotY: -25 },
     normal: { x: 0, y: 150, rotation: -3 },
-
-    // BREAK: Landet tiefer (x: 0)
     break: { x: 0, y: 400, rotation: -2 }
   };
 }
 
-/* ==========================================================================
-   2. DIE HAUPT-ANIMATION (FIXED)
-   ========================================================================== */
 function showPrepNote() {
   if (!prepOverlay || !prepNote || !prepRestShadow) return;
 
   appState = "prep";
   prepOverlay.style.display = "flex";
-  prepOverlay.classList.remove("prep-overlay-persistent");
 
-  // Button verstecken für den Flug
+  // Button reset
   if (prepConfirmButton) {
     gsap.set(prepConfirmButton, { display: "none", opacity: 0 });
   }
-
-  gsap.killTweensOf([prepNote, prepRestShadow]);
 
   const isBreak = document.body.classList.contains('in-break');
   const pos = getStickyPositions();
   const start = pos.start;
   const end = isBreak ? pos.break : pos.normal;
 
-  // SETUP: Beams alles auf die Startposition (xPercent -50 fixiert die Mitte)
+  // SETUP
   gsap.set([prepNote, prepRestShadow], {
     xPercent: -50,
     x: start.x,
@@ -308,20 +295,18 @@ function showPrepNote() {
     transformOrigin: "50% 0%"
   });
 
-  gsap.set(prepRestShadow, { filter: "blur(120px)", opacity: 0 });
-
   const tl = gsap.timeline({
     onComplete: () => {
-      prepOverlay.classList.add("prep-overlay-persistent");
-      // Button einblenden NACH der Landung
+      // Button unter dem Zettel einblenden
       if (prepConfirmButton) {
-        gsap.set(prepConfirmButton, { display: "inline-flex", y: end.y + 400 });
+        const buttonY = end.y + (isBreak ? 350 : 380); // Positioniert den Button unter dem Zettel
+        gsap.set(prepConfirmButton, { display: "inline-flex", top: buttonY });
         gsap.to(prepConfirmButton, { opacity: 1, duration: 0.5 });
       }
     }
   });
 
-  // PHASE 1: Der Flug zur Mitte (x: 0)
+  // Flug
   tl.to([prepNote, prepRestShadow], {
     x: 0, 
     y: end.y,
@@ -334,15 +319,15 @@ function showPrepNote() {
     ease: "power2.inOut"
   });
 
-  // PHASE 2: Der Schatten landet (Tiefe erzeugen)
+  // Schatten-Finishing
   tl.to(prepRestShadow, {
     y: end.y + 10,
-    opacity: 0.5,
-    filter: "blur(12px)",
-    duration: 0.7,
-    ease: "power2.out"
-  }, "-=0.7");
+    opacity: 0.6,
+    filter: "blur(14px)",
+    duration: 0.8
+  }, "-=0.8");
 }
+
 
 /* ==========================================================================
 3. BUTTONS & UI LOGIK (Aus deinem Original-Code erhalten)
