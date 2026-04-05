@@ -255,37 +255,38 @@ async function blurSetupScreenBeforePrep() {
 }
 
 /* ==========================================================================
-1. DAS STEUERPULT - FINAL PICTURE SYNC
-========================================================================== */
+   1. DAS STEUERPULT - ÜBER DIE SCHULTER (BILD-SYNC)
+   ========================================================================== */
 function getStickyPositions() {
   const isMobile = window.innerWidth <= 768;
   return {
-    // START: Riesig (scale 25) und weit rechts oben (wie auf deinem Video-Still)
+    // START: Riesig von rechts oben (kommt "über die Schulter")
     start: isMobile
-      ? { x: 1200, y: -400, scale: 8, rotX: 40, rotY: -15 } 
-      : { x: 3500, y: -900, scale: 22, rotX: 65, rotY: -25 },
+      ? { x: 1000, y: -300, scale: 6, rotX: 40, rotY: -15 } 
+      : { x: 3000, y: -800, scale: 18, rotX: 60, rotY: -25 },
 
-    // NORMAL: Landet exakt zentriert am Screen
-    normal: isMobile
-      ? { x: 0, y: 120, rotation: -3 }
-      : { x: 0, y: 150, rotation: -3 },
+    // NORMAL: Landet exakt mittig (x: 0)
+    normal: { x: 0, y: 150, rotation: -3 },
 
-    // BREAK: Landet tiefer bei der Flip-Clock
-    break: isMobile
-      ? { x: 0, y: 350, rotation: -2 }
-      : { x: 0, y: 420, rotation: -2 }
+    // BREAK: Landet tiefer (x: 0)
+    break: { x: 0, y: 400, rotation: -2 }
   };
 }
 
 /* ==========================================================================
-2. DIE HAUPT-ANIMATION - ÜBER DIE SCHULTER ZUR MITTE
-========================================================================== */
+   2. DIE HAUPT-ANIMATION (FIXED)
+   ========================================================================== */
 function showPrepNote() {
   if (!prepOverlay || !prepNote || !prepRestShadow) return;
 
   appState = "prep";
   prepOverlay.style.display = "flex";
   prepOverlay.classList.remove("prep-overlay-persistent");
+
+  // Button verstecken für den Flug
+  if (prepConfirmButton) {
+    gsap.set(prepConfirmButton, { display: "none", opacity: 0 });
+  }
 
   gsap.killTweensOf([prepNote, prepRestShadow]);
 
@@ -294,9 +295,9 @@ function showPrepNote() {
   const start = pos.start;
   const end = isBreak ? pos.break : pos.normal;
 
-  // SETUP: Beams den Zettel an die "Schulter-Position"
-  const setup = {
-    xPercent: -50, 
+  // SETUP: Beams alles auf die Startposition (xPercent -50 fixiert die Mitte)
+  gsap.set([prepNote, prepRestShadow], {
+    xPercent: -50,
     x: start.x,
     y: start.y,
     scale: start.scale,
@@ -305,20 +306,27 @@ function showPrepNote() {
     rotationZ: 15,
     opacity: 0,
     transformOrigin: "50% 0%"
-  };
+  });
 
-  gsap.set([prepNote, prepRestShadow], setup);
-  // Schatten startet extrem diffus
   gsap.set(prepRestShadow, { filter: "blur(120px)", opacity: 0 });
 
-  const tl = gsap.timeline();
+  const tl = gsap.timeline({
+    onComplete: () => {
+      prepOverlay.classList.add("prep-overlay-persistent");
+      // Button einblenden NACH der Landung
+      if (prepConfirmButton) {
+        gsap.set(prepConfirmButton, { display: "inline-flex", y: end.y + 400 });
+        gsap.to(prepConfirmButton, { opacity: 1, duration: 0.5 });
+      }
+    }
+  });
 
-  // PHASE 1: Der massive Flug (Von "nah am Kopf" zum "Monitor")
+  // PHASE 1: Der Flug zur Mitte (x: 0)
   tl.to([prepNote, prepRestShadow], {
-    x: 0,            // Ziel: Mitte
+    x: 0, 
     y: end.y,
     opacity: 1,
-    scale: 1,        // Wird kleiner beim Entfernen vom Betrachter
+    scale: 1, 
     rotationX: 0,
     rotationY: 0,
     rotationZ: end.rotation,
@@ -326,20 +334,15 @@ function showPrepNote() {
     ease: "power2.inOut"
   });
 
-  // PHASE 2: Schatten zieht scharf nach beim Kontakt
+  // PHASE 2: Der Schatten landet (Tiefe erzeugen)
   tl.to(prepRestShadow, {
-    y: end.y + 10,   // Kleiner 3D-Versatz
-    opacity: 0.55,
+    y: end.y + 10,
+    opacity: 0.5,
     filter: "blur(12px)",
-    duration: 0.8,
-    ease: "power2.out",
-    onComplete: () => {
-      prepOverlay.classList.add("prep-overlay-persistent");
-      if (typeof showConfirmButton === "function") showConfirmButton();
-    }
-  }, "-=0.8");
+    duration: 0.7,
+    ease: "power2.out"
+  }, "-=0.7");
 }
-
 
 /* ==========================================================================
 3. BUTTONS & UI LOGIK (Aus deinem Original-Code erhalten)
