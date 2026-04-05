@@ -266,106 +266,93 @@ gsap.killTweensOf([prepNote, prepRestShadow]);
 
 const isMobile = window.innerWidth <= 768;
 
-// --- START: Riesig (Skalierung leicht angepasst für Performance) ---
+// --- START: Riesig, von rechts oben "über die Schulter" ---
 const start = isMobile
-? { x: 1400, y: -280, scale: 10, rotation: -22, rotationX: 80, rotationY: -15, opacity: 0.9 }
-: { x: 3200, y: -450, scale: 20, rotation: -28, rotationX: 85, rotationY: -25, opacity: 0.8 };
+? { x: 1200, y: -300, scale: 10, rotation: -20, rotationX: 75, opacity: 0.8 }
+: { x: 3500, y: -600, scale: 22, rotation: -25, rotationX: 85, opacity: 0.7 };
 
-// --- MID: Flug (Etwas zügiger als vorher) ---
-const mid = isMobile
-? { x: 450, y: 0, scale: 3.8, rotation: -14, rotationX: 50, rotationY: -12 }
-: { x: 850, y: 30, scale: 5.5, rotation: -16, rotationX: 55, rotationY: -18 };
-
-// --- CONTACT: Klebekante oben (Deine exakte End-X/Y Positionierung) ---
+// --- CONTACT: Klebekante oben trifft auf (TIEFER & MITTIGER) ---
 const contact = isMobile
-? { x: 12, y: 55, scale: 1.12, rotation: -5, rotationX: 20, rotationY: -4 }
-: { x: 8, y: 115, scale: 1.15, rotation: -5, rotationX: 25, rotationY: -6 };
+? { x: 0, y: 150, scale: 1.1, rotation: -5, rotationX: 20 }
+: { x: 0, y: 220, scale: 1.15, rotation: -5, rotationX: 25 };
 
-// --- END: Zurück auf deine Original-Mitte ---
+// --- END: Exakte Endposition ---
 const end = isMobile
-? { x: 0, y: 54, scale: 1, rotation: -3, rotationX: 0, rotationY: 0 }
-: { x: 0, y: 118, scale: 1, rotation: -3, rotationX: 0, rotationY: 0 };
+? { x: 0, y: 160, scale: 1, rotation: -3, rotationX: 0 }
+: { x: 0, y: 230, scale: 1, rotation: -3, rotationX: 0 };
 
+// Setup Note
 gsap.set(prepNote, {
 xPercent: -50, yPercent: -50,
 transformOrigin: "50% 0%",
 ...start
 });
 
-// Schatten-Setup: Wir geben ihm "overflow: visible" via JS sicherheitshalber mit
+// Setup Schatten (Riesig & weich)
 if (prepRestShadow) {
 gsap.set(prepRestShadow, {
-opacity: 0,
+opacity: 0.1,
 scale: 3,
-filter: "blur(50px)",
-x: 150,
-y: 250,
-overflow: "visible"
+filter: "blur(60px)",
+x: 100,
+y: 150
 });
 }
 
 const tl = gsap.timeline();
 
-// PHASE 1: Der Flug (Jetzt 2.4s statt 3.5s -> spürbar flotter aber smooth)
+// PHASE 1: Der zügige Flug (Kohärentes Easing)
 tl.to(prepNote, {
-...mid,
-duration: 2.4,
+x: contact.x,
+y: contact.y,
+scale: contact.scale,
+rotation: contact.rotation,
+rotationX: contact.rotationX,
+opacity: 1,
+duration: 2.2, // Schnellerer Start
 ease: "power2.inOut"
 });
 
 if (prepRestShadow) {
 tl.to(prepRestShadow, {
-opacity: 0.4,
-scale: 1.5,
-filter: "blur(20px)",
-x: 40,
-y: 80,
-duration: 2.4,
+opacity: 0.6,
+scale: 1.1,
+filter: "blur(15px)",
+x: 15,
+y: 30,
+duration: 2.2,
 ease: "power2.inOut"
 }, 0);
 }
 
-// PHASE 2: Landung (0.7s für ein knackiges, aber weiches Aufsetzen)
+// PHASE 2: Das Andrücken (Die "Trapez-zu-Rechteck" Bewegung)
 tl.to(prepNote, {
-...contact,
-duration: 0.7,
-ease: "back.out(1.1)"
-});
-
-// PHASE 3: Der Druck (Hier wird der Zettel flach "gebügelt")
-tl.to(prepNote, {
-rotationX: 0,
-rotationY: 0,
-x: end.x,
-y: end.y,
-duration: 0.5,
+rotationX: -10, // Kurz gegendrücken
+duration: 0.4,
 ease: "sine.inOut"
 });
 
-// PHASE 4: Settle (Das finale Auspendeln)
+// PHASE 3: Settle & Endposition
 tl.to(prepNote, {
 ...end,
-duration: 1.0,
-ease: "elastic.out(1, 0.9)",
+duration: 0.8,
+ease: "elastic.out(1, 0.85)",
 onComplete: () => {
 prepOverlay.classList.add("prep-overlay-persistent");
-// Falls die Positionierung danach springt, nimm diese Zeile rein:
-// gsap.set(prepNote, { clearProps: "transform" });
 }
 });
 
-// Schatten-Finale
 if (prepRestShadow) {
 tl.to(prepRestShadow, {
-opacity: 0.6,
-scale: 1,
-filter: "blur(12px)",
-x: 0,
-y: 12,
-duration: 1.0
-}, "-=1.0");
+opacity: 0.5,
+filter: "blur(8px)",
+x: 10,
+y: 15,
+duration: 0.8
+}, "-=0.8");
 }
 }
+
 
 
 function showConfirmButton() {
