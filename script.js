@@ -255,22 +255,22 @@ async function blurSetupScreenBeforePrep() {
 }
 
 /* ==========================================================================
-1. DAS STEUERPULT - ÜBER DIE SCHULTER (Screengrab-Optimiert)
+1. DAS STEUERPULT - FINAL PICTURE SYNC
 ========================================================================== */
 function getStickyPositions() {
   const isMobile = window.innerWidth <= 768;
   return {
-    // START: Wie auf dem Foto - extrem nah (scale 15-20) und rechts oben
+    // START: Riesig (scale 25) und weit rechts oben (wie auf deinem Video-Still)
     start: isMobile
-      ? { x: 1200, y: -300, scale: 8, rotX: 30, rotY: -15 } 
-      : { x: 2500, y: -600, scale: 18, rotX: 45, rotY: -25 },
+      ? { x: 1200, y: -400, scale: 8, rotX: 40, rotY: -15 } 
+      : { x: 3500, y: -900, scale: 22, rotX: 65, rotY: -25 },
 
-    // NORMAL: Landet exakt zentriert auf dem Screen
+    // NORMAL: Landet exakt zentriert am Screen
     normal: isMobile
       ? { x: 0, y: 120, rotation: -3 }
       : { x: 0, y: 150, rotation: -3 },
 
-    // BREAK: Landet tiefer (Flip-Clock Bereich)
+    // BREAK: Landet tiefer bei der Flip-Clock
     break: isMobile
       ? { x: 0, y: 350, rotation: -2 }
       : { x: 0, y: 420, rotation: -2 }
@@ -278,7 +278,7 @@ function getStickyPositions() {
 }
 
 /* ==========================================================================
-2. DIE HAUPT-ANIMATION - DER FLUG ZUM SCREEN
+2. DIE HAUPT-ANIMATION - ÜBER DIE SCHULTER ZUR MITTE
 ========================================================================== */
 function showPrepNote() {
   if (!prepOverlay || !prepNote || !prepRestShadow) return;
@@ -294,44 +294,41 @@ function showPrepNote() {
   const start = pos.start;
   const end = isBreak ? pos.break : pos.normal;
 
-  // SETUP: Beams den Zettel nach rechts oben (wie auf dem Foto)
+  // SETUP: Beams den Zettel an die "Schulter-Position"
   const setup = {
-    left: "50%",
-    top: 0,
     xPercent: -50, 
     x: start.x,
     y: start.y,
     scale: start.scale,
     rotationX: start.rotX,
     rotationY: start.rotY,
-    rotationZ: 15, // Schräger Einflugwinkel
+    rotationZ: 15,
     opacity: 0,
     transformOrigin: "50% 0%"
   };
 
   gsap.set([prepNote, prepRestShadow], setup);
-  // Schatten ist zu Beginn fast unsichtbar und sehr diffus (weit weg vom Glas)
-  gsap.set(prepRestShadow, { filter: "blur(100px)", opacity: 0 });
+  // Schatten startet extrem diffus
+  gsap.set(prepRestShadow, { filter: "blur(120px)", opacity: 0 });
 
   const tl = gsap.timeline();
 
-  // PHASE 1: Der Flug von "nah am Auge" zu "klebend am Screen"
+  // PHASE 1: Der massive Flug (Von "nah am Kopf" zum "Monitor")
   tl.to([prepNote, prepRestShadow], {
-    x: 0,            // Ziel: Absolute Mitte
+    x: 0,            // Ziel: Mitte
     y: end.y,
     opacity: 1,
-    scale: 1,        // Schrumpft auf Normalgröße (Entfernung vom Auge zum Monitor)
+    scale: 1,        // Wird kleiner beim Entfernen vom Betrachter
     rotationX: 0,
     rotationY: 0,
     rotationZ: end.rotation,
-    duration: 2.0,   // Etwas langsamer für die schwere Kurve
-    ease: "power2.inOut" 
+    duration: 2.0,
+    ease: "power2.inOut"
   });
 
-  // PHASE 2: Schatten-Landung
-  // Sobald der Zettel "klebt", zieht der Schatten scharf nach
+  // PHASE 2: Schatten zieht scharf nach beim Kontakt
   tl.to(prepRestShadow, {
-    y: end.y + 12,   // Tiefe unter dem Zettel
+    y: end.y + 10,   // Kleiner 3D-Versatz
     opacity: 0.55,
     filter: "blur(12px)",
     duration: 0.8,
@@ -340,8 +337,9 @@ function showPrepNote() {
       prepOverlay.classList.add("prep-overlay-persistent");
       if (typeof showConfirmButton === "function") showConfirmButton();
     }
-  }, "-=1.0"); // Beginnt schon während der Zettel landet
+  }, "-=0.8");
 }
+
 
 /* ==========================================================================
 3. BUTTONS & UI LOGIK (Aus deinem Original-Code erhalten)
