@@ -255,100 +255,106 @@ async function blurSetupScreenBeforePrep() {
 }
 
 /* ==========================================================================
-1. DAS STEUERPULT (Positions-Konfiguration)
+1. DAS STEUERPULT (Positions-Konfiguration) - FIXED Y-WERTEN
 ========================================================================== */
 function getStickyPositions() {
-const isMobile = window.innerWidth <= 768;
-return {
-start: isMobile
-? { x: 1500, y: -600, scale: 10, rotX: 70, rotY: -15 }
-: { x: 5000, y: -1500, scale: 30, rotX: 85, rotY: -35 },
-normal: isMobile
-? { x: 0, y: 80, rotation: -3 }
-: { x: 0, y: 120, rotation: -3 },
-break: isMobile
-? { x: 0, y: 350, rotation: -2 }
-: { x: 0, y: 420, rotation: -2 }
-};
+  const isMobile = window.innerWidth <= 768;
+  return {
+    // START: Kommt gigantisch von rechts-oben reingeschossen
+    start: isMobile
+      ? { x: 1800, y: -600, scale: 10, rotX: 70, rotY: -15 }
+      : { x: 5000, y: -1500, scale: 30, rotX: 85, rotY: -35 },
+
+    // NORMAL: Startscreen & Waiting Screen (Gleiche Höhe!)
+    normal: isMobile
+      ? { x: 0, y: 120, rotation: -3 }
+      : { x: 0, y: 150, rotation: -3 },
+
+    // BREAK: Pause mit Flip-Clock (Tiefer)
+    break: isMobile
+      ? { x: 0, y: 350, rotation: -2 }
+      : { x: 0, y: 420, rotation: -2 }
+  };
 }
 
 /* ==========================================================================
-2. DIE HAUPT-ANIMATION (showPrepNote) - AKTUALISIERT & SYNCED
+2. DIE HAUPT-ANIMATION (showPrepNote) - FINAL SYNC
 ========================================================================== */
 function showPrepNote() {
-if (!prepOverlay || !prepNote || !prepRestShadow) return;
+  if (!prepOverlay || !prepNote || !prepRestShadow) return;
 
-appState = "prep";
-prepOverlay.style.display = "flex";
-prepOverlay.classList.remove("prep-overlay-persistent");
+  appState = "prep";
+  prepOverlay.style.display = "flex";
+  prepOverlay.classList.remove("prep-overlay-persistent");
 
-gsap.killTweensOf([prepNote, prepRestShadow]);
+  gsap.killTweensOf([prepNote, prepRestShadow]);
 
-const isMobile = window.innerWidth <= 768;
+  const isBreak = document.body.classList.contains('in-break');
+  const pos = getStickyPositions();
+  const start = pos.start;
+  const end = isBreak ? pos.break : pos.normal;
 
-// 1. START: Gigantisch weit rechts (außerhalb des Bildschirms)
-const start = isMobile
-? { x: 1500, y: -450, scale: 8, rotation: -20, rotationX: 80, rotationY: -15, opacity: 0 }
-: { x: 5000, y: -1200, scale: 25, rotation: -25, rotationX: 85, rotationY: -25, opacity: 0 };
+  // SETUP: Beide absolut deckungsgleich
+  const setup = {
+    left: "50%",
+    top: 0,
+    xPercent: -50, // Mitte fixieren
+    x: start.x,
+    y: start.y,    // WICHTIG: Rein absoluter y-Wert
+    scale: start.scale,
+    rotationX: start.rotX,
+    rotationY: start.rotY,
+    opacity: 0,
+    transformOrigin: "50% 0%"
+  };
 
-// 2. ENDE: Perfekt mittig (x: 0)
-const end = isMobile
-? { x: 0, y: 80, rotation: -3 }
-: { x: 0, y: 118, rotation: -3 };
+  gsap.set([prepNote, prepRestShadow], setup);
+  gsap.set(prepRestShadow, { filter: "blur(60px)", opacity: 0 });
 
-// Setup: Beide auf die Startposition beamen
-const setup = {
-left: "50%",
-top: 0,
-xPercent: -50,
-transformOrigin: "50% 0%",
-...start
-};
+  const tl = gsap.timeline();
 
-gsap.set([prepNote, prepRestShadow], setup);
-gsap.set(prepRestShadow, { filter: "blur(50px)", opacity: 0 });
+  // PHASE 1: Der Flug
+  tl.to([prepNote, prepRestShadow], {
+    x: end.x,
+    y: end.y,
+    xPercent: -50,
+    opacity: 1,
+    rotationX: 25,
+    rotationY: -15,
+    duration: 2.2,
+    ease: "power2.inOut"
+  });
 
-const tl = gsap.timeline({
-onComplete: () => {
-prepOverlay.classList.add("prep-overlay-persistent");
-if (typeof showConfirmButton === "function") showConfirmButton();
-}
-});
+  tl.to(prepRestShadow, {
+    opacity: 0.4,
+    filter: "blur(25px)",
+    duration: 2.2,
+    ease: "power2.inOut"
+  }, 0);
 
-// Flugphase
-tl.to([prepNote, prepRestShadow], {
-x: end.x,
-y: end.y + 80,
-opacity: 1,
-rotationX: 25,
-rotationY: -15,
-duration: 2.2,
-ease: "power2.inOut"
-});
+  // PHASE 2: Die Landung
+  tl.to([prepNote, prepRestShadow], {
+    rotationX: 0,
+    rotationY: 0,
+    rotation: end.rotation,
+    scale: 1,
+    y: end.y, // Exakt auf der Landeposition
+    duration: 0.7,
+    ease: "back.out(1.15)"
+  });
 
-// Landung (Zettel wird flach)
-tl.to(prepNote, {
-y: end.y,
-rotationX: 0,
-rotationY: 0,
-rotation: end.rotation,
-scale: 1,
-duration: 0.7,
-ease: "back.out(1.1)"
-});
-
-// Schatten-Finale (Klebt sich unter den Zettel)
-tl.to(prepRestShadow, {
-y: end.y + 10,
-rotationX: 0,
-rotationY: 0,
-rotation: end.rotation,
-scale: 1,
-opacity: 0.5,
-filter: "blur(12px)",
-duration: 0.7,
-ease: "power2.out"
-}, "-=0.7");
+  // FINALE: Den Schatten minimal unter den Zettel schieben für Tiefe
+  tl.to(prepRestShadow, {
+    y: end.y + 12,
+    opacity: 0.55,
+    filter: "blur(12px)",
+    duration: 0.6,
+    onComplete: () => {
+      prepOverlay.classList.add("prep-overlay-persistent");
+      // Falls ein Confirm-Button eingeblendet werden soll:
+      if (typeof showConfirmButton === "function") showConfirmButton();
+    }
+  }, "-=0.6");
 }
 
 /* ==========================================================================
