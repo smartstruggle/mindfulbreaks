@@ -730,38 +730,75 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
 ========================= */
 
 @media (max-width: 768px) {
-.screen__inner {
-padding: 28px 14px;
+.screen {
 min-height: 100svh;
 }
 
+.screen__inner {
+min-height: 100svh;
+padding: 18px 14px 24px;
+display: flex;
+align-items: flex-start;
+justify-content: center;
+}
+
+/* START + TRANSITION PAPER */
 .paper-sheet {
 width: min(88vw, 420px);
+aspect-ratio: auto;
 min-height: auto;
+border-radius: 8px;
+}
+
+.paper-sheet--start {
+margin-top: 34px;
+min-height: auto;
+}
+
+.paper-sheet--transition {
+margin-top: 70px;
 aspect-ratio: 210 / 297;
 }
 
+/* START CONTENT */
 .start-panel {
-padding: 28px 24px;
+height: auto;
+padding: 24px 26px 28px;
+justify-content: flex-start;
 gap: 14px;
 }
 
 .start-title {
-font-size: clamp(34px, 9vw, 46px);
+font-size: clamp(32px, 8.4vw, 42px);
+line-height: 1.02;
+max-width: 100%;
+margin: 0;
 }
 
 .start-subtitle {
-font-size: 15px;
+font-size: 16px;
+margin: 0 0 8px;
 }
 
 .time-form {
 width: 100%;
 max-width: 330px;
+gap: 14px;
+}
+
+.time-row {
+gap: 14px;
 }
 
 .time-group {
+width: 100%;
 padding: 18px 16px;
 border-radius: 18px;
+}
+
+.time-group label {
+font-size: 18px;
+margin-bottom: 14px;
 }
 
 .time-inputs {
@@ -769,13 +806,13 @@ gap: 10px;
 }
 
 .time-inputs select {
-height: 74px;
-font-size: 34px;
-border-radius: 20px;
+height: 68px;
+font-size: 32px;
+border-radius: 18px;
 }
 
 .colon {
-font-size: 38px;
+font-size: 36px;
 }
 
 #start-button,
@@ -790,31 +827,55 @@ font-size: 20px;
 display: none;
 }
 
-.sticky-note {
-width: min(86vw, 420px);
+/* TRANSITION: PAPER + STICKY STACKED */
+.screen--transition .screen__inner {
+display: grid;
+place-items: start center;
+padding-top: 34px;
 }
 
+.screen--transition .paper-sheet,
+.screen--transition .sticky-note {
+grid-area: 1 / 1;
+}
+
+.screen--transition .sticky-note {
+margin-top: 118px;
+width: min(78vw, 360px);
+}
+
+/* STICKY TEXT */
 .sticky-note__content {
-inset: 22% 13% 14%;
+inset: 23% 13% 14%;
 }
 
 .sticky-note__title {
-font-size: clamp(27px, 7vw, 38px);
+font-size: clamp(24px, 6.2vw, 32px);
+line-height: 1.1;
 }
 
 .sticky-note__checklist {
-font-size: clamp(22px, 6vw, 30px);
+margin: 16px 0 18px;
+font-size: clamp(20px, 5.4vw, 28px);
+line-height: 1.16;
 }
 
+.sticky-note__button {
+padding: 10px 22px;
+font-size: 14px;
+}
+
+/* BREAK SCREEN */
 .screen--break .screen__inner {
-padding: 36px 0 28px;
+padding: 32px 0 24px;
+align-items: flex-start;
 overflow-x: hidden;
 }
 
 .break-layout {
 width: 100%;
 min-height: auto;
-gap: 44px;
+gap: 38px;
 overflow: hidden;
 }
 
@@ -864,6 +925,6 @@ height: 9px;
 }
 
 .screen--break .sticky-note {
-width: min(76vw, 340px);
+width: min(72vw, 320px);
 }
 }
