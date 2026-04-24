@@ -725,3 +725,145 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
 }
 
 
+/* =========================
+11. MOBILE
+========================= */
+
+@media (max-width: 768px) {
+.screen__inner {
+padding: 28px 14px;
+min-height: 100svh;
+}
+
+.paper-sheet {
+width: min(88vw, 420px);
+min-height: auto;
+aspect-ratio: 210 / 297;
+}
+
+.start-panel {
+padding: 28px 24px;
+gap: 14px;
+}
+
+.start-title {
+font-size: clamp(34px, 9vw, 46px);
+}
+
+.start-subtitle {
+font-size: 15px;
+}
+
+.time-form {
+width: 100%;
+max-width: 330px;
+}
+
+.time-group {
+padding: 18px 16px;
+border-radius: 18px;
+}
+
+.time-inputs {
+gap: 10px;
+}
+
+.time-inputs select {
+height: 74px;
+font-size: 34px;
+border-radius: 20px;
+}
+
+.colon {
+font-size: 38px;
+}
+
+#start-button,
+.button {
+width: 100%;
+max-width: 330px;
+padding: 17px 28px;
+font-size: 20px;
+}
+
+.dedication {
+display: none;
+}
+
+.sticky-note {
+width: min(86vw, 420px);
+}
+
+.sticky-note__content {
+inset: 22% 13% 14%;
+}
+
+.sticky-note__title {
+font-size: clamp(27px, 7vw, 38px);
+}
+
+.sticky-note__checklist {
+font-size: clamp(22px, 6vw, 30px);
+}
+
+.screen--break .screen__inner {
+padding: 36px 0 28px;
+overflow-x: hidden;
+}
+
+.break-layout {
+width: 100%;
+min-height: auto;
+gap: 44px;
+overflow: hidden;
+}
+
+.flip-clock-wrap {
+width: min(92vw, 390px);
+max-width: 92vw;
+padding: 8px;
+border-radius: 28px;
+margin: 0;
+}
+
+.flip-clock-panel {
+padding: 28px 16px 24px;
+border-radius: 22px;
+}
+
+.flip-label {
+font-size: 26px;
+margin-bottom: 14px;
+}
+
+.flip-display {
+width: 100%;
+gap: 4px;
+}
+
+.flip-card {
+width: clamp(58px, 18vw, 76px);
+height: clamp(88px, 24vw, 110px);
+font-size: clamp(58px, 17vw, 78px);
+}
+
+.flip-middle-panel {
+width: 54px;
+min-height: 110px;
+margin: 0 -4px;
+}
+
+.flip-middle-panel::before,
+.flip-middle-panel::after {
+width: 54px;
+}
+
+.flip-separator span {
+width: 9px;
+height: 9px;
+}
+
+.screen--break .sticky-note {
+width: min(76vw, 340px);
+}
+}
