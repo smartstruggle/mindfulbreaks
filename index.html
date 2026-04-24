@@ -157,28 +157,28 @@ aria-live="polite"
 <feMorphology radius="81" operator="dilate" in="SourceAlpha" result="effect1_dropShadow_5_73"/>
 <feOffset dx="65" dy="107"/>
 <feGaussianBlur stdDeviation="50"/>
-<feColorMatrix type="matrix" result="shdwTex" values="0 0 0 0 0.0528846 0 0 0 0 0.0523761 0 0 0 0 0.0523761 0 0 0 0.17 0"/><feTurbulence type="fractalNoise" baseFrequency="0.19455254077911377 0.19455254077911377" numOctaves="3" seed="7479" />
-<feDisplacementMap in="shdwTex" scale="1.7200000286102295" xChannelSelector="R" yChannelSelector="G" result="displacedImage" width="100%" height="100%" />
+<feColorMatrix type="matrix" result="shdwTex" values="0 0 0 0 0.0528846 0 0 0 0 0.0523761 0 0 0 0 0.0523761 0 0 0 0.17 0"/><feTurbulence type="fractalNoise" baseFrequency="0.4444444477558136 0.4444444477558136" numOctaves="3" seed="7479" />
+<feDisplacementMap in="shdwTex" scale="0.62000000476837158" xChannelSelector="R" yChannelSelector="G" result="displacedImage" width="100%" height="100%" />
 <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_5_73"/>
 <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
-<feTurbulence type="fractalNoise" baseFrequency="1.0101009607315063 1.0101009607315063" stitchTiles="stitch" numOctaves="3" result="noise" seed="4611" />
+<feTurbulence type="fractalNoise" baseFrequency="1.6393442153930664 1.6393442153930664" stitchTiles="stitch" numOctaves="3" result="noise" seed="4611" />
 <feColorMatrix in="noise" type="luminanceToAlpha" result="alphaNoise" />
 <feComponentTransfer in="alphaNoise" result="coloredNoise1">
-<feFuncA type="discrete" tableValues="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 "/>
+<feFuncA type="discrete" tableValues="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 "/>
 </feComponentTransfer>
 <feComposite operator="in" in2="shape" in="coloredNoise1" result="noise1Clipped" />
-<feFlood flood-color="rgba(0, 0, 0, 0.25)" result="color1Flood" />
+<feFlood flood-color="rgba(0, 0, 0, 0.07)" result="color1Flood" />
 <feComposite operator="in" in2="noise1Clipped" in="color1Flood" result="color1" />
 <feMerge result="effect2_noise_5_73">
 <feMergeNode in="shape" />
 <feMergeNode in="color1" />
 </feMerge>
-<feTurbulence type="fractalNoise" baseFrequency="0.19455254077911377 0.19455254077911377" numOctaves="3" seed="7479" result="displacementX" />
-<feTurbulence type="fractalNoise" baseFrequency="0.19455254077911377 0.19455254077911377" numOctaves="3" seed="7480" result="displacementY" />
+<feTurbulence type="fractalNoise" baseFrequency="0.4444444477558136 0.4444444477558136" numOctaves="3" seed="7479" result="displacementX" />
+<feTurbulence type="fractalNoise" baseFrequency="0.4444444477558136 0.4444444477558136" numOctaves="3" seed="7480" result="displacementY" />
 <feColorMatrix in="displacementX" type="matrix" values="0 0 0 1 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0 1" result="displacementXRed" />
 <feColorMatrix in="displacementY" type="matrix" values="0 0 0 0 0  0 0 0 1 0  0 0 0 0 0  0 0 0 0 1" />
 <feComposite in="displacementXRed" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/>
-<feDisplacementMap in="effect2_noise_5_73" scale="1.7200000286102295" xChannelSelector="R" yChannelSelector="G" width="100%" height="100%" />
+<feDisplacementMap in="effect2_noise_5_73" scale="0.62000000476837158" xChannelSelector="R" yChannelSelector="G" width="100%" height="100%" />
 <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" />
 <feComponentTransfer result="sourceDisplacedAlpha">
 <feFuncA type="gamma" exponent="0.2" />
@@ -200,9 +200,9 @@ aria-live="polite"
 <feFlood flood-color="rgb(127, 127, 127)" flood-opacity="1"/>
 <feComposite in2="displacementAlphasMultiplied" operator="out" />
 <feComposite in2="displacementMap" operator="over" result="displacementMapWithBg"/>
-<feDisplacementMap in="effect2_noise_5_73" scale="1.7200000286102295" xChannelSelector="R" yChannelSelector="G" width="100%" height="100%" result="displacedImage" />
+<feDisplacementMap in="effect2_noise_5_73" scale="0.62000000476837158" xChannelSelector="R" yChannelSelector="G" width="100%" height="100%" result="displacedImage" />
 <feColorMatrix in="effect2_noise_5_73" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 127 0" result="imageOpaque" />
-<feDisplacementMap in="imageOpaque" in2="displacementMapWithBg" scale="1.7200000286102295" xChannelSelector="R" yChannelSelector="G" width="100%" height="100%" result="displacedImageOpaque" />
+<feDisplacementMap in="imageOpaque" in2="displacementMapWithBg" scale="0.62000000476837158" xChannelSelector="R" yChannelSelector="G" width="100%" height="100%" result="displacedImageOpaque" />
 <feColorMatrix in="displacedImage" type="matrix" values="0 0 0 1 0  0 0 0 0 0  0 0 0 0 0  0 0 0 127 0" result="displacedImageRed" />
 <feColorMatrix in="effect2_noise_5_73" type="matrix" values="0 0 0 1 0  0 0 0 0 0  0 0 0 0 0  0 0 0 127 0" />
 <feComposite in="displacedImageRed"  operator="atop" result="transparencyRedMap"/>
