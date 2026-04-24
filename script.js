@@ -60,8 +60,13 @@ applyTimeTheme();
 showScreen("start");
 hideStickyNote();
 
+if (timeForm) {
 timeForm.addEventListener("submit", handleTimeSubmit);
+}
+
+if (prepConfirmButton) {
 prepConfirmButton.addEventListener("click", handlePrepConfirm);
+}
 
 document.addEventListener("visibilitychange", () => {
 if (!document.hidden) syncAppState();
@@ -103,14 +108,26 @@ TIME SELECTS
 function fillTimeOptions() {
 for (let i = 0; i < 24; i++) {
 const hour = String(i).padStart(2, "0");
+
+if (startHour) {
 startHour.innerHTML += `<option value="${hour}">${hour}</option>`;
+}
+
+if (endHour) {
 endHour.innerHTML += `<option value="${hour}">${hour}</option>`;
+}
 }
 
 for (let i = 0; i < 60; i++) {
 const minute = String(i).padStart(2, "0");
+
+if (startMinute) {
 startMinute.innerHTML += `<option value="${minute}">${minute}</option>`;
+}
+
+if (endMinute) {
 endMinute.innerHTML += `<option value="${minute}">${minute}</option>`;
+}
 }
 }
 
@@ -184,43 +201,67 @@ SCREEN HELPERS
 ========================= */
 
 function showScreen(screenName) {
+if (!startScreen || !transitionScreen || !breakScreen) return;
+
 startScreen.classList.remove("is-active");
 transitionScreen.classList.remove("is-active");
 breakScreen.classList.remove("is-active");
 
-document.body.classList.remove("start-active", "transition-active", "break-active");
-
 if (screenName === "start") {
 startScreen.classList.add("is-active");
-document.body.classList.add("start-active");
 }
 
 if (screenName === "transition") {
 transitionScreen.classList.add("is-active");
-document.body.classList.add("transition-active");
 }
 
 if (screenName === "break") {
 breakScreen.classList.add("is-active");
-document.body.classList.add("break-active");
 }
-}
-
 }
 
 
 /* =========================
-STICKY NOTE
+STICKY PLACEMENT
+========================= */
+
+function placeStickyNote(target) {
+if (!stickyNote) return;
+
+if (target === "transition") {
+const transitionInner = transitionScreen.querySelector(".screen__inner");
+
+if (transitionInner && stickyNote.parentElement !== transitionInner) {
+transitionInner.appendChild(stickyNote);
+}
+}
+
+if (target === "break") {
+const breakLayout = breakScreen.querySelector(".break-layout");
+
+if (breakLayout && stickyNote.parentElement !== breakLayout) {
+breakLayout.appendChild(stickyNote);
+}
+}
+}
+
+
+/* =========================
+STICKY NOTE STATES
 ========================= */
 
 function showStickyNote() {
+if (!stickyNote) return;
+
 stickyNote.classList.remove("is-hidden");
 
 if (window.gsap) {
+gsap.killTweensOf(stickyNote);
+
 gsap.fromTo(
 stickyNote,
 {
-x: "90vw",
+x: "80vw",
 opacity: 0,
 scale: 0.98,
 },
@@ -236,25 +277,36 @@ ease: "power3.out",
 }
 
 function hideStickyNote() {
+if (!stickyNote) return;
 stickyNote.classList.add("is-hidden");
 }
 
 function setStickyState(state) {
+if (!stickyNote) return;
+
 stickyNote.dataset.state = state;
 
 stickyStates.forEach((stateEl) => {
 const isTarget = stateEl.dataset.stickyState === state;
 stateEl.classList.toggle("is-active", isTarget);
+stateEl.style.opacity = isTarget ? "1" : "";
 });
 }
 
 function changeStickyStateWithFade(state) {
+if (!stickyNote) return;
+
 if (!window.gsap) {
 setStickyState(state);
 return;
 }
 
-const currentState = document.querySelector(".sticky-note__state.is-active");
+const currentState = stickyNote.querySelector(".sticky-note__state.is-active");
+
+if (!currentState) {
+setStickyState(state);
+return;
+}
 
 gsap.to(currentState, {
 opacity: 0,
@@ -263,7 +315,9 @@ ease: "power1.out",
 onComplete: () => {
 setStickyState(state);
 
-const newState = document.querySelector(".sticky-note__state.is-active");
+const newState = stickyNote.querySelector(".sticky-note__state.is-active");
+
+if (!newState) return;
 
 gsap.fromTo(
 newState,
@@ -291,10 +345,10 @@ const seconds = safeSeconds % 60;
 const minString = String(minutes).padStart(2, "0");
 const secString = String(seconds).padStart(2, "0");
 
-flipMinTens.textContent = minString[0];
-flipMinOnes.textContent = minString[1];
-flipSecTens.textContent = secString[0];
-flipSecOnes.textContent = secString[1];
+if (flipMinTens) flipMinTens.textContent = minString[0];
+if (flipMinOnes) flipMinOnes.textContent = minString[1];
+if (flipSecTens) flipSecTens.textContent = secString[0];
+if (flipSecOnes) flipSecOnes.textContent = secString[1];
 
 if (timer) {
 timer.textContent = `${minString}:${secString}`;
@@ -313,7 +367,11 @@ try {
 gongSound.muted = true;
 gongSound.currentTime = 0;
 
-await gongSound.play();
+const playPromise = gongSound.play();
+
+if (playPromise !== undefined) {
+await playPromise;
+}
 
 gongSound.pause();
 gongSound.currentTime = 0;
@@ -336,9 +394,13 @@ const gong = gongSound.cloneNode();
 gong.volume = 0;
 gong.currentTime = 0;
 
-gong.play()
+const playPromise = gong.play();
+
+if (playPromise !== undefined) {
+playPromise
 .then(() => fadeGong(gong))
 .catch((error) => console.log("Gong Fehler:", error));
+}
 } catch (error) {
 console.log("Gong konnte nicht abgespielt werden:", error);
 }
@@ -396,7 +458,7 @@ console.log("Notification konnte nicht angezeigt werden:", error);
 
 
 /* =========================
-INTERVAL HELPERS
+TIMER HELPERS
 ========================= */
 
 function clearAllTimers() {
@@ -465,15 +527,20 @@ clearAllTimers();
 appState = "planned";
 
 showScreen("transition");
+placeStickyNote("transition");
+
 setStickyState("planned");
-showStickyNote();
 
 if (nextBreakTime) {
 nextBreakTime.textContent = activeStartTime;
 }
+
+showStickyNote();
 }
 
 function handlePrepConfirm() {
+if (appState !== "planned") return;
+
 appState = "waiting";
 
 changeStickyStateWithFade("waiting");
@@ -502,6 +569,8 @@ clearAllTimers();
 appState = "break";
 
 showScreen("break");
+placeStickyNote("break");
+
 setStickyState("break");
 showStickyNote();
 
@@ -565,14 +634,14 @@ startGongPlayed = false;
 endGongPlayed = false;
 endingSequenceRunning = false;
 
-startHour.value = "";
-startMinute.value = "";
-endHour.value = "";
-endMinute.value = "";
+if (startHour) startHour.value = "";
+if (startMinute) startMinute.value = "";
+if (endHour) endHour.value = "";
+if (endMinute) endMinute.value = "";
 
 updateFlipClock(0);
-hideStickyNote();
 setStickyState("planned");
+hideStickyNote();
 showScreen("start");
 }
 
@@ -596,5 +665,10 @@ return;
 
 if (now >= startDate && now < endDate && appState === "waiting") {
 startBreakPhase(true);
+}
+
+if (appState === "break") {
+const remainingSeconds = Math.max(0, Math.floor((endDate - now) / 1000));
+updateFlipClock(remainingSeconds);
 }
 }
