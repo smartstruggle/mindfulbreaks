@@ -188,17 +188,24 @@ startScreen.classList.remove("is-active");
 transitionScreen.classList.remove("is-active");
 breakScreen.classList.remove("is-active");
 
+document.body.classList.remove("start-active", "transition-active", "break-active");
+
 if (screenName === "start") {
 startScreen.classList.add("is-active");
+document.body.classList.add("start-active");
 }
 
 if (screenName === "transition") {
 transitionScreen.classList.add("is-active");
+document.body.classList.add("transition-active");
 }
 
 if (screenName === "break") {
 breakScreen.classList.add("is-active");
+document.body.classList.add("break-active");
 }
+}
+
 }
 
 
