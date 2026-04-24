@@ -1,122 +1,332 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mindful Breaks</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <link rel="stylesheet" href="style.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&display=swap" rel="stylesheet" />
+<title>Mindful Breaks</title>
+
+<link rel="stylesheet" href="style.css" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&display=swap" rel="stylesheet" />
 </head>
-<body>
 
-  <!-- STARTSCREEN -->
-  <div id="setup-screen">
-    <div class="screen-center setup-center">
-      <div class="start-screen">
-        <div class="start-content">
-          <h1 class="title">Wann möchtest du heute Pause machen?</h1>
-          <p class="subtitle">Lege Start und Ende fest.</p>
+<body class="day">
 
-          <div class="time-row">
-            <div class="time-group">
-              <label for="start-hour">Start</label>
-              <div class="time-inputs">
-                <select id="start-hour">
-                  <option value="">HH</option>
-                </select>
-                <span class="colon">:</span>
-                <select id="start-minute">
-                  <option value="">MM</option>
-                </select>
-              </div>
-            </div>
+<main id="app" class="app">
 
-            <div class="time-group">
-              <label for="end-hour">Ende</label>
-              <div class="time-inputs">
-                <select id="end-hour">
-                  <option value="">HH</option>
-                </select>
-                <span class="colon">:</span>
-                <select id="end-minute">
-                  <option value="">MM</option>
-                </select>
-              </div>
-            </div>
-          </div>
+<section id="start-screen" class="screen screen--start is-active">
+<div class="screen__inner">
+<div class="paper-sheet paper-sheet--start">
+<div class="start-panel">
 
-          <button id="start-button">Pause planen</button>
+<header class="start-header">
+<h1 class="start-title">Wann möchtest du heute Pause machen?</h1>
+<p class="start-subtitle">Lege Start und Ende fest.</p>
+</header>
 
-          <p class="dedication">Für Joanna, Helen, Mirjam, Melanie &amp; Dilek</p>
-        </div>
-      </div>
-    </div>
-  </div>
+<form id="time-form" class="time-form">
+<div class="time-row">
 
-  <!-- EIN EINZIGES STICKY / BLEIBT DURCH ALLE PHASEN -->
-  <div id="prep-overlay" class="prep-overlay" style="display: none;">
-    <div class="prep-backdrop"></div>
+<div class="time-group">
+<label for="start-hour">Start</label>
+<div class="time-inputs">
+<select id="start-hour" name="start-hour">
+<option value="">HH</option>
+</select>
+<span class="colon">:</span>
+<select id="start-minute" name="start-minute">
+<option value="">MM</option>
+</select>
+</div>
+</div>
 
-    <!-- fester Rest-Schatten aus Figma -->
-    <img src="shadow.svg" class="prep-rest-shadow" alt="" />
+<div class="time-group">
+<label for="end-hour">Ende</label>
+<div class="time-inputs">
+<select id="end-hour" name="end-hour">
+<option value="">HH</option>
+</select>
+<span class="colon">:</span>
+<select id="end-minute" name="end-minute">
+<option value="">MM</option>
+</select>
+</div>
+</div>
 
-    <!-- optionaler Flugschatten -->
-    <div class="prep-flight-shadow"></div>
+</div>
 
-    <div id="prep-note" class="prep-note-sheet">
-      <div class="prep-note-inner">
-        <div id="prep-note-content" class="prep-note-content"></div>
+<button id="start-button" class="button button--primary" type="submit">
+Pause planen
+</button>
+</form>
 
-        <button id="prep-confirm-button" class="prep-confirm-button">
-          Ich bin bereit
-        </button>
-      </div>
-    </div>
-  </div>
+<p class="dedication">
+Für Joanna, Helen, Mirjam, Melanie &amp; Dilek
+</p>
 
-  <!-- TRANSITION / WAITING SCREEN -->
-  <div id="waiting-screen" style="display: none;">
-    <div class="screen-center">
-      <h2 id="waiting-text">Deine nächste Pause ist um ...</h2>
-    </div>
-  </div>
+</div>
+</div>
+</div>
+</section>
 
-  <!-- BREAK SCREEN -->
-  <div id="break-screen" style="display: none;">
-    <div class="screen-center">
-      <div class="flip-clock-wrap">
-        <div class="flip-clock-panel">
-          <div class="flip-label" id="flip-label">Break ends in</div>
+<section id="transition-screen" class="screen screen--transition">
+<div class="screen__inner">
+<div class="paper-sheet paper-sheet--transition"></div>
+</div>
+</section>
 
-          <div class="flip-display">
-            <div class="flip-group">
-              <div class="flip-card" id="flip-min-tens">0</div>
-              <div class="flip-card" id="flip-min-ones">0</div>
-            </div>
+<section id="break-screen" class="screen screen--break">
+<div class="screen__inner">
+<div class="break-layout">
 
-            <div class="flip-middle-panel">
-              <div class="flip-separator">
-                <span></span>
-                <span></span>
-              </div>
-            </div>
+<div class="flip-clock-wrap">
+<div class="flip-clock-panel">
 
-            <div class="flip-group">
-              <div class="flip-card" id="flip-sec-tens">0</div>
-              <div class="flip-card" id="flip-sec-ones">0</div>
-            </div>
-          </div>
-        </div>
-      </div>
+<div id="flip-label" class="flip-label">Break ends in</div>
 
-      <div id="timer" aria-hidden="true">00:00</div>
-    </div>
-  </div>
+<div class="flip-display" aria-hidden="true">
+<div class="flip-group">
+<div id="flip-min-tens" class="flip-card">0</div>
+<div id="flip-min-ones" class="flip-card">0</div>
+</div>
 
-  <script src="libs/gsap.js"></script>
-  <script src="script.js"></script>
+<div class="flip-middle-panel">
+<div class="flip-separator">
+<span></span>
+<span></span>
+</div>
+</div>
+
+<div class="flip-group">
+<div id="flip-sec-tens" class="flip-card">0</div>
+<div id="flip-sec-ones" class="flip-card">0</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id="timer" class="sr-only" aria-live="polite">00:00</div>
+
+</div>
+</div>
+</section>
+
+<aside
+id="sticky-note"
+class="sticky-note is-hidden"
+data-state="planned"
+aria-live="polite"
+>
+<div class="sticky-note__visual" aria-hidden="true">
+<svg class="sticky-note__svg" width="2635" height="2515" viewBox="0 0 2635 2515" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Group 1">
+<g id="sticky">
+<g id="shadow" opacity="0.21" filter="url(#filter0_f_5_73)">
+<rect x="147" y="185" width="2273" height="2100" fill="#161616"/>
+</g>
+<g id="sitckz" filter="url(#filter1_dng_5_73)">
+<rect x="116" y="74" width="2273" height="2153" fill="url(#paint0_linear_5_73)"/>
+</g>
+<g id="sitckz_2" opacity="0.17" filter="url(#filter2_f_5_73)">
+<ellipse cx="1424.33" cy="1442.38" rx="446.531" ry="365.99" transform="rotate(-18.9905 1424.33 1442.38)" fill="#FFE78E"/>
+</g>
+</g>
+<g id="kelbestreifen">
+<g id="Rectangle 3" opacity="0.54" filter="url(#filter3_ng_5_73)">
+<rect x="116" y="74" width="2273" height="446" fill="#E3C96B"/>
+<rect x="116.5" y="74.5" width="2272" height="445" stroke="#8C6E36"/>
+</g>
+<g id="Ellipse 2" opacity="0.37" filter="url(#filter4_f_5_73)">
+<ellipse cx="1234" cy="191.5" rx="1118" ry="84.5" fill="#DFC061"/>
+</g>
+</g>
+</g>
+<defs>
+<filter id="filter0_f_5_73" x="91" y="129" width="2385" height="2212" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="28" result="effect1_foregroundBlur_5_73"/>
+</filter>
+<filter id="filter1_dng_5_73" x="0" y="0" width="2635" height="2515" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feMorphology radius="81" operator="dilate" in="SourceAlpha" result="effect1_dropShadow_5_73"/>
+<feOffset dx="65" dy="107"/>
+<feGaussianBlur stdDeviation="50"/>
+<feColorMatrix type="matrix" result="shdwTex" values="0 0 0 0 0.0528846 0 0 0 0 0.0523761 0 0 0 0 0.0523761 0 0 0 0.17 0"/><feTurbulence type="fractalNoise" baseFrequency="0.19455254077911377 0.19455254077911377" numOctaves="3" seed="7479" />
+<feDisplacementMap in="shdwTex" scale="1.7200000286102295" xChannelSelector="R" yChannelSelector="G" result="displacedImage" width="100%" height="100%" />
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_5_73"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feTurbulence type="fractalNoise" baseFrequency="1.0101009607315063 1.0101009607315063" stitchTiles="stitch" numOctaves="3" result="noise" seed="4611" />
+<feColorMatrix in="noise" type="luminanceToAlpha" result="alphaNoise" />
+<feComponentTransfer in="alphaNoise" result="coloredNoise1">
+<feFuncA type="discrete" tableValues="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 "/>
+</feComponentTransfer>
+<feComposite operator="in" in2="shape" in="coloredNoise1" result="noise1Clipped" />
+<feFlood flood-color="rgba(0, 0, 0, 0.25)" result="color1Flood" />
+<feComposite operator="in" in2="noise1Clipped" in="color1Flood" result="color1" />
+<feMerge result="effect2_noise_5_73">
+<feMergeNode in="shape" />
+<feMergeNode in="color1" />
+</feMerge>
+<feTurbulence type="fractalNoise" baseFrequency="0.19455254077911377 0.19455254077911377" numOctaves="3" seed="7479" result="displacementX" />
+<feTurbulence type="fractalNoise" baseFrequency="0.19455254077911377 0.19455254077911377" numOctaves="3" seed="7480" result="displacementY" />
+<feColorMatrix in="displacementX" type="matrix" values="0 0 0 1 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0 1" result="displacementXRed" />
+<feColorMatrix in="displacementY" type="matrix" values="0 0 0 0 0  0 0 0 1 0  0 0 0 0 0  0 0 0 0 1" />
+<feComposite in="displacementXRed" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/>
+<feDisplacementMap in="effect2_noise_5_73" scale="1.7200000286102295" xChannelSelector="R" yChannelSelector="G" width="100%" height="100%" />
+<feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" />
+<feComponentTransfer result="sourceDisplacedAlpha">
+<feFuncA type="gamma" exponent="0.2" />
+</feComponentTransfer>
+<feColorMatrix in="effect2_noise_5_73" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" />
+<feComponentTransfer result="inputSourceAlpha">
+<feFuncA type="gamma" exponent="0.2" />
+</feComponentTransfer>
+<feComposite in="sourceDisplacedAlpha" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="displacementAlphasMultiplied"/>
+<feComposite in="displacementAlphasMultiplied"  operator="arithmetic" k1="0" k2="0" k3="-0.5" k4="0.5" result="centeringAdjustment"/>
+<feComposite in="displacementX" in2="displacementAlphasMultiplied" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" />
+<feComposite in="centeringAdjustment" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" />
+<feColorMatrix  type="matrix" values="0 0 0 1 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0 1" result="displacementXFinal" />
+<feComposite in="displacementY" in2="displacementAlphasMultiplied" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" />
+<feComposite in="centeringAdjustment" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" />
+<feColorMatrix  type="matrix" values="0 0 0 0 0  0 0 0 1 0  0 0 0 0 0  0 0 0 0 1" result="displacementYFinal" />
+<feComposite in="displacementXFinal" in2="displacementYFinal" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" />
+<feComposite in2="displacementAlphasMultiplied" operator="in" result="displacementMap" />
+<feFlood flood-color="rgb(127, 127, 127)" flood-opacity="1"/>
+<feComposite in2="displacementAlphasMultiplied" operator="out" />
+<feComposite in2="displacementMap" operator="over" result="displacementMapWithBg"/>
+<feDisplacementMap in="effect2_noise_5_73" scale="1.7200000286102295" xChannelSelector="R" yChannelSelector="G" width="100%" height="100%" result="displacedImage" />
+<feColorMatrix in="effect2_noise_5_73" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 127 0" result="imageOpaque" />
+<feDisplacementMap in="imageOpaque" in2="displacementMapWithBg" scale="1.7200000286102295" xChannelSelector="R" yChannelSelector="G" width="100%" height="100%" result="displacedImageOpaque" />
+<feColorMatrix in="displacedImage" type="matrix" values="0 0 0 1 0  0 0 0 0 0  0 0 0 0 0  0 0 0 127 0" result="displacedImageRed" />
+<feColorMatrix in="effect2_noise_5_73" type="matrix" values="0 0 0 1 0  0 0 0 0 0  0 0 0 0 0  0 0 0 127 0" />
+<feComposite in="displacedImageRed"  operator="atop" result="transparencyRedMap"/>
+<feColorMatrix in="transparencyRedMap" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1 0 0 0 0" result="transparencyAlphaMap" />
+<feComposite in="displacedImageOpaque" in2="imageOpaque" operator="over" />
+<feComposite in2="transparencyAlphaMap" operator="in" result="effect3_texture_5_73"/>
+<feBlend mode="normal" in="effect3_texture_5_73" in2="effect1_dropShadow_5_73" result="effect3_texture_5_73"/>
+</filter>
+<filter id="filter2_f_5_73" x="885.51" y="966.941" width="1077.63" height="950.87" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="50" result="effect1_foregroundBlur_5_73"/>
+</filter>
+<filter id="filter3_ng_5_73" x="112" y="70" width="2281" height="454" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feTurbulence type="fractalNoise" baseFrequency="0.82644623517990112 0.82644623517990112" stitchTiles="stitch" numOctaves="3" result="noise" seed="7490" />
+<feColorMatrix in="noise" type="luminanceToAlpha" result="alphaNoise" />
+<feComponentTransfer in="alphaNoise" result="coloredNoise1">
+<feFuncA type="discrete" tableValues="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 "/>
+</feComponentTransfer>
+<feComposite operator="in" in2="shape" in="coloredNoise1" result="noise1Clipped" />
+<feFlood flood-color="rgba(0, 0, 0, 0.25)" result="color1Flood" />
+<feComposite operator="in" in2="noise1Clipped" in="color1Flood" result="color1" />
+<feMerge result="effect1_noise_5_73">
+<feMergeNode in="shape" />
+<feMergeNode in="color1" />
+</feMerge>
+<feTurbulence type="fractalNoise" baseFrequency="0.039808914065361023 0.039808914065361023" numOctaves="3" seed="3020" result="displacementX" />
+<feTurbulence type="fractalNoise" baseFrequency="0.039808914065361023 0.039808914065361023" numOctaves="3" seed="3021" result="displacementY" />
+<feColorMatrix in="displacementX" type="matrix" values="0 0 0 1 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0 1" result="displacementXRed" />
+<feColorMatrix in="displacementY" type="matrix" values="0 0 0 0 0  0 0 0 1 0  0 0 0 0 0  0 0 0 0 1" />
+<feComposite in="displacementXRed" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/>
+<feDisplacementMap in="effect1_noise_5_73" scale="8" xChannelSelector="R" yChannelSelector="G" width="100%" height="100%" />
+<feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" />
+<feComponentTransfer result="sourceDisplacedAlpha">
+<feFuncA type="gamma" exponent="0.2" />
+</feComponentTransfer>
+<feColorMatrix in="effect1_noise_5_73" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" />
+<feComponentTransfer result="inputSourceAlpha">
+<feFuncA type="gamma" exponent="0.2" />
+</feComponentTransfer>
+<feComposite in="sourceDisplacedAlpha" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="displacementAlphasMultiplied"/>
+<feComposite in="displacementAlphasMultiplied"  operator="arithmetic" k1="0" k2="0" k3="-0.5" k4="0.5" result="centeringAdjustment"/>
+<feComposite in="displacementX" in2="displacementAlphasMultiplied" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" />
+<feComposite in="centeringAdjustment" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" />
+<feColorMatrix  type="matrix" values="0 0 0 1 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0 1" result="displacementXFinal" />
+<feComposite in="displacementY" in2="displacementAlphasMultiplied" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" />
+<feComposite in="centeringAdjustment" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" />
+<feColorMatrix  type="matrix" values="0 0 0 0 0  0 0 0 1 0  0 0 0 0 0  0 0 0 0 1" result="displacementYFinal" />
+<feComposite in="displacementXFinal" in2="displacementYFinal" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" />
+<feComposite in2="displacementAlphasMultiplied" operator="in" result="displacementMap" />
+<feFlood flood-color="rgb(127, 127, 127)" flood-opacity="1"/>
+<feComposite in2="displacementAlphasMultiplied" operator="out" />
+<feComposite in2="displacementMap" operator="over" result="displacementMapWithBg"/>
+<feDisplacementMap in="effect1_noise_5_73" scale="8" xChannelSelector="R" yChannelSelector="G" width="100%" height="100%" result="displacedImage" />
+<feColorMatrix in="effect1_noise_5_73" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 127 0" result="imageOpaque" />
+<feDisplacementMap in="imageOpaque" in2="displacementMapWithBg" scale="8" xChannelSelector="R" yChannelSelector="G" width="100%" height="100%" result="displacedImageOpaque" />
+<feColorMatrix in="displacedImage" type="matrix" values="0 0 0 1 0  0 0 0 0 0  0 0 0 0 0  0 0 0 127 0" result="displacedImageRed" />
+<feColorMatrix in="effect1_noise_5_73" type="matrix" values="0 0 0 1 0  0 0 0 0 0  0 0 0 0 0  0 0 0 127 0" />
+<feComposite in="displacedImageRed"  operator="atop" result="transparencyRedMap"/>
+<feColorMatrix in="transparencyRedMap" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1 0 0 0 0" result="transparencyAlphaMap" />
+<feComposite in="displacedImageOpaque" in2="imageOpaque" operator="over" />
+<feComposite in2="transparencyAlphaMap" operator="in" result="effect2_texture_5_73"/>
+</filter>
+<filter id="filter4_f_5_73" x="68" y="59" width="2332" height="265" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="24" result="effect1_foregroundBlur_5_73"/>
+</filter>
+<linearGradient id="paint0_linear_5_73" x1="1078" y1="167.5" x2="1624" y2="2251.5" gradientUnits="userSpaceOnUse">
+<stop offset="0.149038" stop-color="#FFCD5A"/>
+<stop offset="0.302885" stop-color="#F4D764"/>
+<stop offset="0.509589" stop-color="#F4D771"/>
+<stop offset="0.842025" stop-color="#FFE37B"/>
+<stop offset="0.97643" stop-color="#F1D05C"/>
+</linearGradient>
+</defs>
+
+</svg>
+</div>
+
+<div class="sticky-note__content">
+
+<div class="sticky-note__state sticky-note__state--planned is-active" data-sticky-state="planned">
+<h2 class="sticky-note__title">Deine Pause ist eingeplant</h2>
+
+<ul class="sticky-note__checklist">
+<li>✓ Erinnerung aktiv</li>
+<li>✓ Gong ist an</li>
+</ul>
+
+<button id="prep-confirm-button" class="sticky-note__button" type="button">
+Ich bin bereit
+</button>
+</div>
+
+<div class="sticky-note__state sticky-note__state--waiting" data-sticky-state="waiting">
+<h2 class="sticky-note__title">
+Deine nächste Pause ist um
+<span id="next-break-time">--:--</span>
+</h2>
+</div>
+
+<div class="sticky-note__state sticky-note__state--break" data-sticky-state="break">
+<h2 class="sticky-note__title">Schöne Pause</h2>
+</div>
+
+<div class="sticky-note__state sticky-note__state--done" data-sticky-state="done">
+<h2 class="sticky-note__title">
+Danke, dass du dir heute Zeit für dich genommen hast.
+</h2>
+</div>
+
+</div>
+</aside>
+
+</main>
+
+<audio id="gong-sound" src="gong.mp3" preload="auto"></audio>
+
+<script src="libs/gsap.js"></script>
+<script src="script.js"></script>
+
 </body>
 </html>
+
