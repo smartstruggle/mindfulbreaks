@@ -317,15 +317,13 @@ place-items: center;
 ========================= */
 
 .sticky-note {
-position: fixed;
+position: relative;
 z-index: 20;
-left: 50%;
-top: 50%;
 
 width: min(82vw, 520px);
 aspect-ratio: 2635 / 2515;
 
-transform: translate(-50%, -50%);
+transform: none;
 }
 
 .sticky-note.is-hidden {
@@ -368,17 +366,17 @@ display: block;
 
 .sticky-note__title {
 margin: 0;
-font-size: clamp(28px, 5vw, 48px);
+font-size: clamp(24px, 3.4vw, 38px);
 font-weight: 600;
-line-height: 1.05;
+line-height: 1.08;
 }
 
 .sticky-note__checklist {
 list-style: none;
-margin: 22px 0 24px;
+margin: 18px 0 22px;
 padding: 0;
 
-font-size: clamp(22px, 3.5vw, 34px);
+font-size: clamp(20px, 2.7vw, 30px);
 line-height: 1.2;
 }
 
@@ -398,18 +396,32 @@ font-weight: 600;
 box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
 }
 
+/* Transition: Papier + Sticky übereinander */
+.screen--transition .screen__inner {
+display: grid;
+place-items: center;
+}
 
-/* Breakscreen: Sticky unter der Uhr */
+.screen--transition .paper-sheet,
+.screen--transition .sticky-note {
+grid-area: 1 / 1;
+}
 
-.screen--break .sticky-note,
-body.break-active .sticky-note {
-position: relative;
-left: auto;
-top: auto;
-transform: none;
+/* Break: Sticky unter der Uhr */
+.break-layout {
+width: 100%;
+min-height: calc(100vh - 84px);
 
-width: min(68vw, 460px);
-margin-top: 8px;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: flex-start;
+
+gap: 36px;
+}
+
+.screen--break .sticky-note {
+width: min(58vw, 380px);
 }
 
 
