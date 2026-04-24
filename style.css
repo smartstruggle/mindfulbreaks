@@ -326,7 +326,8 @@ position: fixed;
 z-index: 20;
 left: 50%;
 top: 50%;
-width: min(72vw, 420px);
+
+width: min(82vw, 520px);
 aspect-ratio: 2635 / 2515;
 
 transform: translate(-50%, -50%);
@@ -404,10 +405,16 @@ box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
 
 
 /* Breakscreen: Sticky unter der Uhr */
-.screen--break .sticky-note {
-position: static;
+
+.screen--break .sticky-note,
+body.break-active .sticky-note {
+position: relative;
+left: auto;
+top: auto;
 transform: none;
-width: min(54vw, 340px);
+
+width: min(68vw, 460px);
+margin-top: 8px;
 }
 
 
