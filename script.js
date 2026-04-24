@@ -1,22 +1,22 @@
-const startButton = document.getElementById("start-button");
+/* =========================
+DOM ELEMENTS
+========================= */
 
-const setupScreen = document.getElementById("setup-screen");
-const waitingScreen = document.getElementById("waiting-screen");
+const startScreen = document.getElementById("start-screen");
+const transitionScreen = document.getElementById("transition-screen");
 const breakScreen = document.getElementById("break-screen");
 
+const timeForm = document.getElementById("time-form");
 const startHour = document.getElementById("start-hour");
 const startMinute = document.getElementById("start-minute");
 const endHour = document.getElementById("end-hour");
 const endMinute = document.getElementById("end-minute");
 
-const prepOverlay = document.getElementById("prep-overlay");
-const prepNote = document.getElementById("prep-note");
+const stickyNote = document.getElementById("sticky-note");
+const stickyStates = document.querySelectorAll(".sticky-note__state");
 const prepConfirmButton = document.getElementById("prep-confirm-button");
-const prepNoteContent = document.getElementById("prep-note-content");
-const prepFlightShadow = document.querySelector(".prep-flight-shadow");
-const prepRestShadow = document.querySelector(".prep-rest-shadow");
+const nextBreakTime = document.getElementById("next-break-time");
 
-const waitingText = document.getElementById("waiting-text");
 const timer = document.getElementById("timer");
 
 const flipMinTens = document.getElementById("flip-min-tens");
@@ -24,801 +24,570 @@ const flipMinOnes = document.getElementById("flip-min-ones");
 const flipSecTens = document.getElementById("flip-sec-tens");
 const flipSecOnes = document.getElementById("flip-sec-ones");
 
-const gongSound = new Audio("gong.mp3");
-gongSound.preload = "auto";
+const gongSound = document.getElementById("gong-sound");
 
-let waitingInterval = null;
-let breakInterval = null;
-let reminderTimeout = null;
+
+/* =========================
+APP STATE
+========================= */
+
+let appState = "idle";
+// idle | planned | waiting | break | done
 
 let activeStartTime = null;
 let activeEndTime = null;
 
+let waitingInterval = null;
+let breakInterval = null;
+let endingTimeout = null;
+
 let soundUnlocked = false;
-let appState = "idle"; // idle | prep | waiting | break | ending
-let prepConfirmed = false;
 let startGongPlayed = false;
 let endGongPlayed = false;
 let endingSequenceRunning = false;
-let typingToken = 0;
+
 
 /* =========================
-   BASIC SETUP
+INIT
+========================= */
+
+init();
+
+function init() {
+fillTimeOptions();
+updateFlipClock(0);
+applyTimeTheme();
+showScreen("start");
+hideStickyNote();
+
+timeForm.addEventListener("submit", handleTimeSubmit);
+prepConfirmButton.addEventListener("click", handlePrepConfirm);
+
+document.addEventListener("visibilitychange", () => {
+if (!document.hidden) syncAppState();
+});
+
+window.addEventListener("focus", syncAppState);
+
+if (gongSound) {
+gongSound.addEventListener("error", () => {
+console.log("Fehler beim Laden von gong.mp3. Prüfe Dateiname und Speicherort.");
+});
+}
+}
+
+
+/* =========================
+THEME
+========================= */
+
+function applyTimeTheme() {
+const hour = new Date().getHours();
+
+document.body.classList.remove("morning", "day", "night");
+
+if (hour >= 6 && hour < 11) {
+document.body.classList.add("morning");
+} else if (hour >= 11 && hour < 20) {
+document.body.classList.add("day");
+} else {
+document.body.classList.add("night");
+}
+}
+
+
+/* =========================
+TIME SELECTS
 ========================= */
 
 function fillTimeOptions() {
-  for (let i = 0; i < 24; i++) {
-    const hour = i.toString().padStart(2, "0");
-    startHour.innerHTML += `<option value="${hour}">${hour}</option>`;
-    endHour.innerHTML += `<option value="${hour}">${hour}</option>`;
-  }
-
-  for (let i = 0; i < 60; i++) {
-    const minute = i.toString().padStart(2, "0");
-    startMinute.innerHTML += `<option value="${minute}">${minute}</option>`;
-    endMinute.innerHTML += `<option value="${minute}">${minute}</option>`;
-  }
+for (let i = 0; i < 24; i++) {
+const hour = String(i).padStart(2, "0");
+startHour.innerHTML += `<option value="${hour}">${hour}</option>`;
+endHour.innerHTML += `<option value="${hour}">${hour}</option>`;
 }
 
-function updateFlipClock(totalSeconds) {
-  const safeSeconds = Math.max(0, totalSeconds);
-  const minutes = Math.floor(safeSeconds / 60);
-  const seconds = safeSeconds % 60;
-
-  const minString = minutes.toString().padStart(2, "0");
-  const secString = seconds.toString().padStart(2, "0");
-
-  if (flipMinTens) flipMinTens.textContent = minString[0];
-  if (flipMinOnes) flipMinOnes.textContent = minString[1];
-  if (flipSecTens) flipSecTens.textContent = secString[0];
-  if (flipSecOnes) flipSecOnes.textContent = secString[1];
+for (let i = 0; i < 60; i++) {
+const minute = String(i).padStart(2, "0");
+startMinute.innerHTML += `<option value="${minute}">${minute}</option>`;
+endMinute.innerHTML += `<option value="${minute}">${minute}</option>`;
+}
 }
 
-function clearIntervals() {
-  if (waitingInterval) {
-    clearInterval(waitingInterval);
-    waitingInterval = null;
-  }
-
-  if (breakInterval) {
-    clearInterval(breakInterval);
-    breakInterval = null;
-  }
-
-  if (reminderTimeout) {
-    clearTimeout(reminderTimeout);
-    reminderTimeout = null;
-  }
-}
-
-function getTodayDateForTime(timeString) {
-  const [hours, minutes] = timeString.split(":").map(Number);
-  const date = new Date();
-
-  date.setHours(hours);
-  date.setMinutes(minutes);
-  date.setSeconds(0);
-  date.setMilliseconds(0);
-
-  return date;
-}
-
-function validateTimes(startTime, endTime) {
-  const startDate = getTodayDateForTime(startTime);
-  const endDate = getTodayDateForTime(endTime);
-  return endDate > startDate;
-}
 
 /* =========================
-   AUDIO / NOTIFICATIONS
+TIME HELPERS
+========================= */
+
+function getTodayDateForTime(timeString) {
+const [hours, minutes] = timeString.split(":").map(Number);
+const date = new Date();
+
+date.setHours(hours, minutes, 0, 0);
+
+return date;
+}
+
+function getSelectedTimes() {
+if (!startHour.value || !startMinute.value || !endHour.value || !endMinute.value) {
+return null;
+}
+
+return {
+startTime: `${startHour.value}:${startMinute.value}`,
+endTime: `${endHour.value}:${endMinute.value}`,
+};
+}
+
+function validatePauseTimes(startTime, endTime) {
+const now = new Date();
+const startDate = getTodayDateForTime(startTime);
+const endDate = getTodayDateForTime(endTime);
+
+if (endDate <= startDate) {
+return {
+valid: false,
+reason: "Die Endzeit muss nach der Startzeit liegen 💛",
+};
+}
+
+if (endDate <= now) {
+return {
+valid: false,
+reason: "Diese Pause ist heute leider schon vorbei 💛",
+};
+}
+
+if (startDate <= now && endDate > now) {
+return {
+valid: true,
+mode: "start-break-now",
+};
+}
+
+if (startDate > now && endDate > now) {
+return {
+valid: true,
+mode: "wait-for-break",
+};
+}
+
+return {
+valid: false,
+reason: "Bitte überprüfe deine Zeiten nochmal 💛",
+};
+}
+
+
+/* =========================
+SCREEN HELPERS
+========================= */
+
+function showScreen(screenName) {
+startScreen.classList.remove("is-active");
+transitionScreen.classList.remove("is-active");
+breakScreen.classList.remove("is-active");
+
+if (screenName === "start") {
+startScreen.classList.add("is-active");
+}
+
+if (screenName === "transition") {
+transitionScreen.classList.add("is-active");
+}
+
+if (screenName === "break") {
+breakScreen.classList.add("is-active");
+}
+}
+
+
+/* =========================
+STICKY NOTE
+========================= */
+
+function showStickyNote() {
+stickyNote.classList.remove("is-hidden");
+
+if (window.gsap) {
+gsap.fromTo(
+stickyNote,
+{
+x: "90vw",
+opacity: 0,
+scale: 0.98,
+},
+{
+x: 0,
+opacity: 1,
+scale: 1,
+duration: 0.85,
+ease: "power3.out",
+}
+);
+}
+}
+
+function hideStickyNote() {
+stickyNote.classList.add("is-hidden");
+}
+
+function setStickyState(state) {
+stickyNote.dataset.state = state;
+
+stickyStates.forEach((stateEl) => {
+const isTarget = stateEl.dataset.stickyState === state;
+stateEl.classList.toggle("is-active", isTarget);
+});
+}
+
+function changeStickyStateWithFade(state) {
+if (!window.gsap) {
+setStickyState(state);
+return;
+}
+
+const currentState = document.querySelector(".sticky-note__state.is-active");
+
+gsap.to(currentState, {
+opacity: 0,
+duration: 0.25,
+ease: "power1.out",
+onComplete: () => {
+setStickyState(state);
+
+const newState = document.querySelector(".sticky-note__state.is-active");
+
+gsap.fromTo(
+newState,
+{ opacity: 0 },
+{
+opacity: 1,
+duration: 0.35,
+ease: "power1.out",
+}
+);
+},
+});
+}
+
+
+/* =========================
+FLIP CLOCK
+========================= */
+
+function updateFlipClock(totalSeconds) {
+const safeSeconds = Math.max(0, totalSeconds);
+const minutes = Math.floor(safeSeconds / 60);
+const seconds = safeSeconds % 60;
+
+const minString = String(minutes).padStart(2, "0");
+const secString = String(seconds).padStart(2, "0");
+
+flipMinTens.textContent = minString[0];
+flipMinOnes.textContent = minString[1];
+flipSecTens.textContent = secString[0];
+flipSecOnes.textContent = secString[1];
+
+if (timer) {
+timer.textContent = `${minString}:${secString}`;
+}
+}
+
+
+/* =========================
+AUDIO / NOTIFICATIONS
 ========================= */
 
 async function unlockSound() {
-  if (soundUnlocked) return true;
+if (soundUnlocked || !gongSound) return true;
 
-  try {
-    gongSound.muted = true;
-    gongSound.currentTime = 0;
+try {
+gongSound.muted = true;
+gongSound.currentTime = 0;
 
-    const playPromise = gongSound.play();
-    if (playPromise !== undefined) {
-      await playPromise;
-    }
+await gongSound.play();
 
-    gongSound.pause();
-    gongSound.currentTime = 0;
-    gongSound.muted = false;
-    soundUnlocked = true;
+gongSound.pause();
+gongSound.currentTime = 0;
+gongSound.muted = false;
 
-    console.log("Sound erfolgreich freigeschaltet.");
-    return true;
-  } catch (error) {
-    gongSound.muted = false;
-    console.log("Sound konnte nicht freigeschaltet werden:", error);
-    return false;
-  }
+soundUnlocked = true;
+return true;
+} catch (error) {
+gongSound.muted = false;
+console.log("Sound konnte nicht freigeschaltet werden:", error);
+return false;
+}
 }
 
 function playGong() {
-  try {
-    const gong = gongSound.cloneNode();
-    gong.volume = 0;
-    gong.currentTime = 0;
+if (!gongSound) return;
 
-    const playPromise = gong.play();
+try {
+const gong = gongSound.cloneNode();
+gong.volume = 0;
+gong.currentTime = 0;
 
-    if (playPromise !== undefined) {
-      playPromise
-        .then(() => {
-          let vol = 0;
+gong.play()
+.then(() => fadeGong(gong))
+.catch((error) => console.log("Gong Fehler:", error));
+} catch (error) {
+console.log("Gong konnte nicht abgespielt werden:", error);
+}
+}
 
-          const fadeIn = setInterval(() => {
-            vol += 0.04;
-            if (vol >= 0.75) {
-              gong.volume = 0.75;
-              clearInterval(fadeIn);
-            } else {
-              gong.volume = vol;
-            }
-          }, 40);
+function fadeGong(gong) {
+let volume = 0;
 
-          setTimeout(() => {
-            let fadeVol = gong.volume;
+const fadeIn = setInterval(() => {
+volume += 0.04;
 
-            const fadeOut = setInterval(() => {
-              fadeVol -= 0.02;
-              if (fadeVol <= 0) {
-                gong.volume = 0;
-                clearInterval(fadeOut);
-              } else {
-                gong.volume = fadeVol;
-              }
-            }, 60);
-          }, 3000);
-        })
-        .catch((error) => {
-          console.log("Gong Fehler:", error);
-        });
-    }
-  } catch (error) {
-    console.log("Gong konnte nicht abgespielt werden:", error);
-  }
+if (volume >= 0.75) {
+gong.volume = 0.75;
+clearInterval(fadeIn);
+} else {
+gong.volume = volume;
+}
+}, 40);
+
+setTimeout(() => {
+let fadeOutVolume = gong.volume;
+
+const fadeOut = setInterval(() => {
+fadeOutVolume -= 0.02;
+
+if (fadeOutVolume <= 0) {
+gong.volume = 0;
+clearInterval(fadeOut);
+} else {
+gong.volume = fadeOutVolume;
+}
+}, 60);
+}, 3000);
 }
 
 async function requestNotificationPermission() {
-  try {
-    if ("Notification" in window && Notification.permission === "default") {
-      await Notification.requestPermission();
-    }
-  } catch (error) {
-    console.log("Notification permission fehlgeschlagen:", error);
-  }
+if ("Notification" in window && Notification.permission === "default") {
+try {
+await Notification.requestPermission();
+} catch (error) {
+console.log("Notification permission fehlgeschlagen:", error);
+}
+}
 }
 
 function showNotification(title, body) {
-  try {
-    if ("Notification" in window && Notification.permission === "granted") {
-      new Notification(title, { body });
-    }
-  } catch (error) {
-    console.log("Notification konnte nicht angezeigt werden:", error);
-  }
+if ("Notification" in window && Notification.permission === "granted") {
+try {
+new Notification(title, { body });
+} catch (error) {
+console.log("Notification konnte nicht angezeigt werden:", error);
 }
+}
+}
+
 
 /* =========================
-   SCREEN HELPERS
+INTERVAL HELPERS
 ========================= */
 
-function showSetupScreen() {
-  document.body.classList.remove("waiting-active", "break-active");
-
-  setupScreen.style.display = "block";
-  waitingScreen.style.display = "none";
-  breakScreen.style.display = "none";
+function clearAllTimers() {
+if (waitingInterval) {
+clearInterval(waitingInterval);
+waitingInterval = null;
 }
 
-function showWaitingScreen() {
-  document.body.classList.add("waiting-active");
-  document.body.classList.remove("break-active");
-
-  setupScreen.style.display = "none";
-  waitingScreen.style.display = "block";
-  breakScreen.style.display = "none";
+if (breakInterval) {
+clearInterval(breakInterval);
+breakInterval = null;
 }
 
-function showBreakScreen() {
-  document.body.classList.add("break-active");
-  document.body.classList.remove("waiting-active");
-
-  setupScreen.style.display = "none";
-  waitingScreen.style.display = "none";
-  breakScreen.style.display = "block";
+if (endingTimeout) {
+clearTimeout(endingTimeout);
+endingTimeout = null;
 }
+}
+
 
 /* =========================
-   NOTE CONTENT HELPERS
+FLOW
 ========================= */
 
-function resetTypingToken() {
-  typingToken += 1;
+async function handleTimeSubmit(event) {
+event.preventDefault();
+
+await unlockSound();
+await requestNotificationPermission();
+
+const selectedTimes = getSelectedTimes();
+
+if (!selectedTimes) {
+alert("Bitte beide Zeiten vollständig eingeben 🥺");
+return;
 }
 
-function wait(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+const { startTime, endTime } = selectedTimes;
+const validation = validatePauseTimes(startTime, endTime);
+
+if (!validation.valid) {
+alert(validation.reason);
+return;
 }
 
-async function blurSetupScreenBeforePrep() {
-  if (!setupScreen) return;
-  setupScreen.classList.add("is-blurring");
-  await wait(420);
+activeStartTime = startTime;
+activeEndTime = endTime;
+
+startGongPlayed = false;
+endGongPlayed = false;
+endingSequenceRunning = false;
+
+if (validation.mode === "start-break-now") {
+await startBreakPhase(true);
+return;
 }
 
-/* ANIMATION NOTE SHEET */
-
-function showPrepNote() {
-if (!prepOverlay || !prepNote) return;
-
-appState = "prep";
-prepOverlay.style.display = "flex";
-prepOverlay.classList.remove("prep-overlay-persistent");
-
-gsap.killTweensOf([prepNote, prepRestShadow]);
-
-const isMobile = window.innerWidth <= 768;
-
-// --- FIX Startposition: Weiter RECHTS und weiter OBEN (Über-die-Schulter) ---
-// x: 4200 (statt 3200) schiebt ihn außerhalb der Mitte rechts
-const start = isMobile
-? { x: 1800, y: -450, scale: 10, rotation: -25, rotationX: 80, rotationY: -15, opacity: 0.9 }
-: { x: 4200, y: -800, scale: 20, rotation: -28, rotationX: 85, rotationY: -25, opacity: 0.8 };
-
-// --- FIX Endposition: Deutlich TIEFER für wahre Mittigkeit ---
-// y: 350 (statt 230) zieht den Zettel in die vertikale Mitte des Screens
-const end = isMobile
-? { x: 0, y: 160, scale: 1, rotation: -3, rotationX: 0, rotationY: 0 }
-: { x: 0, y: 350, scale: 1, rotation: -3, rotationX: 0, rotationY: 0 };
-
-// Setup Note (Initial setting)
-gsap.set(prepNote, {
-xPercent: -50,
-yPercent: 0, // Wichtig: yPercent auf 0 setzen, da transformOrigin top ist
-transformOrigin: "50% 0%",
-...start
-});
-
-// Setup Schatten (Deine diffuse Schatten-Evolution erhalten)
-if (prepRestShadow) {
-gsap.set(prepRestShadow, {
-opacity: 0,
-scale: 3,
-filter: "blur(50px)",
-x: 150,
-y: 250,
-overflow: "visible"
-});
-}
-
-const tl = gsap.timeline();
-
-// PHASE 1: Der flüssige, verkürzte Flug (Timings kohärent)
-tl.to(prepNote, {
-x: end.x,
-y: end.y,
-scale: 1.15, // Kurzzeitig etwas größer für Impact
-rotation: end.rotation - 2, // Leichter Overshoot der Rotation
-rotationX: 25, // Trapezform bleibt bis zur Landung
-rotationY: -10,
-duration: 2.2, // Schnellerer Start
-ease: "power2.inOut"
-});
-
-// Schatten materialisiert sich parallel
-if (prepRestShadow) {
-tl.to(prepRestShadow, {
-opacity: 0.4,
-scale: 1.5,
-filter: "blur(20px)",
-x: 40,
-y: 80,
-duration: 2.2,
-ease: "power2.inOut"
-}, 0);
-}
-
-// PHASE 2: Der Impact (Haptisches Andrücken)
-tl.to(prepNote, {
-rotationX: 0, // Zettel wird flach
-rotationY: 0,
-rotation: end.rotation,
-scale: end.scale,
-duration: 0.7,
-ease: "back.out(1.1)", // Sehr subtiler snap
-onComplete: () => {
-prepOverlay.classList.add("prep-overlay-persistent");
-}
-});
-
-// Schatten-Finale
-if (prepRestShadow) {
-tl.to(prepRestShadow, {
-opacity: 0.6,
-scale: 1,
-filter: "blur(12px)",
-x: 0,
-y: 12,
-duration: 1.0
-}, "-=0.7");
+if (validation.mode === "wait-for-break") {
+startTransitionPhase();
 }
 }
 
+function startTransitionPhase() {
+clearAllTimers();
 
+appState = "planned";
 
+showScreen("transition");
+setStickyState("planned");
+showStickyNote();
 
-
-function showConfirmButton() {
-  if (!prepConfirmButton) return;
-  prepConfirmButton.style.opacity = "1";
-  prepConfirmButton.style.pointerEvents = "auto";
-  prepConfirmButton.style.display = "inline-flex";
+if (nextBreakTime) {
+nextBreakTime.textContent = activeStartTime;
+}
 }
 
-function hideConfirmButton() {
-  if (!prepConfirmButton) return;
-  prepConfirmButton.style.opacity = "0";
-  prepConfirmButton.style.pointerEvents = "none";
+function handlePrepConfirm() {
+appState = "waiting";
+
+changeStickyStateWithFade("waiting");
+
+const startDate = getTodayDateForTime(activeStartTime);
+const endDate = getTodayDateForTime(activeEndTime);
+
+waitingInterval = setInterval(async () => {
+const now = new Date();
+
+if (now >= endDate) {
+resetApp();
+return;
 }
 
-function resetPrepNoteVisualState() {
-  if (!prepOverlay || !prepNote) return;
-
-  gsap.killTweensOf(prepNote);
-  if (prepFlightShadow) gsap.killTweensOf(prepFlightShadow);
-  if (prepRestShadow) gsap.killTweensOf(prepRestShadow);
-
-  prepOverlay.style.display = "none";
-  prepOverlay.classList.remove("prep-overlay-persistent");
-  prepNote.classList.remove("is-taking-away");
-  prepNote.classList.remove("is-placing");
-
-  gsap.set(prepNote, { clearProps: "transform" });
-
-  if (prepFlightShadow) {
-    gsap.set(prepFlightShadow, {
-      clearProps: "transform,opacity,filter"
-    });
-  }
-
-  if (prepRestShadow) {
-    gsap.set(prepRestShadow, {
-      opacity: 0.55
-    });
-  }
+if (now >= startDate && now < endDate) {
+clearAllTimers();
+await startBreakPhase(true);
 }
-function renderPrepIntroNote() {
-  if (!prepNoteContent) return;
-
-  prepNoteContent.innerHTML = `
-    <div class="note-copy note-copy-intro">
-      <div class="note-main-text">
-        Deine Pause ist<br>
-        eingeplant 🌿🍵
-      </div>
-
-      <div class="note-checklist">
-        <div class="note-check-item">✓ Erinnerung aktiv</div>
-        <div class="note-check-item">✓ Gong ist an</div>
-      </div>
-    </div>
-  `;
+}, 500);
 }
 
-function renderWaitingNote(startTime) {
-  if (!prepNoteContent) return;
+async function startBreakPhase(playStartGong = true) {
+clearAllTimers();
 
-  prepNoteContent.innerHTML = `
-    <div class="note-copy note-copy-waiting">
-      <div id="note-handwriting-line-1" class="note-handwriting-line"></div>
-    </div>
-  `;
+appState = "break";
 
-  const line1 = document.getElementById("note-handwriting-line-1");
-  return typeText(line1, `Deine nächste Pause ist um ${startTime}.`, 52);
+showScreen("break");
+setStickyState("break");
+showStickyNote();
+
+if (playStartGong && !startGongPlayed) {
+playGong();
+showNotification("Pause 💛", "Zeit für deine Pause 🌿");
+startGongPlayed = true;
 }
 
-function renderBreakNote() {
-  if (!prepNoteContent) return;
+const endDate = getTodayDateForTime(activeEndTime);
 
-  prepNoteContent.innerHTML = `
-    <div class="note-copy note-copy-break">
-      <div id="note-handwriting-line-1" class="note-handwriting-line"></div>
-    </div>
-  `;
+function renderRemainingTime() {
+if (appState !== "break") return;
 
-  const line1 = document.getElementById("note-handwriting-line-1");
-  return typeText(line1, "Schöne Pause", 48);
+const now = new Date();
+const remainingSeconds = Math.max(0, Math.floor((endDate - now) / 1000));
+
+updateFlipClock(remainingSeconds);
+
+if (remainingSeconds <= 0) {
+triggerBreakEnd();
+}
 }
 
-async function appendBreakClosingNote() {
-  if (!prepNoteContent) return;
-
-  let wrap = prepNoteContent.querySelector(".note-copy-break");
-  if (!wrap) {
-    wrap = document.createElement("div");
-    wrap.className = "note-copy note-copy-break";
-    prepNoteContent.innerHTML = "";
-    prepNoteContent.appendChild(wrap);
-  }
-
-  let line2 = document.getElementById("note-handwriting-line-2");
-  if (!line2) {
-    line2 = document.createElement("div");
-    line2.id = "note-handwriting-line-2";
-    line2.className = "note-handwriting-line note-handwriting-line-secondary";
-    wrap.appendChild(line2);
-  }
-
-  await typeText(line2, "Danke, dass du dir heute Zeit für dich genommen hast.", 38);
+renderRemainingTime();
+breakInterval = setInterval(renderRemainingTime, 250);
 }
 
-async function fadeNoteContentOut(duration = 380) {
-  if (!prepNoteContent) return;
+function triggerBreakEnd() {
+if (endingSequenceRunning) return;
 
-  prepNoteContent.style.transition = `opacity ${duration}ms ease`;
-  prepNoteContent.style.opacity = "0";
-  await wait(duration);
+endingSequenceRunning = true;
+appState = "done";
+
+clearAllTimers();
+updateFlipClock(0);
+
+if (!endGongPlayed) {
+playGong();
+showNotification("Pause vorbei ✨", "Deine Pause ist jetzt vorbei.");
+endGongPlayed = true;
 }
 
-async function swapNoteContent(renderFn) {
-  if (!prepNoteContent) return;
+endingTimeout = setTimeout(() => {
+changeStickyStateWithFade("done");
 
-  await fadeNoteContentOut(320);
-  resetTypingToken();
-  prepNoteContent.innerHTML = "";
-  prepNoteContent.style.transition = "none";
-  prepNoteContent.style.opacity = "1";
-
-  const maybePromise = renderFn();
-  if (maybePromise instanceof Promise) {
-    await maybePromise;
-  }
+endingTimeout = setTimeout(() => {
+resetApp();
+}, 4500);
+}, 5000);
 }
-
-/* =========================
-   TYPING EFFECT
-========================= */
-
-async function typeText(element, text, speed = 42) {
-  if (!element) return;
-
-  typingToken += 1;
-  const currentToken = typingToken;
-
-  element.textContent = "";
-
-  for (let i = 0; i < text.length; i++) {
-    if (currentToken !== typingToken) return;
-    element.textContent += text[i];
-    await wait(speed);
-  }
-}
-
-/* =========================
-   APP STATE / FLOW
-========================= */
 
 function resetApp() {
-  clearIntervals();
-  resetTypingToken();
+clearAllTimers();
 
-  appState = "idle";
-  prepConfirmed = false;
-  startGongPlayed = false;
-  endGongPlayed = false;
-  endingSequenceRunning = false;
+appState = "idle";
+activeStartTime = null;
+activeEndTime = null;
 
-  activeStartTime = null;
-  activeEndTime = null;
+startGongPlayed = false;
+endGongPlayed = false;
+endingSequenceRunning = false;
 
-  showSetupScreen();
+startHour.value = "";
+startMinute.value = "";
+endHour.value = "";
+endMinute.value = "";
 
-  if (setupScreen) {
-    setupScreen.classList.remove("is-blurring");
-  }
-
-  startHour.value = "";
-  startMinute.value = "";
-  endHour.value = "";
-  endMinute.value = "";
-
-  if (timer) {
-    timer.textContent = "00:00";
-  }
-
-  updateFlipClock(0);
-  resetPrepNoteVisualState();
-
-  if (prepNoteContent) {
-    prepNoteContent.innerHTML = "";
-    prepNoteContent.style.opacity = "1";
-    prepNoteContent.style.transition = "none";
-  }
-
-  showConfirmButton();
+updateFlipClock(0);
+hideStickyNote();
+setStickyState("planned");
+showScreen("start");
 }
 
 
-async function confirmPrepNoteAndContinue() {
-  hideConfirmButton();
-
-  gsap.killTweensOf(prepNote);
-  if (prepFlightShadow) gsap.killTweensOf(prepFlightShadow);
-  if (prepRestShadow) gsap.killTweensOf(prepRestShadow);
-
-  if (prepOverlay) {
-    prepOverlay.classList.add("prep-overlay-persistent");
-  }
-
-  if (prepNote) {
-    gsap.set(prepNote, { clearProps: "transform" });
-  }
-
-  if (prepFlightShadow) {
-    gsap.set(prepFlightShadow, { clearProps: "transform,opacity,filter" });
-  }
-
-  if (prepRestShadow) {
-    gsap.set(prepRestShadow, { opacity: 0.55 });
-  }
-
-  if (activeStartTime && activeEndTime) {
-    const now = new Date();
-    const startDate = getTodayDateForTime(activeStartTime);
-    const endDate = getTodayDateForTime(activeEndTime);
-
-    if (now >= endDate) {
-      alert("Diese Zeitspanne ist heute schon vorbei 💛");
-      resetApp();
-      return;
-    }
-
-    if (now >= startDate && now < endDate) {
-      await startBreakPhase(false);
-      return;
-    }
-
-    await startWaitingPhase(activeStartTime, activeEndTime);
-  }
-}
-
-async function startWaitingPhase(startTime, endTime) {
-  clearIntervals();
-  resetTypingToken();
-
-  appState = "waiting";
-  activeStartTime = startTime;
-  activeEndTime = endTime;
-
-  showWaitingScreen();
-
-  if (waitingText) {
-    waitingText.textContent = `Deine nächste Pause ist um ${startTime}`;
-  }
-
-  await swapNoteContent(() => renderWaitingNote(startTime));
-
-  const startDate = getTodayDateForTime(startTime);
-  const endDate = getTodayDateForTime(endTime);
-  const now = new Date();
-
-  if (endDate <= startDate) {
-    alert("Die Endzeit muss nach der Startzeit liegen 💛");
-    resetApp();
-    return;
-  }
-
-  if (now >= endDate) {
-    resetApp();
-    return;
-  }
-
-  if (now >= startDate) {
-    await triggerBreakStart(true);
-    return;
-  }
-
-  waitingInterval = setInterval(async () => {
-    if (appState !== "waiting") return;
-
-    const currentNow = new Date();
-
-    if (currentNow >= startDate) {
-      clearIntervals();
-      await triggerBreakStart(true);
-    }
-  }, 500);
-}
-
-async function triggerBreakStart(playCue = true) {
-  if (startGongPlayed === false && playCue) {
-    playGong();
-    showNotification("Pause 💛", "Zeit für deine Pause 🌿");
-    startGongPlayed = true;
-  }
-
-  await startBreakPhase(false);
-}
-
-async function startBreakPhase(playCue = false) {
-  clearIntervals();
-  resetTypingToken();
-
-  appState = "break";
-  showBreakScreen();
-
-  if (playCue && startGongPlayed === false) {
-    playGong();
-    showNotification("Pause 💛", "Zeit für deine Pause 🌿");
-    startGongPlayed = true;
-  }
-
-  await swapNoteContent(() => renderBreakNote());
-
-  const endDate = getTodayDateForTime(activeEndTime);
-
-  function renderRemainingTime() {
-    if (appState !== "break") return;
-
-    const now = new Date();
-    const remainingSeconds = Math.max(0, Math.floor((endDate - now) / 1000));
-
-    updateFlipClock(remainingSeconds);
-
-    if (timer) {
-      const minutes = Math.floor(remainingSeconds / 60).toString().padStart(2, "0");
-      const seconds = (remainingSeconds % 60).toString().padStart(2, "0");
-      timer.textContent = `${minutes}:${seconds}`;
-    }
-
-    if (remainingSeconds <= 0) {
-      triggerBreakEnd();
-    }
-  }
-
-  renderRemainingTime();
-  breakInterval = setInterval(renderRemainingTime, 250);
-}
-
-async function triggerBreakEnd() {
-  if (endingSequenceRunning) return;
-  endingSequenceRunning = true;
-  appState = "ending";
-
-  clearIntervals();
-  updateFlipClock(0);
-
-  if (timer) {
-    timer.textContent = "00:00";
-  }
-
-  if (!endGongPlayed) {
-    playGong();
-    showNotification("Pause vorbei ✨", "Deine Pause ist jetzt vorbei.");
-    endGongPlayed = true;
-  }
-
-  await wait(2200);
-  await appendBreakClosingNote();
-  await wait(2200);
-
-  resetApp();
-}
+/* =========================
+RESYNC
+========================= */
 
 function syncAppState() {
-  if (!activeStartTime || !activeEndTime) return;
-  if (appState === "prep" || appState === "ending") return;
+if (!activeStartTime || !activeEndTime) return;
+if (appState === "idle" || appState === "planned" || appState === "done") return;
 
-  const now = new Date();
-  const startDate = getTodayDateForTime(activeStartTime);
-  const endDate = getTodayDateForTime(activeEndTime);
+const now = new Date();
+const startDate = getTodayDateForTime(activeStartTime);
+const endDate = getTodayDateForTime(activeEndTime);
 
-  if (appState === "waiting") {
-    if (now >= endDate) {
-      resetApp();
-      return;
-    }
-
-    if (now >= startDate && now < endDate) {
-      startGongPlayed = true;
-      startBreakPhase(false);
-    }
-  }
-
-  if (appState === "break") {
-    if (now >= endDate) {
-      endGongPlayed = true;
-      resetApp();
-    }
-  }
+if (now >= endDate) {
+triggerBreakEnd();
+return;
 }
 
-/* =========================
-   EVENTS
-========================= */
-
-startButton.addEventListener("click", async () => {
-  const unlocked = await unlockSound();
-  await requestNotificationPermission();
-
-  if (!unlocked) {
-    console.log("Hinweis: Sound ist noch nicht freigeschaltet oder Datei fehlt.");
-  }
-
-  if (!startHour.value || !startMinute.value || !endHour.value || !endMinute.value) {
-    alert("Bitte beide Zeiten vollständig eingeben 🥺");
-    return;
-  }
-
-  const startTime = `${startHour.value}:${startMinute.value}`;
-  const endTime = `${endHour.value}:${endMinute.value}`;
-
-  if (!validateTimes(startTime, endTime)) {
-    alert("Die Endzeit muss nach der Startzeit liegen 💛");
-    return;
-  }
-
-  activeStartTime = startTime;
-  activeEndTime = endTime;
-
-  prepConfirmed = false;
-  startGongPlayed = false;
-  endGongPlayed = false;
-  endingSequenceRunning = false;
-  resetTypingToken();
-
-  renderPrepIntroNote();
-  showConfirmButton();
-
-  await blurSetupScreenBeforePrep();
-  showPrepNote();
-});
-
-if (prepConfirmButton) {
-  prepConfirmButton.addEventListener("click", async () => {
-    prepConfirmed = true;
-    await confirmPrepNoteAndContinue();
-  });
+if (now >= startDate && now < endDate && appState === "waiting") {
+startBreakPhase(true);
 }
-
-document.addEventListener("visibilitychange", () => {
-  if (!document.hidden) {
-    syncAppState();
-  }
-});
-
-window.addEventListener("focus", () => {
-  syncAppState();
-});
-
-gongSound.addEventListener("error", () => {
-  console.log("Fehler beim Laden von gong.mp3. Prüfe Dateiname und Speicherort.");
-});
-
-
-const hour = new Date().getHours();
-const body = document.body;
-
-if (hour >= 6 && hour < 11) {
-  body.classList.add("morning");
-} else if (hour >= 11 && hour < 18) {
-  body.classList.add("day");
-} else {
-  body.classList.add("night");
 }
-
-
-/* =========================
-   INIT
-========================= */
-
-fillTimeOptions();
-updateFlipClock(0);
