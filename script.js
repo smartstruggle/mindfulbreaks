@@ -112,44 +112,76 @@ function stopDayAtmosphereMotion() {
 
 let nightAtmosphereTween = null;
 let nightStarsTween = null;
+let nightSparklesTween = null;
+let nightStarsDriftTween = null;
 
 function startNightAtmosphereMotion() {
   if (!window.gsap) return;
 
   const atmosphere = document.querySelector(".night-atmosphere");
   const stars = document.querySelector(".night-stars");
+  const sparkles = document.querySelector(".night-sparkles");
 
-  if (!atmosphere || !stars) return;
+  if (!atmosphere || !stars || !sparkles) return;
 
   if (nightAtmosphereTween) nightAtmosphereTween.kill();
   if (nightStarsTween) nightStarsTween.kill();
+  if (nightSparklesTween) nightSparklesTween.kill();
+  if (nightStarsDriftTween) nightStarsDriftTween.kill();
 
   gsap.set(atmosphere, {
-    opacity: 0.9,
-    x: 0,
+    opacity: 0.78,
+    x: -30,
     y: 0,
-    scale: 1.04
+    scale: 1.08
   });
 
   gsap.set(stars, {
-    opacity: 0.42,
+    opacity: 0.34,
     x: 0,
     y: 0
   });
 
+  gsap.set(sparkles, {
+    opacity: 0.18,
+    x: 0,
+    y: 0
+  });
+
+  /* Wolke schiebt sich langsam vor die Sterne */
   nightAtmosphereTween = gsap.to(atmosphere, {
-    x: -44,
-    y: 26,
-    scale: 1.08,
-    duration: 22,
+    x: 90,
+    y: -18,
+    scale: 1.14,
+    duration: 34,
     ease: "sine.inOut",
     repeat: -1,
     yoyo: true
   });
 
+  /* Sternfeld driftet minimal */
+  nightStarsDriftTween = gsap.to(stars, {
+    x: -10,
+    y: 6,
+    duration: 46,
+    ease: "sine.inOut",
+    repeat: -1,
+    yoyo: true
+  });
+
+  /* Grundsterne dimmen leicht, als ob Schleier drüberzieht */
   nightStarsTween = gsap.to(stars, {
-    opacity: 0.68,
-    duration: 3.8,
+    opacity: 0.55,
+    duration: 5.4,
+    ease: "sine.inOut",
+    repeat: -1,
+    yoyo: true
+  });
+
+  /* wenige stärkere Funkler */
+  nightSparklesTween = gsap.to(sparkles, {
+    opacity: 0.62,
+    duration: 2.2,
     ease: "sine.inOut",
     repeat: -1,
     yoyo: true
@@ -159,6 +191,7 @@ function startNightAtmosphereMotion() {
 function stopNightAtmosphereMotion() {
   const atmosphere = document.querySelector(".night-atmosphere");
   const stars = document.querySelector(".night-stars");
+  const sparkles = document.querySelector(".night-sparkles");
 
   if (nightAtmosphereTween) {
     nightAtmosphereTween.kill();
@@ -170,24 +203,20 @@ function stopNightAtmosphereMotion() {
     nightStarsTween = null;
   }
 
-  if (atmosphere) {
-    gsap.to(atmosphere, {
-      opacity: 0,
-      duration: 0.7,
-      ease: "sine.out"
-    });
+  if (nightSparklesTween) {
+    nightSparklesTween.kill();
+    nightSparklesTween = null;
   }
 
-  if (stars) {
-    gsap.to(stars, {
-      opacity: 0,
-      duration: 0.7,
-      ease: "sine.out"
-    });
+  if (nightStarsDriftTween) {
+    nightStarsDriftTween.kill();
+    nightStarsDriftTween = null;
   }
+
+  if (atmosphere) gsap.to(atmosphere, { opacity: 0, duration: 0.7, ease: "sine.out" });
+  if (stars) gsap.to(stars, { opacity: 0, duration: 0.7, ease: "sine.out" });
+  if (sparkles) gsap.to(sparkles, { opacity: 0, duration: 0.7, ease: "sine.out" });
 }
-
-
 
 /* =========================
 INIT
