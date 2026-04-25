@@ -524,31 +524,40 @@ function changeStickyStateWithFade(state) {
 
 /*DAYANIMATION*/
 
+let dayAtmosphereTween = null;
+
 function startDayAtmosphereMotion() {
   if (!window.gsap) return;
 
   const layer = document.querySelector(".day-atmosphere");
   if (!layer) return;
 
-  gsap.killTweensOf(layer);
+  // alte Animation killen
+  if (dayAtmosphereTween) {
+    dayAtmosphereTween.kill();
+    dayAtmosphereTween = null;
+  }
 
+  // falls nicht im Day → ausblenden
   if (!document.body.classList.contains("day")) {
     gsap.set(layer, { opacity: 0 });
     return;
   }
 
+  // Startzustand (sichtbarer als vorher!)
   gsap.set(layer, {
-    opacity: 0.7,
+    opacity: 0.95,
     x: 0,
     y: 0,
-    scale: 1.02
+    scale: 1.04
   });
 
-  gsap.to(layer, {
-    x: 26,
-    y: -18,
-    scale: 1.045,
-    duration: 18,
+  // neue Animation (deutlich wahrnehmbar, aber ruhig)
+  dayAtmosphereTween = gsap.to(layer, {
+    x: 90,
+    y: -42,
+    scale: 1.11,
+    duration: 14,
     ease: "sine.inOut",
     repeat: -1,
     yoyo: true
