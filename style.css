@@ -62,32 +62,74 @@ background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08), transpare
 
 /*TAGESSCREEN*/
 
+body.day {
+  min-height: 100vh;
+  color: #26332c;
+  background:
+    radial-gradient(circle at 18% 18%,
+      rgba(255, 244, 210, 0.78) 0%,
+      rgba(255, 244, 210, 0.26) 23%,
+      transparent 46%
+    ),
+    radial-gradient(circle at 82% 24%,
+      rgba(188, 221, 190, 0.42) 0%,
+      rgba(188, 221, 190, 0.18) 28%,
+      transparent 55%
+    ),
+    radial-gradient(circle at 48% 86%,
+      rgba(137, 173, 137, 0.22) 0%,
+      rgba(137, 173, 137, 0.08) 36%,
+      transparent 68%
+    ),
+    linear-gradient(145deg,
+      #eef3ea 0%,
+      #e5eee3 34%,
+      #dbe8dc 68%,
+      #ccdcca 100%
+    );
+  overflow: hidden;
+}
+
 body.day::before {
   content: "";
   position: fixed;
-  inset: -18%;
+  inset: -12%;
   pointer-events: none;
   z-index: -2;
 
   background:
-    radial-gradient(ellipse at 24% 20%,
-      rgba(255, 250, 224, 0.72) 0%,
-      rgba(255, 250, 224, 0.24) 26%,
-      transparent 58%
+    /* ferner Licht-Himmel */
+    radial-gradient(ellipse at 50% 18%,
+      rgba(255, 250, 222, 0.72) 0%,
+      rgba(255, 250, 222, 0.22) 34%,
+      transparent 62%
     ),
-    radial-gradient(ellipse at 76% 78%,
-      rgba(117, 157, 118, 0.20) 0%,
-      rgba(117, 157, 118, 0.08) 35%,
+
+    /* linke Ferne / Waldkante */
+    radial-gradient(ellipse at 12% 58%,
+      rgba(117, 151, 116, 0.22) 0%,
+      rgba(117, 151, 116, 0.09) 32%,
+      transparent 62%
+    ),
+
+    /* rechte Ferne / Feld */
+    radial-gradient(ellipse at 88% 64%,
+      rgba(144, 173, 126, 0.20) 0%,
+      rgba(144, 173, 126, 0.08) 36%,
       transparent 68%
     ),
-    linear-gradient(120deg,
-      rgba(255, 255, 255, 0.26),
-      transparent 42%,
-      rgba(108, 142, 105, 0.10)
+
+    /* ganz weicher Horizont */
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      transparent 44%,
+      rgba(118, 149, 116, 0.10) 49%,
+      rgba(255, 255, 255, 0.14) 53%,
+      transparent 62%
     );
 
-  filter: blur(18px);
-  transform: translateZ(0);
+  filter: blur(22px);
 }
 
 body.day::after {
@@ -98,28 +140,40 @@ body.day::after {
   z-index: -1;
 
   background:
-    radial-gradient(circle at 30% 32%,
-      rgba(255, 255, 255, 0.34) 0 1px,
-      transparent 2px
+    /* leichte Vignette an den Rändern */
+    radial-gradient(ellipse at center,
+      transparent 0%,
+      transparent 48%,
+      rgba(65, 92, 70, 0.08) 100%
     ),
-    radial-gradient(circle at 68% 58%,
-      rgba(255, 255, 255, 0.22) 0 1px,
-      transparent 2px
-    ),
+
+    /* Bodentiefe unten */
     linear-gradient(
       180deg,
-      rgba(255, 255, 255, 0.24),
-      transparent 38%,
-      rgba(95, 124, 91, 0.08)
+      transparent 0%,
+      transparent 58%,
+      rgba(137, 166, 128, 0.08) 72%,
+      rgba(80, 112, 83, 0.14) 100%
+    ),
+
+    /* Lichtnebel vorne */
+    radial-gradient(ellipse at 50% 82%,
+      rgba(255, 255, 255, 0.34) 0%,
+      rgba(255, 255, 255, 0.14) 28%,
+      transparent 62%
     );
 
-  background-size:
-    180px 180px,
-    260px 260px,
-    100% 100%;
+  opacity: 0.9;
+  mix-blend-mode: normal;
+}
 
-  opacity: 0.42;
-  mix-blend-mode: soft-light;
+body.day .screen-inner {
+  background: rgba(255, 255, 248, 0.42);
+  box-shadow:
+    0 34px 90px rgba(57, 83, 60, 0.16),
+    0 10px 30px rgba(57, 83, 60, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16px);
 }
 
 body.night {
