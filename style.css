@@ -319,18 +319,18 @@ body.night::after {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 0;
+  z-index: 1;
   opacity: 0;
 
   background-image:
-    radial-gradient(circle, rgba(255,255,255,0.75) 0 1px, transparent 1.7px),
-    radial-gradient(circle, rgba(210,230,235,0.45) 0 1px, transparent 1.5px),
-    radial-gradient(circle, rgba(255,245,210,0.35) 0 1px, transparent 1.4px);
+    radial-gradient(circle, rgba(255,255,255,0.95) 0 1.4px, transparent 2.2px),
+    radial-gradient(circle, rgba(210,230,235,0.7) 0 1.2px, transparent 2px),
+    radial-gradient(circle, rgba(255,245,210,0.55) 0 1px, transparent 1.8px);
 
   background-size:
-    180px 180px,
-    260px 260px,
-    340px 340px;
+    160px 160px,
+    230px 230px,
+    310px 310px;
 
   background-position:
     18px 22px,
