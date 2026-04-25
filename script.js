@@ -197,7 +197,6 @@ function getStickyBaseRotation() {
 /* =========================
 STICKY NOTE – IDLE MOTION
 ========================= */
-let idleTimeline = null;
 
 function startStickyIdleMotion() {
   if (!stickyNote || !window.gsap) return;
@@ -213,31 +212,30 @@ function startStickyIdleMotion() {
 
   idleTimeline
     .to(stickyNote, {
-      y: "+=6",
-      x: "+=2",
-      rotation: base + 1,
+      y: "+=5",
+      x: "+=1.5",
+      rotation: base + 0.85,
+      duration: 3.6,
+      ease: "sine.inOut"
+    })
+    .to(stickyNote, {
+      y: "-=4",
+      x: "-=1.5",
+      rotation: base - 0.45,
       duration: 3.2,
       ease: "sine.inOut"
     })
     .to(stickyNote, {
-      y: "-=5",
-      x: "-=2",
-      rotation: base - 0.6,
-      duration: 3.0,
-      ease: "sine.inOut"
-    })
-    .to(stickyNote, {
       y: "+=2",
-      x: "+=1",
-      rotation: base + 0.3,
+      rotation: base + 0.25,
       duration: 3.4,
       ease: "sine.inOut"
     })
     .to(stickyNote, {
       y: "-=3",
-      x: "-=1",
+      x: "-=0.5",
       rotation: base,
-      duration: 3.6,
+      duration: 3.8,
       ease: "sine.inOut"
     });
 }
@@ -247,6 +245,7 @@ function stopStickyIdleMotion() {
     idleTimeline.kill();
     idleTimeline = null;
   }
+
   if (stickyNote && window.gsap) {
     gsap.killTweensOf(stickyNote);
   }
@@ -266,67 +265,71 @@ function playStickyPlaceAnimation() {
   stopStickyIdleMotion();
 
   gsap.set(stickyNote, {
-    x: "110vw",
-    y: -6,
-    scale: 1.04,
-    rotation: base + 10,
+    x: "92vw",
+    y: -4,
+    scale: 1.02,
+    rotation: base + 7,
     opacity: 1,
     transformOrigin: "50% 10%"
   });
 
   if (tape) {
-    gsap.set(tape, { transformOrigin: "50% 0%", scaleY: 1 });
+    gsap.set(tape, {
+      transformOrigin: "50% 0%",
+      scaleY: 1,
+      opacity: 1
+    });
   }
 
   const tl = gsap.timeline({
     onComplete: () => startStickyIdleMotion()
   });
 
-  // 🟡 REINFLUG (JETZT DIREKT, KEIN DELAY)
   tl.to(stickyNote, {
     x: 0,
+    y: 0,
     rotation: base,
     scale: 1,
-    duration: 0.55,
+    duration: 0.62,
     ease: "power3.out"
   });
 
-  // 🟡 PAPP-MOMENT (JETZT SICHTBARER)
   tl.to(stickyNote, {
-    y: 10,
-    scaleY: 0.94,
-    scaleX: 1.02,
-    rotation: base - 0.4,
-    duration: 0.18,
+    y: 8,
+    scaleY: 0.955,
+    scaleX: 1.014,
+    rotation: base - 0.3,
+    duration: 0.16,
     ease: "power2.out"
-  }, "-=0.05");
+  }, "-=0.02");
 
   if (tape) {
     tl.to(tape, {
-      scaleY: 0.65, // 🔥 stärker sichtbar
-      duration: 0.18,
+      scaleY: 0.72,
+      duration: 0.16,
       ease: "power2.out"
     }, "<");
   }
 
-  // 🟡 REBOUND
   tl.to(stickyNote, {
     y: 0,
     scaleY: 1,
     scaleX: 1,
     rotation: base,
-    duration: 0.35,
-    ease: "back.out(2)"
+    duration: 0.34,
+    ease: "back.out(1.8)"
   });
 
   if (tape) {
     tl.to(tape, {
       scaleY: 1,
       duration: 0.3,
-      ease: "back.out(2)"
+      ease: "back.out(1.8)"
     }, "<");
   }
 }
+
+
 /* =========================
 STICKY NOTE – PEEL OUT ANIMATION
 ========================= */
@@ -346,57 +349,46 @@ function playStickyPeelOutAnimation() {
     const tl = gsap.timeline({
       onComplete: () => {
         hideStickyNote();
-        gsap.set(stickyNote, { clearProps: "all" });
         resolve();
       }
     });
 
-    // Phase 1: Zögern – als würde eine Hand danach greifen
+    // 1. Kurz lösen, nicht ansaugen
     tl.to(stickyNote, {
-      scale: 0.97,
-      rotation: base - 3,
-      y: -3,
-      duration: 0.25,
-      ease: "power1.inOut"
+      y: -8,
+      rotation: base + 2,
+      scale: 1.005,
+      duration: 0.35,
+      ease: "power2.out"
     });
-
-    // Phase 2: Tape löst sich
-    if (tape) {
-      tl.to(tape, {
-        scaleY: 1.15,
-        opacity: 0.7,
-        duration: 0.2,
-        ease: "power1.in"
-      }, "-=0.1");
-    }
-
-    // Phase 3: Papier gleitet nach rechts heraus
-    tl.to(stickyNote, {
-      x: "115vw",
-      y: -40,
-      rotation: base + 18,
-      scale: 0.96,
-      duration: 0.85,
-      ease: "power2.in"
-    });
-
-    tl.to(stickyNote, {
-      opacity: 0,
-      duration: 0.25,
-      ease: "power1.in"
-    }, "-=0.28");
 
     if (tape) {
       tl.to(tape, {
-        scaleY: 1,
-        opacity: 0,
-        duration: 0.3,
-        ease: "power1.in"
+        scaleY: 0.9,
+        opacity: 0.85,
+        duration: 0.28,
+        ease: "power1.out"
       }, "<");
     }
+
+    // 2. Ruhig nach rechts rausziehen
+    tl.to(stickyNote, {
+      x: "78vw",
+      y: -24,
+      rotation: base + 8,
+      scale: 0.99,
+      duration: 1.45,
+      ease: "power2.inOut"
+    });
+
+    // 3. Erst am Ende weich ausblenden
+    tl.to(stickyNote, {
+      opacity: 0,
+      duration: 0.35,
+      ease: "power1.out"
+    }, "-=0.28");
   });
 }
-
 
 /* =========================
 STICKY NOTE – STATE & PLACEMENT
@@ -760,8 +752,8 @@ function triggerBreakEnd() {
     endingTimeout = setTimeout(async () => {
       await playStickyPeelOutAnimation();
       resetApp();
-    }, 4500);
-  }, 5000);
+    }, 1200);
+  }, 4500);
 }
 
 function resetApp() {
