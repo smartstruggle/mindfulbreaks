@@ -208,34 +208,41 @@ function startStickyIdleMotion() {
     idleTimeline = null;
   }
 
+  gsap.killTweensOf(stickyNote);
+
   idleTimeline = gsap.timeline({ repeat: -1 });
 
   idleTimeline
     .to(stickyNote, {
-      y: "+=5",
-      x: "+=1.5",
-      rotation: base + 0.85,
-      duration: 3.6,
+      y: "+=7",
+      x: "+=2.5",
+      rotation: base + 1.05,
+      scale: 1.004,
+      duration: 4.2,
       ease: "sine.inOut"
     })
     .to(stickyNote, {
-      y: "-=4",
+      y: "-=6",
+      x: "-=2",
+      rotation: base - 0.75,
+      scale: 1,
+      duration: 4.0,
+      ease: "sine.inOut"
+    })
+    .to(stickyNote, {
+      y: "+=4",
+      x: "+=1",
+      rotation: base + 0.45,
+      scale: 1.003,
+      duration: 4.4,
+      ease: "sine.inOut"
+    })
+    .to(stickyNote, {
+      y: "-=5",
       x: "-=1.5",
-      rotation: base - 0.45,
-      duration: 3.2,
-      ease: "sine.inOut"
-    })
-    .to(stickyNote, {
-      y: "+=2",
-      rotation: base + 0.25,
-      duration: 3.4,
-      ease: "sine.inOut"
-    })
-    .to(stickyNote, {
-      y: "-=3",
-      x: "-=0.5",
       rotation: base,
-      duration: 3.8,
+      scale: 1,
+      duration: 4.6,
       ease: "sine.inOut"
     });
 }
@@ -265,12 +272,12 @@ function playStickyPlaceAnimation() {
   stopStickyIdleMotion();
 
   gsap.set(stickyNote, {
-    x: "92vw",
-    y: -4,
-    scale: 1.02,
-    rotation: base + 7,
+    x: "86vw",
+    y: -18,
+    scale: 1.018,
+    rotation: base + 4.5,
     opacity: 1,
-    transformOrigin: "50% 10%"
+    transformOrigin: "50% 12%"
   });
 
   if (tape) {
@@ -285,46 +292,49 @@ function playStickyPlaceAnimation() {
     onComplete: () => startStickyIdleMotion()
   });
 
+  // Ruhigeres Reinlegen, weniger hektisch
   tl.to(stickyNote, {
     x: 0,
     y: 0,
     rotation: base,
     scale: 1,
-    duration: 0.62,
-    ease: "power3.out"
+    duration: 1.05,
+    ease: "power2.out"
   });
 
+  // Sanfter Kontakt mit der Fläche
   tl.to(stickyNote, {
-    y: 8,
-    scaleY: 0.955,
-    scaleX: 1.014,
-    rotation: base - 0.3,
-    duration: 0.16,
-    ease: "power2.out"
-  }, "-=0.02");
+    y: 6,
+    scaleY: 0.972,
+    scaleX: 1.008,
+    rotation: base - 0.18,
+    duration: 0.2,
+    ease: "sine.out"
+  }, "-=0.04");
 
   if (tape) {
     tl.to(tape, {
-      scaleY: 0.72,
-      duration: 0.16,
-      ease: "power2.out"
+      scaleY: 0.82,
+      duration: 0.2,
+      ease: "sine.out"
     }, "<");
   }
 
+  // Ruhiges Zurückfedern, weniger Cartoon-Bounce
   tl.to(stickyNote, {
     y: 0,
     scaleY: 1,
     scaleX: 1,
     rotation: base,
-    duration: 0.34,
-    ease: "back.out(1.8)"
+    duration: 0.46,
+    ease: "sine.inOut"
   });
 
   if (tape) {
     tl.to(tape, {
       scaleY: 1,
-      duration: 0.3,
-      ease: "back.out(1.8)"
+      duration: 0.4,
+      ease: "sine.inOut"
     }, "<");
   }
 }
@@ -353,40 +363,60 @@ function playStickyPeelOutAnimation() {
       }
     });
 
-    // 1. Kurz lösen, nicht ansaugen
+    // 1. Kleiner Löse-Ruck nach rechts unten
     tl.to(stickyNote, {
-      y: -8,
-      rotation: base + 2,
-      scale: 1.005,
-      duration: 0.35,
-      ease: "power2.out"
+      x: 10,
+      y: 10,
+      rotation: base + 1.4,
+      scale: 1.006,
+      duration: 0.24,
+      ease: "sine.out"
     });
 
     if (tape) {
       tl.to(tape, {
-        scaleY: 0.9,
-        opacity: 0.85,
-        duration: 0.28,
-        ease: "power1.out"
+        scaleY: 0.84,
+        opacity: 0.82,
+        duration: 0.22,
+        ease: "sine.out"
       }, "<");
     }
 
-    // 2. Ruhig nach rechts rausziehen
+    // 2. Leicht anheben / ablösen
     tl.to(stickyNote, {
-      x: "78vw",
-      y: -24,
-      rotation: base + 8,
-      scale: 0.99,
-      duration: 1.45,
-      ease: "power2.inOut"
+      x: 24,
+      y: -6,
+      rotation: base - 2.4,
+      scale: 1.01,
+      duration: 0.34,
+      ease: "sine.inOut"
     });
 
-    // 3. Erst am Ende weich ausblenden
+    if (tape) {
+      tl.to(tape, {
+        scaleY: 0.68,
+        opacity: 0.55,
+        duration: 0.3,
+        ease: "sine.inOut"
+      }, "<");
+    }
+
+    // 3. Gleichmäßig nach rechts rausziehen
+    tl.to(stickyNote, {
+      x: "82vw",
+      y: -10,
+      rotation: base - 4,
+      scale: 0.995,
+      duration: 1.15,
+      ease: "none"
+    });
+
+    // 4. Am Ende weich verschwinden
     tl.to(stickyNote, {
       opacity: 0,
-      duration: 0.35,
-      ease: "power1.out"
-    }, "-=0.28");
+      duration: 0.28,
+      ease: "sine.out"
+    }, "-=0.24");
   });
 }
 
