@@ -93,26 +93,6 @@ function applyTimeTheme() {
   if (hour >= 6 && hour < 11) {
     document.body.classList.add("morning");
     stopDayAtmosphereMotion();
-
-  } else if (hour >= 11 && hour < 20) {
-    document.body.classList.add("day");
-    startDayAtmosphereMotion();
-
-  } else {
-    document.body.classList.add("night");
-    stopDayAtmosphereMotion();
-  }
-}
-
-
-function applyTimeTheme() {
-  const hour = new Date().getHours();
-
-  document.body.classList.remove("morning", "day", "night");
-
-  if (hour >= 6 && hour < 11) {
-    document.body.classList.add("morning");
-    stopDayAtmosphereMotion();
     stopNightAtmosphereMotion();
 
   } else if (hour >= 11 && hour < 20) {
