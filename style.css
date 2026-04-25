@@ -320,10 +320,11 @@ place-items: center;
 position: relative;
 z-index: 20;
 
-width: min(82vw, 520px);
+width: min(82vw, 540px);
 aspect-ratio: 2635 / 2515;
 
-transform: none;
+transform: rotate(-7deg);
+transform-origin: 50% 40%;
 }
 
 .sticky-note.is-hidden {
@@ -342,15 +343,34 @@ height: 100%;
 display: block;
 }
 
+/* leichte zusätzliche Papiertextur über dem SVG */
+.sticky-note::after {
+content: "";
+position: absolute;
+inset: 10% 8% 8%;
+pointer-events: none;
+z-index: 1;
+
+opacity: 0.13;
+mix-blend-mode: multiply;
+
+background-image:
+radial-gradient(circle, rgba(70, 45, 10, 0.16) 0 0.7px, transparent 0.8px),
+linear-gradient(135deg, rgba(255,255,255,0.12), rgba(0,0,0,0.04));
+background-size: 13px 13px, 100% 100%;
+}
+
 .sticky-note__content {
 position: absolute;
-inset: 18% 15% 14%;
+inset: 22% 15% 16%;
 z-index: 2;
 
-display: grid;
-place-items: center;
-text-align: center;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: flex-start;
 
+text-align: center;
 font-family: "Caveat", cursive;
 color: #3a2f1f;
 }
@@ -361,28 +381,40 @@ width: 100%;
 }
 
 .sticky-note__state.is-active {
-display: block;
+display: flex;
+flex-direction: column;
+align-items: center;
 }
 
+/* Allgemeine Sticky-Schrift */
 .sticky-note__title {
 margin: 0;
-font-size: clamp(24px, 3.4vw, 38px);
+font-size: clamp(22px, 3vw, 32px);
 font-weight: 600;
-line-height: 1.08;
+line-height: 1.1;
+letter-spacing: 0.01em;
+}
+
+/* STATE 1: Pause eingeplant */
+.sticky-note__state--planned .sticky-note__title {
+font-size: clamp(22px, 2.8vw, 31px);
+max-width: 88%;
 }
 
 .sticky-note__checklist {
 list-style: none;
-margin: 18px 0 22px;
+margin: 16px 0 16px;
 padding: 0;
 
-font-size: clamp(20px, 2.7vw, 30px);
-line-height: 1.2;
+font-size: clamp(20px, 2.6vw, 28px);
+line-height: 1.18;
 }
 
 .sticky-note__button {
 width: auto;
-padding: 12px 26px;
+margin-top: 2px;
+padding: 10px 24px;
+
 border: none;
 border-radius: 999px;
 
@@ -390,10 +422,39 @@ background: rgba(60, 52, 40, 0.88);
 color: #fff7df;
 
 font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-font-size: 15px;
+font-size: 14px;
 font-weight: 600;
 
 box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+}
+
+/* STATE 2: nächste Pause */
+.sticky-note__state--waiting {
+padding-top: 8px;
+}
+
+.sticky-note__state--waiting .sticky-note__title {
+max-width: 86%;
+font-size: clamp(22px, 2.9vw, 32px);
+}
+
+/* STATE 3: schöne Pause */
+.sticky-note__state--break {
+padding-top: 4px;
+}
+
+.sticky-note__state--break .sticky-note__title {
+font-size: clamp(28px, 3.4vw, 40px);
+}
+
+/* STATE 4: Ende */
+.sticky-note__state--done {
+padding-top: 4px;
+}
+
+.sticky-note__state--done .sticky-note__title {
+max-width: 90%;
+font-size: clamp(22px, 2.7vw, 30px);
 }
 
 /* Transition: Papier + Sticky übereinander */
@@ -422,8 +483,8 @@ gap: 36px;
 
 .screen--break .sticky-note {
 width: min(58vw, 380px);
+transform: rotate(-5deg);
 }
-
 
 /* =========================
 8. BREAK SCREEN LAYOUT
