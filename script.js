@@ -13,7 +13,6 @@ const endHour = document.getElementById("end-hour");
 const endMinute = document.getElementById("end-minute");
 
 const stickyNote = document.querySelector(".sticky-note");
-const stickyStates = document.querySelectorAll(".sticky-note__state");
 const prepConfirmButton = document.getElementById("prep-confirm-button");
 const nextBreakTime = document.getElementById("next-break-time");
 
@@ -76,7 +75,7 @@ function init() {
 
   if (gongSound) {
     gongSound.addEventListener("error", () => {
-      console.log("Fehler beim Laden von gong.mp3. Prüfe Dateiname und Speicherort.");
+      console.log("Fehler beim Laden von gong.mp3.");
     });
   }
 }
@@ -88,7 +87,6 @@ THEME
 
 function applyTimeTheme() {
   const hour = new Date().getHours();
-
   document.body.classList.remove("morning", "day", "night");
 
   if (hour >= 6 && hour < 11) {
@@ -132,9 +130,9 @@ function getTodayDateForTime(timeString) {
 }
 
 function getSelectedTimes() {
-  if (!startHour.value || !startMinute.value || !endHour.value || !endMinute.value) {
-    return null;
-  }
+  if (!startHour || !startMinute || !endHour || !endMinute) return null;
+  if (!startHour.value || !startMinute.value || !endHour.value || !endMinute.value) return null;
+
   return {
     startTime: `${startHour.value}:${startMinute.value}`,
     endTime: `${endHour.value}:${endMinute.value}`,
@@ -179,25 +177,25 @@ function showScreen(screenName) {
 }
 
 
-/* =============================================================
-   STICKY NOTE SYSTEM
-   ============================================================= */
+/* =========================
+STICKY NOTE – HELPERS
+========================= */
 
-// Das Tape-Element hat im SVG die ID "kelbestreifen"
 function getStickyTape() {
   if (!stickyNote) return null;
   return stickyNote.querySelector("#kelbestreifen");
 }
 
-// Basis-Rotation aus dem CSS:
-// Standard-Screen: -7deg, Break-Screen: -5deg
 function getStickyBaseRotation() {
   if (!stickyNote) return -7;
-  return stickyNote.closest(".screen--break") ? -5 : -7;
+  // Im Break-Screen: -5deg (aus CSS), sonst -7deg
+  return stickyNote.closest("#break-screen") ? -5 : -7;
 }
 
 
-/* --- IDLE MOTION --- */
+/* =========================
+STICKY NOTE – IDLE MOTION
+========================= */
 
 let idleTimeline = null;
 
@@ -211,9 +209,6 @@ function startStickyIdleMotion() {
     idleTimeline = null;
   }
 
-  // Vier sanft ineinandergreifende Phasen – wie eine leichte Brise.
-  // Alle Bewegungen relativ zur aktuellen Position (+=), damit kein
-  // harter Sprung entsteht egal wann die Idle-Motion startet.
   idleTimeline = gsap.timeline({ repeat: -1 });
 
   idleTimeline
@@ -256,7 +251,9 @@ function stopStickyIdleMotion() {
 }
 
 
-/* --- PLACE ANIMATION --- */
+/* =========================
+STICKY NOTE – PLACE ANIMATION
+========================= */
 
 function playStickyPlaceAnimation() {
   if (!stickyNote || !window.gsap) return;
@@ -266,11 +263,6 @@ function playStickyPlaceAnimation() {
 
   stopStickyIdleMotion();
 
-  // Startposition: rechts außerhalb des Viewports.
-  // transformOrigin auf ~8% von oben = ungefähr die Tape-Zone des SVG
-  // (Tape geht von y=74 bis y=520 bei einer Gesamthöhe von 2515 → ~17%,
-  // Mittelpunkt bei ~8%). Das sorgt dafür, dass die Rotation
-  // realistisch um den Aufhängepunkt dreht.
   gsap.set(stickyNote, {
     x: "120vw",
     y: -8,
@@ -281,19 +273,14 @@ function playStickyPlaceAnimation() {
   });
 
   if (tape) {
-    gsap.set(tape, {
-      transformOrigin: "50% 0%",
-      scaleY: 1
-    });
+    gsap.set(tape, { transformOrigin: "50% 0%", scaleY: 1 });
   }
 
   const tl = gsap.timeline({
     onComplete: () => startStickyIdleMotion()
   });
 
-  // ── Phase 1: Eingleiten ──────────────────────────────────────
-  // Das Papier kommt von rechts, leicht angewinkelt.
-  // back.out(1.05): minimaler Overshoot – physisch, nicht cartoonhaft.
+  // Phase 1: Eingleiten von rechts
   tl.to(stickyNote, {
     x: 0,
     rotation: base,
@@ -302,10 +289,7 @@ function playStickyPlaceAnimation() {
     ease: "back.out(1.05)"
   });
 
-  // ── Phase 2: Aufsetzen ───────────────────────────────────────
-  // Kurz vor Ende des Slides berührt das Papier die Fläche:
-  // minimale Y-Stauchung + leichte X-Spreizung = Druck-Illusion.
-  // Startet 180ms vor Ende von Phase 1 (überlappend = flüssig).
+  // Phase 2: Aufsetzen – Druck-Illusion
   tl.to(stickyNote, {
     y: 5,
     scaleY: 0.965,
@@ -314,7 +298,6 @@ function playStickyPlaceAnimation() {
     ease: "power2.out"
   }, "-=0.18");
 
-  // Tape wird gleichzeitig leicht zusammengedrückt
   if (tape) {
     tl.to(tape, {
       scaleY: 0.82,
@@ -323,9 +306,7 @@ function playStickyPlaceAnimation() {
     }, "<");
   }
 
-  // ── Phase 3: Rebound ─────────────────────────────────────────
-  // Das Papier federt organisch aus.
-  // elastic.out(1.1, 0.55): weiches Federn, kein übertriebenes Wippen.
+  // Phase 3: Rebound – weiches Ausfedern
   tl.to(stickyNote, {
     y: 0,
     scaleY: 1,
@@ -344,7 +325,9 @@ function playStickyPlaceAnimation() {
 }
 
 
-/* --- PEEL OUT ANIMATION --- */
+/* =========================
+STICKY NOTE – PEEL OUT ANIMATION
+========================= */
 
 function playStickyPeelOutAnimation() {
   if (!stickyNote || !window.gsap) {
@@ -361,15 +344,12 @@ function playStickyPeelOutAnimation() {
     const tl = gsap.timeline({
       onComplete: () => {
         hideStickyNote();
-        // Alle GSAP-Props zurücksetzen damit nächste Nutzung sauber startet
         gsap.set(stickyNote, { clearProps: "all" });
         resolve();
       }
     });
 
-    // ── Phase 1: Zögern / Greifen ────────────────────────────────
-    // Kurze Gegenbewegung – als würde eine Hand nach dem Zettel greifen.
-    // Subtile Spannung bevor das Papier losgelassen wird.
+    // Phase 1: Zögern – als würde eine Hand danach greifen
     tl.to(stickyNote, {
       scale: 0.97,
       rotation: base - 3,
@@ -378,9 +358,7 @@ function playStickyPeelOutAnimation() {
       ease: "power1.inOut"
     });
 
-    // ── Phase 2: Tape löst sich ──────────────────────────────────
-    // Der Klebestreifen wird leicht gestreckt bevor das Papier abgeht –
-    // simuliert das echte Ablösen von einer Oberfläche.
+    // Phase 2: Tape löst sich
     if (tape) {
       tl.to(tape, {
         scaleY: 1.15,
@@ -390,11 +368,7 @@ function playStickyPeelOutAnimation() {
       }, "-=0.1");
     }
 
-    // ── Phase 3: Abgleiten nach rechts ──────────────────────────
-    // Rotation steigt (Papier wird von oben-rechts weggezogen),
-    // leichte Skalierung nach unten (Perspektive/Distanz).
-    // Opacity fällt erst ganz am Ende ab – das Papier bleibt
-    // sichtbar bis es wirklich außerhalb ist.
+    // Phase 3: Papier gleitet nach rechts heraus
     tl.to(stickyNote, {
       x: "115vw",
       y: -40,
@@ -422,21 +396,30 @@ function playStickyPeelOutAnimation() {
 }
 
 
-/* --- STATE & PLACEMENT --- */
+/* =========================
+STICKY NOTE – STATE & PLACEMENT
+========================= */
 
 function placeStickyNote(target) {
   if (!stickyNote) return;
 
+  // Exakte Container-IDs statt generischer Klassen –
+  // verhindert dass der falsche .screen__inner erwischt wird
   const containers = {
-    "transition": ".screen__inner",
-    "break": ".break-layout"
+    "transition": "#transition-screen .screen__inner",
+    "break": "#break-screen .break-layout"
   };
 
   const selector = containers[target];
   if (!selector) return;
 
   const parent = document.querySelector(selector);
-  if (parent && stickyNote.parentElement !== parent) {
+  if (!parent) {
+    console.warn(`placeStickyNote: Container "${selector}" nicht gefunden.`);
+    return;
+  }
+
+  if (stickyNote.parentElement !== parent) {
     parent.appendChild(stickyNote);
   }
 }
@@ -450,8 +433,6 @@ function showStickyNote(options = {}) {
   if (animate && window.gsap) {
     playStickyPlaceAnimation();
   } else {
-    // Kein animate (z.B. direkt in Break): sauber positionieren
-    // und Idle starten ohne Einflug-Animation
     gsap.set(stickyNote, {
       x: 0,
       y: 0,
@@ -475,8 +456,7 @@ function setStickyState(state) {
   if (!stickyNote) return;
   stickyNote.dataset.state = state;
 
-  const states = stickyNote.querySelectorAll(".sticky-note__state");
-  states.forEach((el) => {
+  stickyNote.querySelectorAll(".sticky-note__state").forEach((el) => {
     const isActive = el.dataset.stickyState === state;
     el.classList.toggle("is-active", isActive);
     if (isActive) el.style.opacity = "1";
@@ -636,8 +616,8 @@ TIMER HELPERS
 
 function clearAllTimers() {
   if (waitingInterval) { clearInterval(waitingInterval); waitingInterval = null; }
-  if (breakInterval) { clearInterval(breakInterval); breakInterval = null; }
-  if (endingTimeout) { clearTimeout(endingTimeout); endingTimeout = null; }
+  if (breakInterval)   { clearInterval(breakInterval);   breakInterval = null;   }
+  if (endingTimeout)   { clearTimeout(endingTimeout);    endingTimeout = null;   }
 }
 
 
@@ -685,23 +665,27 @@ async function handleTimeSubmit(event) {
 
 function startTransitionPhase() {
   clearAllTimers();
-
   appState = "planned";
 
+  // Screen zuerst einblenden
   showScreen("transition");
-  placeStickyNote("transition");
-  setStickyState("planned");
 
-  if (nextBreakTime) nextBreakTime.textContent = activeStartTime;
+  // Nach einem RAF sicherstellen dass der Screen im DOM aktiv ist,
+  // bevor das Sticky Note hineinbewegt und animiert wird
+  requestAnimationFrame(() => {
+    placeStickyNote("transition");
+    setStickyState("planned");
 
-  showStickyNote();
+    if (nextBreakTime) nextBreakTime.textContent = activeStartTime;
+
+    showStickyNote();
+  });
 }
 
 function handlePrepConfirm() {
   if (appState !== "planned") return;
 
   appState = "waiting";
-
   changeStickyStateWithFade("waiting");
 
   const startDate = getTodayDateForTime(activeStartTime);
@@ -724,13 +708,15 @@ function handlePrepConfirm() {
 
 async function startBreakPhase(playStartGong = true) {
   clearAllTimers();
-
   appState = "break";
 
   showScreen("break");
-  placeStickyNote("break");
-  setStickyState("break");
-  showStickyNote({ animate: false });
+
+  requestAnimationFrame(() => {
+    placeStickyNote("break");
+    setStickyState("break");
+    showStickyNote({ animate: false });
+  });
 
   if (playStartGong && !startGongPlayed) {
     playGong();
@@ -770,10 +756,10 @@ function triggerBreakEnd() {
     endGongPlayed = true;
   }
 
-  // Gong klingt → 5s warten → "done"-State einblenden →
-  // 4.5s lesen → Sticky Note gleitet heraus → Reset
+  // Gong klingt aus → done-State einblenden → Sticky Note abziehen → Reset
   endingTimeout = setTimeout(() => {
     changeStickyStateWithFade("done");
+
     endingTimeout = setTimeout(async () => {
       await playStickyPeelOutAnimation();
       resetApp();
@@ -792,10 +778,10 @@ function resetApp() {
   endGongPlayed = false;
   endingSequenceRunning = false;
 
-  if (startHour) startHour.value = "";
+  if (startHour)   startHour.value   = "";
   if (startMinute) startMinute.value = "";
-  if (endHour) endHour.value = "";
-  if (endMinute) endMinute.value = "";
+  if (endHour)     endHour.value     = "";
+  if (endMinute)   endMinute.value   = "";
 
   updateFlipClock(0);
   setStickyState("planned");
