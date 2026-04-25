@@ -568,6 +568,25 @@ function startDayAtmosphereMotion() {
 }
 
 
+function stopDayAtmosphereMotion() {
+  const layer = document.querySelector(".day-atmosphere");
+
+  if (dayAtmosphereTween) {
+    dayAtmosphereTween.kill();
+    dayAtmosphereTween = null;
+  }
+
+  if (layer && window.gsap) {
+    gsap.to(layer, {
+      opacity: 0,
+      duration: 0.6,
+      ease: "sine.out"
+    });
+  }
+}
+
+
+
 let nightAtmosphereTween = null;
 let nightStarsTween = null;
 
