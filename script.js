@@ -247,33 +247,213 @@ breakLayout.appendChild(stickyNote);
 
 
 /* =========================
+STICKY NOTE MOTION
+========================= */
+
+function getStickyBaseRotation() {
+if (!stickyNote) return -7;
+
+if (stickyNote.closest(".screen--break")) {
+return -5;
+}
+
+return -7;
+}
+
+function getStickyTape() {
+if (!stickyNote) return null;
+
+return stickyNote.querySelector(
+"#kelbestreifen, #klebestreifen, #Klebestreifen"
+);
+}
+
+function stopStickyIdleMotion() {
+if (!stickyNote || !window.gsap) return;
+gsap.killTweensOf(stickyNote);
+}
+
+function startStickyIdleMotion() {
+if (!stickyNote || !window.gsap) return;
+
+const baseRotation = getStickyBaseRotation();
+
+gsap.killTweensOf(stickyNote);
+
+gsap.to(stickyNote, {
+y: -3,
+rotation: baseRotation + 0.45,
+duration: 4.8,
+ease: "sine.inOut",
+repeat: -1,
+yoyo: true,
+});
+}
+
+function playStickyPlaceAnimation() {
+if (!stickyNote || !window.gsap) return;
+
+const baseRotation = getStickyBaseRotation();
+const tape = getStickyTape();
+
+gsap.killTweensOf(stickyNote);
+if (tape) gsap.killTweensOf(tape);
+
+const tl = gsap.timeline({
+onComplete: () => {
+startStickyIdleMotion();
+},
+});
+
+gsap.set(stickyNote, {
+x: "88vw",
+y: -12,
+opacity: 0,
+scale: 0.98,
+rotation: baseRotation + 2.5,
+transformOrigin: "50% 38%",
+});
+
+if (tape) {
+gsap.set(tape, {
+transformOrigin: "50% 20%",
+scaleY: 1,
+});
+}
+
+tl.to(stickyNote, {
+x: 0,
+y: 0,
+opacity: 1,
+scale: 1,
+rotation: baseRotation,
+duration: 0.9,
+ease: "power3.out",
+});
+
+/* kleiner Andock-/Papp-Moment */
+tl.to(stickyNote, {
+y: 4,
+scale: 0.992,
+rotation: baseRotation - 0.35,
+duration: 0.12,
+ease: "power1.out",
+});
+
+if (tape) {
+tl.to(
+tape,
+{
+scaleY: 0.985,
+duration: 0.12,
+ease: "power1.out",
+},
+"<"
+);
+}
+
+tl.to(stickyNote, {
+y: 0,
+scale: 1,
+rotation: baseRotation,
+duration: 0.28,
+ease: "back.out(1.5)",
+});
+
+if (tape) {
+tl.to(
+tape,
+{
+scaleY: 1,
+duration: 0.28,
+ease: "back.out(1.4)",
+},
+"<"
+);
+}
+}
+
+function playStickyPeelOutAnimation() {
+if (!stickyNote || !window.gsap) {
+hideStickyNote();
+return Promise.resolve();
+}
+
+const baseRotation = getStickyBaseRotation();
+const tape = getStickyTape();
+
+gsap.killTweensOf(stickyNote);
+if (tape) gsap.killTweensOf(tape);
+
+return new Promise((resolve) => {
+const tl = gsap.timeline({
+onComplete: () => {
+hideStickyNote();
+resolve();
+},
+});
+
+if (tape) {
+tl.to(tape, {
+scaleY: 0.96,
+duration: 0.16,
+ease: "power1.out",
+transformOrigin: "50% 20%",
+});
+}
+
+tl.to(stickyNote, {
+y: -10,
+rotation: baseRotation + 3,
+scale: 1.01,
+duration: 0.18,
+ease: "power2.out",
+});
+
+tl.to(stickyNote, {
+x: "90vw",
+y: -42,
+rotation: baseRotation + 9,
+opacity: 0,
+scale: 0.98,
+duration: 0.72,
+ease: "power3.in",
+});
+});
+}
+
+
+/* =========================
 STICKY NOTE STATES
 ========================= */
 
-function showStickyNote() {
+function showStickyNote(options = {}) {
 if (!stickyNote) return;
+
+const { animate = true } = options;
 
 stickyNote.classList.remove("is-hidden");
 
-if (window.gsap) {
-gsap.killTweensOf(stickyNote);
+if (!window.gsap) return;
 
-gsap.fromTo(
-stickyNote,
-{
-x: "80vw",
-opacity: 0,
-scale: 0.98,
-},
-{
+if (animate) {
+playStickyPlaceAnimation();
+return;
+}
+
+const baseRotation = getStickyBaseRotation();
+
+gsap.killTweensOf(stickyNote);
+gsap.set(stickyNote, {
 x: 0,
+y: 0,
 opacity: 1,
 scale: 1,
-duration: 0.85,
-ease: "power3.out",
-}
-);
-}
+rotation: baseRotation,
+transformOrigin: "50% 38%",
+});
+
+startStickyIdleMotion();
 }
 
 function hideStickyNote() {
@@ -310,28 +490,28 @@ return;
 
 gsap.to(currentState, {
 opacity: 0,
-duration: 0.25,
+y: -3,
+duration: 0.16,
 ease: "power1.out",
 onComplete: () => {
 setStickyState(state);
 
 const newState = stickyNote.querySelector(".sticky-note__state.is-active");
-
 if (!newState) return;
 
 gsap.fromTo(
 newState,
-{ opacity: 0 },
+{ opacity: 0, y: 4 },
 {
 opacity: 1,
-duration: 0.35,
+y: 0,
+duration: 0.22,
 ease: "power1.out",
 }
 );
 },
 });
 }
-
 
 /* =========================
 FLIP CLOCK
@@ -535,7 +715,7 @@ if (nextBreakTime) {
 nextBreakTime.textContent = activeStartTime;
 }
 
-showStickyNote();
+showStickyNote(); 
 }
 
 function handlePrepConfirm() {
@@ -572,7 +752,7 @@ showScreen("break");
 placeStickyNote("break");
 
 setStickyState("break");
-showStickyNote();
+showStickyNote({ animate: false });
 
 if (playStartGong && !startGongPlayed) {
 playGong();
@@ -617,11 +797,12 @@ endGongPlayed = true;
 endingTimeout = setTimeout(() => {
 changeStickyStateWithFade("done");
 
-endingTimeout = setTimeout(() => {
+endingTimeout = setTimeout(async () => {
+await playStickyPeelOutAnimation();
 resetApp();
 }, 4500);
 }, 5000);
-}
+
 
 function resetApp() {
 clearAllTimers();
