@@ -271,6 +271,7 @@ color: #383d46;
 
 .button,
 #start-button {
+margin-top: clamp(10px, 3vh, 28px);
 padding: 18px 42px;
 width: min(100%, 360px);
 
