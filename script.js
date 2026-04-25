@@ -197,6 +197,7 @@ function getStickyBaseRotation() {
 /* =========================
 STICKY NOTE – IDLE MOTION
 ========================= */
+let idleTimeline = null;
 
 function startStickyIdleMotion() {
   if (!stickyNote || !window.gsap) return;
@@ -212,29 +213,31 @@ function startStickyIdleMotion() {
 
   idleTimeline
     .to(stickyNote, {
-      y: "+=4",
-      rotation: base + 0.6,
-      duration: 3.8,
-      ease: "sine.inOut"
-    })
-    .to(stickyNote, {
-      y: "-=2",
-      rotation: base - 0.4,
-      duration: 2.9,
-      ease: "sine.inOut"
-    })
-    .to(stickyNote, {
-      y: "+=1",
-      x: "+=1.5",
-      rotation: base + 0.2,
+      y: "+=6",
+      x: "+=2",
+      rotation: base + 1,
       duration: 3.2,
       ease: "sine.inOut"
     })
     .to(stickyNote, {
+      y: "-=5",
+      x: "-=2",
+      rotation: base - 0.6,
+      duration: 3.0,
+      ease: "sine.inOut"
+    })
+    .to(stickyNote, {
+      y: "+=2",
+      x: "+=1",
+      rotation: base + 0.3,
+      duration: 3.4,
+      ease: "sine.inOut"
+    })
+    .to(stickyNote, {
       y: "-=3",
-      x: "-=1.5",
+      x: "-=1",
       rotation: base,
-      duration: 3.5,
+      duration: 3.6,
       ease: "sine.inOut"
     });
 }
@@ -263,12 +266,12 @@ function playStickyPlaceAnimation() {
   stopStickyIdleMotion();
 
   gsap.set(stickyNote, {
-    x: "120vw",
-    y: -8,
-    opacity: 1,
-    scale: 1.03,
+    x: "110vw",
+    y: -6,
+    scale: 1.04,
     rotation: base + 10,
-    transformOrigin: "50% 8%"
+    opacity: 1,
+    transformOrigin: "50% 10%"
   });
 
   if (tape) {
@@ -279,51 +282,51 @@ function playStickyPlaceAnimation() {
     onComplete: () => startStickyIdleMotion()
   });
 
-  // Phase 1: Eingleiten von rechts
+  // 🟡 REINFLUG (JETZT DIREKT, KEIN DELAY)
   tl.to(stickyNote, {
     x: 0,
     rotation: base,
     scale: 1,
-    duration: 0.72,
-    ease: "back.out(1.05)"
+    duration: 0.55,
+    ease: "power3.out"
   });
 
-  // Phase 2: Aufsetzen – Druck-Illusion
+  // 🟡 PAPP-MOMENT (JETZT SICHTBARER)
   tl.to(stickyNote, {
-    y: 5,
-    scaleY: 0.965,
-    scaleX: 1.012,
-    duration: 0.13,
+    y: 10,
+    scaleY: 0.94,
+    scaleX: 1.02,
+    rotation: base - 0.4,
+    duration: 0.18,
     ease: "power2.out"
-  }, "-=0.18");
+  }, "-=0.05");
 
   if (tape) {
     tl.to(tape, {
-      scaleY: 0.82,
-      duration: 0.13,
+      scaleY: 0.65, // 🔥 stärker sichtbar
+      duration: 0.18,
       ease: "power2.out"
     }, "<");
   }
 
-  // Phase 3: Rebound – weiches Ausfedern
+  // 🟡 REBOUND
   tl.to(stickyNote, {
     y: 0,
     scaleY: 1,
     scaleX: 1,
-    duration: 0.55,
-    ease: "elastic.out(1.1, 0.55)"
+    rotation: base,
+    duration: 0.35,
+    ease: "back.out(2)"
   });
 
   if (tape) {
     tl.to(tape, {
       scaleY: 1,
-      duration: 0.45,
-      ease: "elastic.out(1.1, 0.55)"
+      duration: 0.3,
+      ease: "back.out(2)"
     }, "<");
   }
 }
-
-
 /* =========================
 STICKY NOTE – PEEL OUT ANIMATION
 ========================= */
@@ -666,19 +669,14 @@ function startTransitionPhase() {
   clearAllTimers();
   appState = "planned";
 
-  // Screen zuerst einblenden
   showScreen("transition");
 
-  // Nach einem RAF sicherstellen dass der Screen im DOM aktiv ist,
-  // bevor das Sticky Note hineinbewegt und animiert wird
-  requestAnimationFrame(() => {
-    placeStickyNote("transition");
-    setStickyState("planned");
+  placeStickyNote("transition");
+  setStickyState("planned");
 
-    if (nextBreakTime) nextBreakTime.textContent = activeStartTime;
+  if (nextBreakTime) nextBreakTime.textContent = activeStartTime;
 
-    showStickyNote();
-  });
+  showStickyNote(); // 🔥 sofort starten – kein requestAnimationFrame mehr
 }
 
 function handlePrepConfirm() {
