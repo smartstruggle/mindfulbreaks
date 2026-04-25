@@ -796,12 +796,15 @@ endGongPlayed = true;
 
 endingTimeout = setTimeout(() => {
 changeStickyStateWithFade("done");
+endingTimeout = setTimeout(() => {
+changeStickyStateWithFade("done");
 
 endingTimeout = setTimeout(async () => {
 await playStickyPeelOutAnimation();
 resetApp();
 }, 4500);
 }, 5000);
+}
 
 
 function resetApp() {
