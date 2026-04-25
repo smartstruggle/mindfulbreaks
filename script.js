@@ -47,6 +47,148 @@ let endGongPlayed = false;
 let endingSequenceRunning = false;
 
 
+
+/*DAYANIMATION*/
+
+let dayAtmosphereTween = null;
+
+function startDayAtmosphereMotion() {
+  if (!window.gsap) return;
+
+  const layer = document.querySelector(".day-atmosphere");
+  if (!layer) return;
+
+  // alte Animation killen
+  if (dayAtmosphereTween) {
+    dayAtmosphereTween.kill();
+    dayAtmosphereTween = null;
+  }
+
+  // falls nicht im Day → ausblenden
+  if (!document.body.classList.contains("day")) {
+    gsap.set(layer, { opacity: 0 });
+    return;
+  }
+
+  // Startzustand (sichtbarer als vorher!)
+  gsap.set(layer, {
+    opacity: 0.95,
+    x: 0,
+    y: 0,
+    scale: 1.04
+  });
+
+  // neue Animation (deutlich wahrnehmbar, aber ruhig)
+  dayAtmosphereTween = gsap.to(layer, {
+    x: 90,
+    y: -42,
+    scale: 1.11,
+    duration: 14,
+    ease: "sine.inOut",
+    repeat: -1,
+    yoyo: true
+  });
+}
+
+
+function stopDayAtmosphereMotion() {
+  const layer = document.querySelector(".day-atmosphere");
+
+  if (dayAtmosphereTween) {
+    dayAtmosphereTween.kill();
+    dayAtmosphereTween = null;
+  }
+
+  if (layer && window.gsap) {
+    gsap.to(layer, {
+      opacity: 0,
+      duration: 0.6,
+      ease: "sine.out"
+    });
+  }
+}
+
+
+
+let nightAtmosphereTween = null;
+let nightStarsTween = null;
+
+function startNightAtmosphereMotion() {
+  if (!window.gsap) return;
+
+  const atmosphere = document.querySelector(".night-atmosphere");
+  const stars = document.querySelector(".night-stars");
+
+  if (!atmosphere || !stars) return;
+
+  if (nightAtmosphereTween) nightAtmosphereTween.kill();
+  if (nightStarsTween) nightStarsTween.kill();
+
+  gsap.set(atmosphere, {
+    opacity: 0.9,
+    x: 0,
+    y: 0,
+    scale: 1.04
+  });
+
+  gsap.set(stars, {
+    opacity: 0.42,
+    x: 0,
+    y: 0
+  });
+
+  nightAtmosphereTween = gsap.to(atmosphere, {
+    x: -44,
+    y: 26,
+    scale: 1.08,
+    duration: 22,
+    ease: "sine.inOut",
+    repeat: -1,
+    yoyo: true
+  });
+
+  nightStarsTween = gsap.to(stars, {
+    opacity: 0.68,
+    duration: 3.8,
+    ease: "sine.inOut",
+    repeat: -1,
+    yoyo: true
+  });
+}
+
+function stopNightAtmosphereMotion() {
+  const atmosphere = document.querySelector(".night-atmosphere");
+  const stars = document.querySelector(".night-stars");
+
+  if (nightAtmosphereTween) {
+    nightAtmosphereTween.kill();
+    nightAtmosphereTween = null;
+  }
+
+  if (nightStarsTween) {
+    nightStarsTween.kill();
+    nightStarsTween = null;
+  }
+
+  if (atmosphere) {
+    gsap.to(atmosphere, {
+      opacity: 0,
+      duration: 0.7,
+      ease: "sine.out"
+    });
+  }
+
+  if (stars) {
+    gsap.to(stars, {
+      opacity: 0,
+      duration: 0.7,
+      ease: "sine.out"
+    });
+  }
+}
+
+
+
 /* =========================
 INIT
 ========================= */
@@ -525,144 +667,6 @@ function changeStickyStateWithFade(state) {
 }
 
 
-/*DAYANIMATION*/
-
-let dayAtmosphereTween = null;
-
-function startDayAtmosphereMotion() {
-  if (!window.gsap) return;
-
-  const layer = document.querySelector(".day-atmosphere");
-  if (!layer) return;
-
-  // alte Animation killen
-  if (dayAtmosphereTween) {
-    dayAtmosphereTween.kill();
-    dayAtmosphereTween = null;
-  }
-
-  // falls nicht im Day → ausblenden
-  if (!document.body.classList.contains("day")) {
-    gsap.set(layer, { opacity: 0 });
-    return;
-  }
-
-  // Startzustand (sichtbarer als vorher!)
-  gsap.set(layer, {
-    opacity: 0.95,
-    x: 0,
-    y: 0,
-    scale: 1.04
-  });
-
-  // neue Animation (deutlich wahrnehmbar, aber ruhig)
-  dayAtmosphereTween = gsap.to(layer, {
-    x: 90,
-    y: -42,
-    scale: 1.11,
-    duration: 14,
-    ease: "sine.inOut",
-    repeat: -1,
-    yoyo: true
-  });
-}
-
-
-function stopDayAtmosphereMotion() {
-  const layer = document.querySelector(".day-atmosphere");
-
-  if (dayAtmosphereTween) {
-    dayAtmosphereTween.kill();
-    dayAtmosphereTween = null;
-  }
-
-  if (layer && window.gsap) {
-    gsap.to(layer, {
-      opacity: 0,
-      duration: 0.6,
-      ease: "sine.out"
-    });
-  }
-}
-
-
-
-let nightAtmosphereTween = null;
-let nightStarsTween = null;
-
-function startNightAtmosphereMotion() {
-  if (!window.gsap) return;
-
-  const atmosphere = document.querySelector(".night-atmosphere");
-  const stars = document.querySelector(".night-stars");
-
-  if (!atmosphere || !stars) return;
-
-  if (nightAtmosphereTween) nightAtmosphereTween.kill();
-  if (nightStarsTween) nightStarsTween.kill();
-
-  gsap.set(atmosphere, {
-    opacity: 0.9,
-    x: 0,
-    y: 0,
-    scale: 1.04
-  });
-
-  gsap.set(stars, {
-    opacity: 0.42,
-    x: 0,
-    y: 0
-  });
-
-  nightAtmosphereTween = gsap.to(atmosphere, {
-    x: -44,
-    y: 26,
-    scale: 1.08,
-    duration: 22,
-    ease: "sine.inOut",
-    repeat: -1,
-    yoyo: true
-  });
-
-  nightStarsTween = gsap.to(stars, {
-    opacity: 0.68,
-    duration: 3.8,
-    ease: "sine.inOut",
-    repeat: -1,
-    yoyo: true
-  });
-}
-
-function stopNightAtmosphereMotion() {
-  const atmosphere = document.querySelector(".night-atmosphere");
-  const stars = document.querySelector(".night-stars");
-
-  if (nightAtmosphereTween) {
-    nightAtmosphereTween.kill();
-    nightAtmosphereTween = null;
-  }
-
-  if (nightStarsTween) {
-    nightStarsTween.kill();
-    nightStarsTween = null;
-  }
-
-  if (atmosphere) {
-    gsap.to(atmosphere, {
-      opacity: 0,
-      duration: 0.7,
-      ease: "sine.out"
-    });
-  }
-
-  if (stars) {
-    gsap.to(stars, {
-      opacity: 0,
-      duration: 0.7,
-      ease: "sine.out"
-    });
-  }
-}
 
 /* =========================
 FLIP CLOCK
