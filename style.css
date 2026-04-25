@@ -256,35 +256,83 @@ position: relative;
 
 
 /* =========================
-4. PAPER SHEET
+4. SPIRAL NOTEBOOK SHEET
 Start + Transition
 ========================= */
 
 .paper-sheet {
-position: relative;
-width: min(86vw, calc((100vh - 56px) * 210 / 297), 1020px);
-aspect-ratio: 210 / 297;
-border-radius: 8px;
+  position: relative;
+  width: min(82vw, calc((100vh - 56px) * 210 / 297), 720px);
+  aspect-ratio: 210 / 297;
+  border-radius: 18px 12px 18px 18px;
 
-background-color: rgba(248, 247, 243, 0.93);
-background-image:
-linear-gradient(rgba(0, 0, 0, 0.035) 1px, transparent 1px),
-linear-gradient(90deg, rgba(0, 0, 0, 0.035) 1px, transparent 1px);
-background-size: 26px 26px;
+  background-color: rgba(252, 250, 244, 0.97);
+  background-image:
+    linear-gradient(rgba(60, 70, 64, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(60, 70, 64, 0.045) 1px, transparent 1px);
+  background-size: 24px 24px;
 
-box-shadow:
-0 34px 64px rgba(0, 0, 0, 0.14),
-0 0 34px rgba(255,255,255,0.18),
-0 0 96px rgba(214,230,220,0.22),
-inset 0 0 50px rgba(0, 0, 0, 0.025);
+  box-shadow:
+    0 42px 92px rgba(54, 78, 56, 0.20),
+    0 16px 34px rgba(54, 78, 56, 0.12),
+    8px 8px 0 rgba(230, 226, 214, 0.88),
+    12px 12px 0 rgba(205, 203, 192, 0.70),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
+  z-index: 2;
+}
+
+/* Spiral-Löcher / Schatten links am Papier */
+.paper-sheet::before {
+  content: "";
+  position: absolute;
+  left: -8px;
+  top: 34px;
+  width: 18px;
+  height: calc(100% - 68px);
+  border-radius: 999px;
+
+  background:
+    repeating-linear-gradient(
+      180deg,
+      rgba(42, 42, 38, 0.46) 0 8px,
+      transparent 8px 44px
+    );
+
+  filter: blur(0.2px);
+  opacity: 0.7;
+  z-index: 3;
+}
+
+/* Spiralringe */
+.paper-sheet::after {
+  content: "";
+  position: absolute;
+  left: -34px;
+  top: 31px;
+  width: 42px;
+  height: calc(100% - 62px);
+
+  background:
+    repeating-linear-gradient(
+      180deg,
+      transparent 0 13px,
+      rgba(92, 88, 78, 0.92) 13px 17px,
+      rgba(245, 241, 226, 0.96) 17px 21px,
+      rgba(75, 72, 65, 0.78) 21px 25px,
+      transparent 25px 44px
+    );
+
+  border-radius: 999px;
+  filter: drop-shadow(0 4px 4px rgba(42, 58, 42, 0.20));
+  z-index: 4;
 }
 
 .paper-sheet--start {
-display: flex;
-align-items: stretch;
-justify-content: center;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
 }
-
 
 /* =========================
 5. START SCREEN
