@@ -268,11 +268,6 @@ return stickyNote.querySelector(
 );
 }
 
-function stopStickyIdleMotion() {
-if (!stickyNote || !window.gsap) return;
-gsap.killTweensOf(stickyNote);
-}
-
 function startStickyIdleMotion() {
 if (!stickyNote || !window.gsap) return;
 
@@ -281,13 +276,18 @@ const baseRotation = getStickyBaseRotation();
 gsap.killTweensOf(stickyNote);
 
 gsap.to(stickyNote, {
-y: -3,
-rotation: baseRotation + 0.45,
-duration: 4.8,
+y: -5,
+rotation: baseRotation + 0.7,
+duration: 3.8,
 ease: "sine.inOut",
 repeat: -1,
 yoyo: true,
 });
+}
+
+function stopStickyIdleMotion() {
+if (!stickyNote || !window.gsap) return;
+gsap.killTweensOf(stickyNote);
 }
 
 function playStickyPlaceAnimation() {
@@ -306,17 +306,17 @@ startStickyIdleMotion();
 });
 
 gsap.set(stickyNote, {
-x: "88vw",
-y: -12,
+x: "58vw",
+y: -6,
 opacity: 0,
-scale: 0.98,
-rotation: baseRotation + 2.5,
-transformOrigin: "50% 38%",
+scale: 1,
+rotation: baseRotation + 1.2,
+transformOrigin: "50% 18%",
 });
 
 if (tape) {
 gsap.set(tape, {
-transformOrigin: "50% 20%",
+transformOrigin: "50% 10%",
 scaleY: 1,
 });
 }
@@ -325,28 +325,27 @@ tl.to(stickyNote, {
 x: 0,
 y: 0,
 opacity: 1,
-scale: 1,
 rotation: baseRotation,
-duration: 0.9,
+duration: 0.48,
 ease: "power3.out",
 });
 
-/* kleiner Andock-/Papp-Moment */
 tl.to(stickyNote, {
-y: 4,
-scale: 0.992,
-rotation: baseRotation - 0.35,
-duration: 0.12,
-ease: "power1.out",
+y: 7,
+scaleY: 0.985,
+scaleX: 1.006,
+rotation: baseRotation - 0.25,
+duration: 0.09,
+ease: "power2.out",
 });
 
 if (tape) {
 tl.to(
 tape,
 {
-scaleY: 0.985,
-duration: 0.12,
-ease: "power1.out",
+scaleY: 0.94,
+duration: 0.09,
+ease: "power2.out",
 },
 "<"
 );
@@ -354,10 +353,11 @@ ease: "power1.out",
 
 tl.to(stickyNote, {
 y: 0,
-scale: 1,
+scaleY: 1,
+scaleX: 1,
 rotation: baseRotation,
-duration: 0.28,
-ease: "back.out(1.5)",
+duration: 0.24,
+ease: "back.out(2.1)",
 });
 
 if (tape) {
@@ -365,8 +365,8 @@ tl.to(
 tape,
 {
 scaleY: 1,
-duration: 0.28,
-ease: "back.out(1.4)",
+duration: 0.22,
+ease: "back.out(2)",
 },
 "<"
 );
@@ -395,29 +395,33 @@ resolve();
 
 if (tape) {
 tl.to(tape, {
-scaleY: 0.96,
-duration: 0.16,
+scaleY: 0.9,
+duration: 0.22,
 ease: "power1.out",
-transformOrigin: "50% 20%",
+transformOrigin: "50% 10%",
 });
 }
 
-tl.to(stickyNote, {
-y: -10,
-rotation: baseRotation + 3,
+tl.to(
+stickyNote,
+{
+y: -12,
+rotation: baseRotation + 2.8,
 scale: 1.01,
-duration: 0.18,
+duration: 0.28,
 ease: "power2.out",
-});
+},
+"<"
+);
 
 tl.to(stickyNote, {
-x: "90vw",
-y: -42,
-rotation: baseRotation + 9,
+x: "82vw",
+y: -34,
+rotation: baseRotation + 8,
 opacity: 0,
-scale: 0.98,
-duration: 0.72,
-ease: "power3.in",
+scale: 0.985,
+duration: 1.35,
+ease: "power2.inOut",
 });
 });
 }
@@ -450,7 +454,7 @@ y: 0,
 opacity: 1,
 scale: 1,
 rotation: baseRotation,
-transformOrigin: "50% 38%",
+transformOrigin: "50% 18%",
 });
 
 startStickyIdleMotion();
@@ -470,6 +474,7 @@ stickyStates.forEach((stateEl) => {
 const isTarget = stateEl.dataset.stickyState === state;
 stateEl.classList.toggle("is-active", isTarget);
 stateEl.style.opacity = isTarget ? "1" : "";
+stateEl.style.transform = "";
 });
 }
 
@@ -491,7 +496,7 @@ return;
 gsap.to(currentState, {
 opacity: 0,
 y: -3,
-duration: 0.16,
+duration: 0.12,
 ease: "power1.out",
 onComplete: () => {
 setStickyState(state);
@@ -501,17 +506,18 @@ if (!newState) return;
 
 gsap.fromTo(
 newState,
-{ opacity: 0, y: 4 },
+{ opacity: 0, y: 3 },
 {
 opacity: 1,
 y: 0,
-duration: 0.22,
+duration: 0.18,
 ease: "power1.out",
 }
 );
 },
 });
 }
+
 
 /* =========================
 FLIP CLOCK
