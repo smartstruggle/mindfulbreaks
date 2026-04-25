@@ -198,8 +198,6 @@ function getStickyBaseRotation() {
 STICKY NOTE – IDLE MOTION
 ========================= */
 
-let idleTimeline = null;
-
 function startStickyIdleMotion() {
   if (!stickyNote || !window.gsap) return;
 
