@@ -180,26 +180,26 @@ body.day .screen-inner {
   position: fixed;
   inset: -18%;
   pointer-events: none;
-  z-index: -1;
+  z-index: 0;
 
   background:
     radial-gradient(ellipse at 28% 24%,
-      rgba(255, 252, 225, 0.34) 0%,
-      rgba(255, 252, 225, 0.12) 34%,
+      rgba(255, 252, 225, 0.55) 0%,
+      rgba(255, 252, 225, 0.22) 34%,
       transparent 66%
     ),
     radial-gradient(ellipse at 64% 76%,
-      rgba(255, 255, 255, 0.22) 0%,
-      rgba(255, 255, 255, 0.10) 28%,
+      rgba(255, 255, 255, 0.36) 0%,
+      rgba(255, 255, 255, 0.16) 28%,
       transparent 62%
     ),
     radial-gradient(ellipse at 42% 54%,
-      rgba(172, 204, 168, 0.16) 0%,
-      rgba(172, 204, 168, 0.06) 36%,
+      rgba(172, 204, 168, 0.24) 0%,
+      rgba(172, 204, 168, 0.10) 36%,
       transparent 70%
     );
 
-  filter: blur(26px);
+  filter: blur(22px);
   opacity: 0;
   transform: translate3d(0, 0, 0) scale(1.02);
 }
