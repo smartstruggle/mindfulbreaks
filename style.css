@@ -71,27 +71,26 @@ body.day {
   color: #26332c;
   background:
     radial-gradient(circle at 22% 20%,
-      rgba(255, 244, 210, 0.85) 0%,
-      rgba(255, 244, 210, 0.28) 23%,
+      rgba(255, 244, 210, 0.9) 0%,
+      rgba(255, 244, 210, 0.3) 23%,
       transparent 46%
     ),
     radial-gradient(circle at 82% 24%,
-      rgba(188, 221, 190, 0.42) 0%,
-      rgba(188, 221, 190, 0.18) 28%,
+      rgba(188, 221, 190, 0.38) 0%,
+      rgba(188, 221, 190, 0.14) 28%,
       transparent 55%
     ),
-    radial-gradient(circle at 48% 86%,
-      rgba(137, 173, 137, 0.22) 0%,
-      rgba(137, 173, 137, 0.08) 36%,
+    radial-gradient(circle at 48% 90%,
+      rgba(108, 142, 105, 0.28) 0%,
+      rgba(108, 142, 105, 0.12) 34%,
       transparent 68%
     ),
     linear-gradient(145deg,
-      #eef3ea 0%,
-      #e5eee3 34%,
-      #dbe8dc 68%,
-      #ccdcca 100%
+      #f3f6ed 0%,
+      #e7efe2 32%,
+      #d7e5d5 68%,
+      #bfd2bf 100%
     );
-  overflow: hidden;
 }
 
 body.day::before {
@@ -147,14 +146,14 @@ body.day::after {
       rgba(65, 92, 70, 0.08) 100%
     ),
 
-    linear-gradient(
-      180deg,
-      transparent 0%,
-      transparent 55%,
-      rgba(120, 150, 110, 0.10) 68%,
-      rgba(75, 105, 80, 0.18) 85%,
-      rgba(60, 90, 70, 0.22) 100%
-    ),
+linear-gradient(
+  180deg,
+  transparent 0%,
+  transparent 52%,
+  rgba(120, 150, 110, 0.12) 66%,
+  rgba(75, 105, 80, 0.22) 86%,
+  rgba(52, 82, 64, 0.28) 100%
+),
 
     radial-gradient(ellipse at 50% 82%,
       rgba(255, 255, 255, 0.34) 0%,
