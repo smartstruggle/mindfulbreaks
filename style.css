@@ -320,7 +320,7 @@ place-items: center;
 position: relative;
 z-index: 20;
 
-width: min(82vw, 560px);
+width: min(82vw, 540px);
 aspect-ratio: 2635 / 2515;
 
 transform: rotate(-7deg);
@@ -362,7 +362,7 @@ background-size: 14px 14px, 100% 100%;
 
 .sticky-note__content {
 position: absolute;
-inset: 22% 15% 16%;
+inset: 25% 15% 13%;
 z-index: 2;
 
 display: flex;
