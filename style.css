@@ -210,16 +210,147 @@ body.day .screen-inner {
 }
 
 
+/* =========================
+   NIGHTSCREEN
+========================= */
+
 body.night {
-background:
-radial-gradient(circle at 50% 18%, rgba(255,255,255,0.12), transparent 38%),
-radial-gradient(circle at 50% 45%, rgba(90,110,118,0.12), transparent 50%),
-radial-gradient(circle at 50% 90%, rgba(12,18,24,0.22), transparent 62%),
-linear-gradient(180deg, #2c3738 0%, #20282b 30%, #171d21 60%, #111519 100%);
+  min-height: 100vh;
+  color: #eef2f2;
+  overflow: hidden;
+
+  background:
+    radial-gradient(circle at 22% 18%,
+      rgba(154, 174, 190, 0.20) 0%,
+      rgba(154, 174, 190, 0.08) 24%,
+      transparent 48%
+    ),
+    radial-gradient(circle at 78% 72%,
+      rgba(72, 96, 112, 0.34) 0%,
+      rgba(72, 96, 112, 0.12) 34%,
+      transparent 70%
+    ),
+    linear-gradient(145deg,
+      #101923 0%,
+      #172532 34%,
+      #203442 68%,
+      #142029 100%
+    );
+}
+
+body.night::before {
+  content: "";
+  position: fixed;
+  inset: -12%;
+  pointer-events: none;
+  z-index: -3;
+
+  background:
+    radial-gradient(ellipse at 50% 16%,
+      rgba(216, 225, 230, 0.16) 0%,
+      rgba(216, 225, 230, 0.06) 32%,
+      transparent 62%
+    ),
+    radial-gradient(ellipse at 18% 62%,
+      rgba(56, 84, 96, 0.34) 0%,
+      rgba(56, 84, 96, 0.12) 34%,
+      transparent 66%
+    ),
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      transparent 45%,
+      rgba(180, 205, 210, 0.08) 51%,
+      rgba(10, 18, 24, 0.18) 72%,
+      rgba(5, 10, 14, 0.28) 100%
+    );
+
+  filter: blur(24px);
 }
 
 body.night::after {
-background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.04), transparent 65%);
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -2;
+
+  background:
+    radial-gradient(ellipse at center,
+      transparent 0%,
+      transparent 42%,
+      rgba(0, 0, 0, 0.28) 100%
+    ),
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      transparent 54%,
+      rgba(6, 13, 18, 0.22) 78%,
+      rgba(2, 6, 9, 0.42) 100%
+    );
+
+  opacity: 0.9;
+}
+
+.night-atmosphere {
+  position: fixed;
+  inset: -22%;
+  pointer-events: none;
+  z-index: -1;
+
+  background:
+    radial-gradient(ellipse at 28% 22%,
+      rgba(180, 205, 220, 0.16) 0%,
+      rgba(180, 205, 220, 0.06) 32%,
+      transparent 68%
+    ),
+    radial-gradient(ellipse at 72% 74%,
+      rgba(98, 132, 150, 0.18) 0%,
+      rgba(98, 132, 150, 0.07) 34%,
+      transparent 70%
+    );
+
+  filter: blur(24px);
+  opacity: 0;
+  transform: translate3d(0, 0, 0) scale(1.04);
+}
+
+.night-stars {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,0.75) 0 1px, transparent 1.7px),
+    radial-gradient(circle, rgba(210,230,235,0.45) 0 1px, transparent 1.5px),
+    radial-gradient(circle, rgba(255,245,210,0.35) 0 1px, transparent 1.4px);
+
+  background-size:
+    180px 180px,
+    260px 260px,
+    340px 340px;
+
+  background-position:
+    18px 22px,
+    90px 64px,
+    150px 120px;
+
+  mix-blend-mode: screen;
+}
+
+body.night .paper-sheet {
+  position: relative;
+  z-index: 2;
+
+  background-color: rgba(247, 246, 239, 0.94);
+  box-shadow:
+    0 48px 120px rgba(0, 0, 0, 0.34),
+    0 18px 44px rgba(0, 0, 0, 0.22),
+    8px 8px 0 rgba(205, 208, 198, 0.76),
+    12px 12px 0 rgba(150, 158, 150, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.86);
 }
 
 
