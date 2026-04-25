@@ -60,15 +60,16 @@ body.morning::after {
 background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08), transparent 65%);
 }
 
-/*TAGESSCREEN*/
 
- /* =========================
+/* =========================
    TAGESSCREEN
 ========================= */
 
 body.day {
   min-height: 100vh;
   color: #26332c;
+  overflow: hidden;
+
   background:
     radial-gradient(circle at 22% 20%,
       rgba(255, 244, 210, 0.9) 0%,
@@ -93,12 +94,14 @@ body.day {
     );
 }
 
+/* ===== Fern-Layer (Himmel / Landschaft) ===== */
+
 body.day::before {
   content: "";
   position: fixed;
   inset: -12%;
   pointer-events: none;
-  z-index: -2;
+  z-index: -3;
 
   background:
     radial-gradient(ellipse at 50% 18%,
@@ -106,19 +109,16 @@ body.day::before {
       rgba(255, 250, 222, 0.22) 34%,
       transparent 62%
     ),
-
     radial-gradient(ellipse at 12% 58%,
       rgba(117, 151, 116, 0.22) 0%,
       rgba(117, 151, 116, 0.09) 32%,
       transparent 62%
     ),
-
     radial-gradient(ellipse at 88% 64%,
       rgba(144, 173, 126, 0.20) 0%,
       rgba(144, 173, 126, 0.08) 36%,
-      transparent 68%
+      transparent 68% 
     ),
-
     linear-gradient(
       180deg,
       transparent 0%,
@@ -132,12 +132,14 @@ body.day::before {
   filter: blur(22px);
 }
 
+/* ===== Vordergrund-Tiefe ===== */
+
 body.day::after {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: -1;
+  z-index: -2;
 
   background:
     radial-gradient(ellipse at center,
@@ -145,16 +147,14 @@ body.day::after {
       transparent 48%,
       rgba(65, 92, 70, 0.08) 100%
     ),
-
-linear-gradient(
-  180deg,
-  transparent 0%,
-  transparent 52%,
-  rgba(120, 150, 110, 0.12) 66%,
-  rgba(75, 105, 80, 0.22) 86%,
-  rgba(52, 82, 64, 0.28) 100%
-),
-
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      transparent 52%,
+      rgba(120, 150, 110, 0.12) 66%,
+      rgba(75, 105, 80, 0.22) 86%,
+      rgba(52, 82, 64, 0.28) 100%
+    ),
     radial-gradient(ellipse at 50% 82%,
       rgba(255, 255, 255, 0.34) 0%,
       rgba(255, 255, 255, 0.14) 28%,
@@ -162,24 +162,15 @@ linear-gradient(
     );
 
   opacity: 0.9;
-  mix-blend-mode: normal;
 }
 
-body.day .screen-inner {
-  background: rgba(255, 255, 248, 0.42);
-  box-shadow:
-    0 34px 90px rgba(57, 83, 60, 0.16),
-    0 10px 30px rgba(57, 83, 60, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(16px);
-}
-
+/* ===== Atmosphere (animierter Layer) ===== */
 
 .day-atmosphere {
   position: fixed;
   inset: -22%;
   pointer-events: none;
-  z-index: 0;
+  z-index: -1;
 
   background:
     radial-gradient(ellipse at 22% 18%,
@@ -202,6 +193,22 @@ body.day .screen-inner {
   opacity: 0;
   transform: translate3d(0, 0, 0) scale(1.04);
 }
+
+/* ===== Dein UI-Container ===== */
+
+body.day .screen-inner {
+  position: relative;
+  z-index: 2;
+
+  background: rgba(255, 255, 248, 0.42);
+  box-shadow:
+    0 34px 90px rgba(57, 83, 60, 0.16),
+    0 10px 30px rgba(57, 83, 60, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+
+  backdrop-filter: blur(16px);
+}
+
 
 body.night {
 background:
