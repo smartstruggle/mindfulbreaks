@@ -85,30 +85,24 @@ function init() {
 /* =========================
 THEME
 ========================= */
-
 function applyTimeTheme() {
   const hour = new Date().getHours();
-document.body.classList.remove("morning", "day", "night");
 
-if (hour >= 6 && hour < 11) {
-  document.body.classList.add("morning");
+  document.body.classList.remove("morning", "day", "night");
 
-  // Day-Animation sauber stoppen
-  stopDayAtmosphereMotion();
+  if (hour >= 6 && hour < 11) {
+    document.body.classList.add("morning");
+    stopDayAtmosphereMotion();
 
-} else if (hour >= 11 && hour < 20) {
-  document.body.classList.add("day");
+  } else if (hour >= 11 && hour < 20) {
+    document.body.classList.add("day");
+    startDayAtmosphereMotion();
 
-  startDayAtmosphereMotion();
-
-} else {
-  document.body.classList.add("night");
-
-  // Day-Animation sauber stoppen
-  stopDayAtmosphereMotion();
+  } else {
+    document.body.classList.add("night");
+    stopDayAtmosphereMotion();
+  }
 }
-
-
 /* =========================
 TIME SELECTS
 ========================= */
