@@ -103,6 +103,29 @@ function applyTimeTheme() {
     stopDayAtmosphereMotion();
   }
 }
+
+
+function applyTimeTheme() {
+  const hour = new Date().getHours();
+
+  document.body.classList.remove("morning", "day", "night");
+
+  if (hour >= 6 && hour < 11) {
+    document.body.classList.add("morning");
+    stopDayAtmosphereMotion();
+    stopNightAtmosphereMotion();
+
+  } else if (hour >= 11 && hour < 20) {
+    document.body.classList.add("day");
+    startDayAtmosphereMotion();
+    stopNightAtmosphereMotion();
+
+  } else {
+    document.body.classList.add("night");
+    stopDayAtmosphereMotion();
+    startNightAtmosphereMotion();
+  }
+}
 /* =========================
 TIME SELECTS
 ========================= */
@@ -562,6 +585,84 @@ function startDayAtmosphereMotion() {
     repeat: -1,
     yoyo: true
   });
+}
+
+
+let nightAtmosphereTween = null;
+let nightStarsTween = null;
+
+function startNightAtmosphereMotion() {
+  if (!window.gsap) return;
+
+  const atmosphere = document.querySelector(".night-atmosphere");
+  const stars = document.querySelector(".night-stars");
+
+  if (!atmosphere || !stars) return;
+
+  if (nightAtmosphereTween) nightAtmosphereTween.kill();
+  if (nightStarsTween) nightStarsTween.kill();
+
+  gsap.set(atmosphere, {
+    opacity: 0.9,
+    x: 0,
+    y: 0,
+    scale: 1.04
+  });
+
+  gsap.set(stars, {
+    opacity: 0.42,
+    x: 0,
+    y: 0
+  });
+
+  nightAtmosphereTween = gsap.to(atmosphere, {
+    x: -44,
+    y: 26,
+    scale: 1.08,
+    duration: 22,
+    ease: "sine.inOut",
+    repeat: -1,
+    yoyo: true
+  });
+
+  nightStarsTween = gsap.to(stars, {
+    opacity: 0.68,
+    duration: 3.8,
+    ease: "sine.inOut",
+    repeat: -1,
+    yoyo: true
+  });
+}
+
+function stopNightAtmosphereMotion() {
+  const atmosphere = document.querySelector(".night-atmosphere");
+  const stars = document.querySelector(".night-stars");
+
+  if (nightAtmosphereTween) {
+    nightAtmosphereTween.kill();
+    nightAtmosphereTween = null;
+  }
+
+  if (nightStarsTween) {
+    nightStarsTween.kill();
+    nightStarsTween = null;
+  }
+
+  if (atmosphere) {
+    gsap.to(atmosphere, {
+      opacity: 0,
+      duration: 0.7,
+      ease: "sine.out"
+    });
+  }
+
+  if (stars) {
+    gsap.to(stars, {
+      opacity: 0,
+      duration: 0.7,
+      ease: "sine.out"
+    });
+  }
 }
 
 /* =========================
