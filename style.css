@@ -62,13 +62,17 @@ background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08), transpare
 
 /*TAGESSCREEN*/
 
+ /* =========================
+   TAGESSCREEN
+========================= */
+
 body.day {
   min-height: 100vh;
   color: #26332c;
   background:
-    radial-gradient(circle at 18% 18%,
-      rgba(255, 244, 210, 0.78) 0%,
-      rgba(255, 244, 210, 0.26) 23%,
+    radial-gradient(circle at 22% 20%,
+      rgba(255, 244, 210, 0.85) 0%,
+      rgba(255, 244, 210, 0.28) 23%,
       transparent 46%
     ),
     radial-gradient(circle at 82% 24%,
@@ -98,35 +102,32 @@ body.day::before {
   z-index: -2;
 
   background:
-    /* ferner Licht-Himmel */
     radial-gradient(ellipse at 50% 18%,
       rgba(255, 250, 222, 0.72) 0%,
       rgba(255, 250, 222, 0.22) 34%,
       transparent 62%
     ),
 
-    /* linke Ferne / Waldkante */
     radial-gradient(ellipse at 12% 58%,
       rgba(117, 151, 116, 0.22) 0%,
       rgba(117, 151, 116, 0.09) 32%,
       transparent 62%
     ),
 
-    /* rechte Ferne / Feld */
     radial-gradient(ellipse at 88% 64%,
       rgba(144, 173, 126, 0.20) 0%,
       rgba(144, 173, 126, 0.08) 36%,
       transparent 68%
     ),
 
-    /* ganz weicher Horizont */
     linear-gradient(
       180deg,
       transparent 0%,
-      transparent 44%,
-      rgba(118, 149, 116, 0.10) 49%,
-      rgba(255, 255, 255, 0.14) 53%,
-      transparent 62%
+      transparent 46%,
+      rgba(95, 125, 98, 0.18) 50%,
+      rgba(255, 255, 255, 0.22) 52%,
+      rgba(95, 125, 98, 0.10) 56%,
+      transparent 64%
     );
 
   filter: blur(22px);
@@ -140,23 +141,21 @@ body.day::after {
   z-index: -1;
 
   background:
-    /* leichte Vignette an den Rändern */
     radial-gradient(ellipse at center,
       transparent 0%,
       transparent 48%,
       rgba(65, 92, 70, 0.08) 100%
     ),
 
-    /* Bodentiefe unten */
     linear-gradient(
       180deg,
       transparent 0%,
-      transparent 58%,
-      rgba(137, 166, 128, 0.08) 72%,
-      rgba(80, 112, 83, 0.14) 100%
+      transparent 55%,
+      rgba(120, 150, 110, 0.10) 68%,
+      rgba(75, 105, 80, 0.18) 85%,
+      rgba(60, 90, 70, 0.22) 100%
     ),
 
-    /* Lichtnebel vorne */
     radial-gradient(ellipse at 50% 82%,
       rgba(255, 255, 255, 0.34) 0%,
       rgba(255, 255, 255, 0.14) 28%,
@@ -175,6 +174,36 @@ body.day .screen-inner {
     inset 0 1px 0 rgba(255, 255, 255, 0.65);
   backdrop-filter: blur(16px);
 }
+
+
+.day-atmosphere {
+  position: fixed;
+  inset: -18%;
+  pointer-events: none;
+  z-index: -1;
+
+  background:
+    radial-gradient(ellipse at 28% 24%,
+      rgba(255, 252, 225, 0.34) 0%,
+      rgba(255, 252, 225, 0.12) 34%,
+      transparent 66%
+    ),
+    radial-gradient(ellipse at 64% 76%,
+      rgba(255, 255, 255, 0.22) 0%,
+      rgba(255, 255, 255, 0.10) 28%,
+      transparent 62%
+    ),
+    radial-gradient(ellipse at 42% 54%,
+      rgba(172, 204, 168, 0.16) 0%,
+      rgba(172, 204, 168, 0.06) 36%,
+      transparent 70%
+    );
+
+  filter: blur(26px);
+  opacity: 0;
+  transform: translate3d(0, 0, 0) scale(1.02);
+}
+
 
 body.night {
 background:
