@@ -39,6 +39,7 @@ let activeEndTime = null;
 let waitingInterval = null;
 let breakInterval = null;
 let endingTimeout = null;
+let idleTimeline = null;
 
 let soundUnlocked = false;
 let startGongPlayed = false;
