@@ -313,14 +313,14 @@ place-items: center;
 
 
 /* =========================
-7. STICKY NOTE SYSTEM
+7. STICKY NOTE SYSTEM (FINAL POLISH)
 ========================= */
 
 .sticky-note {
 position: relative;
 z-index: 20;
 
-width: min(82vw, 540px);
+width: min(82vw, 560px);
 aspect-ratio: 2635 / 2515;
 
 transform: rotate(-7deg);
@@ -343,7 +343,7 @@ height: 100%;
 display: block;
 }
 
-/* leichte zusätzliche Papiertextur über dem SVG */
+/* leichte Papiertextur */
 .sticky-note::after {
 content: "";
 position: absolute;
@@ -351,13 +351,13 @@ inset: 10% 8% 8%;
 pointer-events: none;
 z-index: 1;
 
-opacity: 0.13;
+opacity: 0.12;
 mix-blend-mode: multiply;
 
 background-image:
-radial-gradient(circle, rgba(70, 45, 10, 0.16) 0 0.7px, transparent 0.8px),
-linear-gradient(135deg, rgba(255,255,255,0.12), rgba(0,0,0,0.04));
-background-size: 13px 13px, 100% 100%;
+radial-gradient(circle, rgba(70, 45, 10, 0.14) 0 0.7px, transparent 0.8px),
+linear-gradient(135deg, rgba(255,255,255,0.10), rgba(0,0,0,0.04));
+background-size: 14px 14px, 100% 100%;
 }
 
 .sticky-note__content {
@@ -386,70 +386,96 @@ flex-direction: column;
 align-items: center;
 }
 
-/* Allgemeine Sticky-Schrift */
+/* =========================
+TYPO SYSTEM
+========================= */
+
 .sticky-note__title {
 margin: 0;
-font-size: clamp(22px, 3vw, 32px);
+font-size: clamp(24px, 3vw, 34px);
 font-weight: 600;
-line-height: 1.1;
+line-height: 1.18;
 letter-spacing: 0.01em;
 }
 
-/* STATE 1: Pause eingeplant */
+/* =========================
+STATE 1: GEPLANT
+========================= */
+
 .sticky-note__state--planned .sticky-note__title {
-font-size: clamp(22px, 2.8vw, 31px);
 max-width: 88%;
+margin-bottom: 14px;
 }
 
 .sticky-note__checklist {
 list-style: none;
-margin: 16px 0 16px;
+margin: 0 0 20px;
 padding: 0;
 
 font-size: clamp(20px, 2.6vw, 28px);
-line-height: 1.18;
+line-height: 1.25;
 }
 
-.sticky-note__button {
-width: auto;
-margin-top: 2px;
-padding: 10px 24px;
+.sticky-note__checklist li {
+margin-bottom: 6px;
+}
 
-border: none;
+/* 👉 BUTTON (eingelassen, größer, ruhiger) */
+.sticky-note__button {
+margin-top: 6px;
+
+padding: 14px 32px;
 border-radius: 999px;
 
-background: rgba(60, 52, 40, 0.88);
-color: #fff7df;
+border: none;
 
 font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-font-size: 14px;
+font-size: 16px;
 font-weight: 600;
 
-box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+color: #fff7df;
+
+background: rgba(58, 50, 38, 0.92);
+
+/* INSET LOOK */
+box-shadow:
+inset 0 2px 4px rgba(0,0,0,0.25),
+inset 0 -2px 4px rgba(255,255,255,0.08);
+
+transform: translateY(0);
 }
 
-/* STATE 2: nächste Pause */
+/* =========================
+STATE 2: WAITING
+========================= */
+
 .sticky-note__state--waiting {
-padding-top: 8px;
+padding-top: 16px;
 }
 
 .sticky-note__state--waiting .sticky-note__title {
 max-width: 86%;
-font-size: clamp(22px, 2.9vw, 32px);
+font-size: clamp(24px, 3vw, 34px);
 }
 
-/* STATE 3: schöne Pause */
+/* =========================
+STATE 3: BREAK
+========================= */
+
 .sticky-note__state--break {
-padding-top: 4px;
+padding-top: 6px;
 }
 
 .sticky-note__state--break .sticky-note__title {
-font-size: clamp(28px, 3.4vw, 40px);
+font-size: clamp(28px, 3.6vw, 40px);
 }
 
-/* STATE 4: Ende */
+/* =========================
+STATE 4: DONE
+========================= */
+
 .sticky-note__state--done {
-padding-top: 4px;
+padding-top: 6px;
 }
 
 .sticky-note__state--done .sticky-note__title {
@@ -457,7 +483,11 @@ max-width: 90%;
 font-size: clamp(22px, 2.7vw, 30px);
 }
 
-/* Transition: Papier + Sticky übereinander */
+/* =========================
+LAYOUT
+========================= */
+
+/* Transition: Sticky + Papier */
 .screen--transition .screen__inner {
 display: grid;
 place-items: center;
@@ -468,7 +498,7 @@ place-items: center;
 grid-area: 1 / 1;
 }
 
-/* Break: Sticky unter der Uhr */
+/* Break Layout */
 .break-layout {
 width: 100%;
 min-height: calc(100vh - 84px);
@@ -478,13 +508,15 @@ flex-direction: column;
 align-items: center;
 justify-content: flex-start;
 
-gap: 36px;
+gap: 42px;
 }
 
+/* Sticky im Break */
 .screen--break .sticky-note {
-width: min(58vw, 380px);
+width: min(58vw, 400px);
 transform: rotate(-5deg);
 }
+
 
 /* =========================
 8. BREAK SCREEN LAYOUT
