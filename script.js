@@ -221,301 +221,239 @@ breakScreen.classList.add("is-active");
 }
 
 
-/* =========================
-STICKY PLACEMENT
-========================= */
+/* =============================================================
+   STICKY NOTE SYSTEM (GSAP OPTIMIZED)
+   ============================================================= */
 
-function placeStickyNote(target) {
-if (!stickyNote) return;
-
-if (target === "transition") {
-const transitionInner = transitionScreen.querySelector(".screen__inner");
-
-if (transitionInner && stickyNote.parentElement !== transitionInner) {
-transitionInner.appendChild(stickyNote);
-}
-}
-
-if (target === "break") {
-const breakLayout = breakScreen.querySelector(".break-layout");
-
-if (breakLayout && stickyNote.parentElement !== breakLayout) {
-breakLayout.appendChild(stickyNote);
-}
-}
-}
-
-
-/* =========================
-STICKY NOTE MOTION
-========================= */
+let stickyNote = document.querySelector(".sticky-note"); // Stelle sicher, dass die Variable definiert ist
 
 function getStickyBaseRotation() {
-if (!stickyNote) return -7;
-
-if (stickyNote.closest(".screen--break")) {
-return -5;
-}
-
-return -7;
+    if (!stickyNote) return -7;
+    return stickyNote.closest(".screen--break") ? -5 : -7;
 }
 
 function getStickyTape() {
-if (!stickyNote) return null;
-
-return stickyNote.querySelector(
-"#kelbestreifen, #klebestreifen, #Klebestreifen"
-);
+    if (!stickyNote) return null;
+    return stickyNote.querySelector("#kelbestreifen, #klebestreifen, #Klebestreifen");
 }
 
+/* --- MOTION LOGIC --- */
+
 function startStickyIdleMotion() {
-if (!stickyNote || !window.gsap) return;
+    if (!stickyNote || !window.gsap) return;
 
-const baseRotation = getStickyBaseRotation();
+    const baseRotation = getStickyBaseRotation();
+    gsap.killTweensOf(stickyNote);
 
-gsap.killTweensOf(stickyNote);
+    // Sanfte Brise: Kombiniert minimale vertikale Bewegung mit Rotation
+    const tl = gsap.timeline({
+        repeat: -1,
+        yoyo: true,
+        defaults: { ease: "sine.inOut" }
+    });
 
-gsap.to(stickyNote, {
-y: -5,
-rotation: baseRotation + 0.7,
-duration: 3.8,
-ease: "sine.inOut",
-repeat: -1,
-yoyo: true,
-});
+    tl.to(stickyNote, {
+        y: "+=5",
+        rotation: baseRotation + 0.8,
+        duration: 4,
+    });
+
+    gsap.to(stickyNote, {
+        x: "+=2",
+        duration: 5,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut"
+    });
 }
 
 function stopStickyIdleMotion() {
-if (!stickyNote || !window.gsap) return;
-gsap.killTweensOf(stickyNote);
+    if (!stickyNote || !window.gsap) return;
+    gsap.killTweensOf(stickyNote);
 }
 
 function playStickyPlaceAnimation() {
-if (!stickyNote || !window.gsap) return;
+    if (!stickyNote || !window.gsap) return;
 
-const baseRotation = getStickyBaseRotation();
-const tape = getStickyTape();
+    const baseRotation = getStickyBaseRotation();
+    const tape = getStickyTape();
 
-gsap.killTweensOf(stickyNote);
-if (tape) gsap.killTweensOf(tape);
+    gsap.killTweensOf(stickyNote);
+    if (tape) gsap.killTweensOf(tape);
 
-const tl = gsap.timeline({
-onComplete: () => {
-startStickyIdleMotion();
-},
-});
+    const tl = gsap.timeline({
+        onComplete: () => startStickyIdleMotion()
+    });
 
-gsap.set(stickyNote, {
-x: "58vw",
-y: -6,
-opacity: 0,
-scale: 1,
-rotation: baseRotation + 1.2,
-transformOrigin: "50% 18%",
-});
+    // 1. Initiales Setup (Außerhalb des Sichtfelds)
+    gsap.set(stickyNote, {
+        x: "100vw", // Startet komplett rechts
+        y: -10,
+        opacity: 0,
+        scale: 1.05,
+        rotation: baseRotation + 12,
+        transformOrigin: "50% 10%" // Wichtig für den Drück-Effekt oben
+    });
 
-if (tape) {
-gsap.set(tape, {
-transformOrigin: "50% 10%",
-scaleY: 1,
-});
-}
+    if (tape) {
+        gsap.set(tape, { transformOrigin: "50% 0%" });
+    }
 
-tl.to(stickyNote, {
-x: 0,
-y: 0,
-opacity: 1,
-rotation: baseRotation,
-duration: 0.48,
-ease: "power3.out",
-});
+    // 2. Der Gleit-Vorgang mit Overshoot
+    tl.to(stickyNote, {
+        x: 0,
+        opacity: 1,
+        rotation: baseRotation,
+        scale: 1,
+        duration: 0.75,
+        ease: "back.out(1.1)" // Erzeugt das leichte Übersteuern der Position
+    });
 
-tl.to(stickyNote, {
-y: 7,
-scaleY: 0.985,
-scaleX: 1.006,
-rotation: baseRotation - 0.25,
-duration: 0.09,
-ease: "power2.out",
-});
+    // 3. Der "Stick-Effekt" (Kurz vor Ende des Slides einfügen)
+    // Simuliert das Festdrücken des Klebestreifens
+    tl.to(stickyNote, {
+        y: 4,
+        scaleY: 0.96,
+        scaleX: 1.01,
+        duration: 0.12,
+        ease: "power2.out"
+    }, "-=0.2");
 
-if (tape) {
-tl.to(
-tape,
-{
-scaleY: 0.94,
-duration: 0.09,
-ease: "power2.out",
-},
-"<"
-);
-}
+    if (tape) {
+        tl.to(tape, {
+            scaleY: 0.88,
+            duration: 0.12,
+            ease: "power2.out"
+        }, "<");
+    }
 
-tl.to(stickyNote, {
-y: 0,
-scaleY: 1,
-scaleX: 1,
-rotation: baseRotation,
-duration: 0.24,
-ease: "back.out(2.1)",
-});
+    // 4. Sanfter Rebound (Das Papier federt aus)
+    tl.to(stickyNote, {
+        y: 0,
+        scaleY: 1,
+        scaleX: 1,
+        duration: 0.5,
+        ease: "elastic.out(1.2, 0.6)"
+    });
 
-if (tape) {
-tl.to(
-tape,
-{
-scaleY: 1,
-duration: 0.22,
-ease: "back.out(2)",
-},
-"<"
-);
-}
+    if (tape) {
+        tl.to(tape, {
+            scaleY: 1,
+            duration: 0.4,
+            ease: "elastic.out(1.2, 0.6)"
+        }, "<");
+    }
 }
 
 function playStickyPeelOutAnimation() {
-if (!stickyNote || !window.gsap) {
-hideStickyNote();
-return Promise.resolve();
+    if (!stickyNote || !window.gsap) {
+        hideStickyNote();
+        return Promise.resolve();
+    }
+
+    const baseRotation = getStickyBaseRotation();
+    const tape = getStickyTape();
+
+    return new Promise((resolve) => {
+        const tl = gsap.timeline({
+            onComplete: () => {
+                hideStickyNote();
+                resolve();
+            }
+        });
+
+        // Kurz "ansaugen" bevor er wegfliegt (Physischer Effekt)
+        tl.to(stickyNote, {
+            scale: 0.98,
+            rotation: baseRotation - 2,
+            duration: 0.2,
+            ease: "power1.in"
+        });
+
+        tl.to(stickyNote, {
+            x: "100vw",
+            y: -50,
+            rotation: baseRotation + 15,
+            opacity: 0,
+            duration: 0.8,
+            ease: "power2.in"
+        });
+    });
 }
 
-const baseRotation = getStickyBaseRotation();
-const tape = getStickyTape();
+/* --- STATE & PLACEMENT --- */
 
-gsap.killTweensOf(stickyNote);
-if (tape) gsap.killTweensOf(tape);
+function placeStickyNote(target) {
+    if (!stickyNote) return;
 
-return new Promise((resolve) => {
-const tl = gsap.timeline({
-onComplete: () => {
-hideStickyNote();
-resolve();
-},
-});
+    const containers = {
+        "transition": ".screen__inner",
+        "break": ".break-layout"
+    };
 
-if (tape) {
-tl.to(tape, {
-scaleY: 0.9,
-duration: 0.22,
-ease: "power1.out",
-transformOrigin: "50% 10%",
-});
+    const selector = containers[target];
+    if (!selector) return;
+
+    const parent = document.querySelector(selector);
+    if (parent && stickyNote.parentElement !== parent) {
+        parent.appendChild(stickyNote);
+    }
 }
-
-tl.to(
-stickyNote,
-{
-y: -12,
-rotation: baseRotation + 2.8,
-scale: 1.01,
-duration: 0.28,
-ease: "power2.out",
-},
-"<"
-);
-
-tl.to(stickyNote, {
-x: "82vw",
-y: -34,
-rotation: baseRotation + 8,
-opacity: 0,
-scale: 0.985,
-duration: 1.35,
-ease: "power2.inOut",
-});
-});
-}
-
-
-/* =========================
-STICKY NOTE STATES
-========================= */
 
 function showStickyNote(options = {}) {
-if (!stickyNote) return;
+    if (!stickyNote) return;
+    const { animate = true } = options;
 
-const { animate = true } = options;
+    stickyNote.classList.remove("is-hidden");
 
-stickyNote.classList.remove("is-hidden");
-
-if (!window.gsap) return;
-
-if (animate) {
-playStickyPlaceAnimation();
-return;
-}
-
-const baseRotation = getStickyBaseRotation();
-
-gsap.killTweensOf(stickyNote);
-gsap.set(stickyNote, {
-x: 0,
-y: 0,
-opacity: 1,
-scale: 1,
-rotation: baseRotation,
-transformOrigin: "50% 18%",
-});
-
-startStickyIdleMotion();
+    if (animate && window.gsap) {
+        playStickyPlaceAnimation();
+    } else {
+        gsap.set(stickyNote, { x: 0, y: 0, opacity: 1, scale: 1, rotation: getStickyBaseRotation() });
+        startStickyIdleMotion();
+    }
 }
 
 function hideStickyNote() {
-if (!stickyNote) return;
-stickyNote.classList.add("is-hidden");
+    if (!stickyNote) return;
+    stickyNote.classList.add("is-hidden");
+    stopStickyIdleMotion();
 }
 
 function setStickyState(state) {
-if (!stickyNote) return;
+    if (!stickyNote) return;
+    stickyNote.dataset.state = state;
 
-stickyNote.dataset.state = state;
-
-stickyStates.forEach((stateEl) => {
-const isTarget = stateEl.dataset.stickyState === state;
-stateEl.classList.toggle("is-active", isTarget);
-stateEl.style.opacity = isTarget ? "1" : "";
-stateEl.style.transform = "";
-});
+    const states = stickyNote.querySelectorAll(".sticky-note__state");
+    states.forEach((el) => {
+        const isActive = el.dataset.stickyState === state;
+        el.classList.toggle("is-active", isActive);
+        if (isActive) el.style.opacity = "1";
+    });
 }
 
 function changeStickyStateWithFade(state) {
-if (!stickyNote) return;
+    if (!stickyNote || !window.gsap) {
+        setStickyState(state);
+        return;
+    }
 
-if (!window.gsap) {
-setStickyState(state);
-return;
-}
+    const current = stickyNote.querySelector(".sticky-note__state.is-active");
+    if (!current) {
+        setStickyState(state);
+        return;
+    }
 
-const currentState = stickyNote.querySelector(".sticky-note__state.is-active");
-
-if (!currentState) {
-setStickyState(state);
-return;
-}
-
-gsap.to(currentState, {
-opacity: 0,
-y: -3,
-duration: 0.12,
-ease: "power1.out",
-onComplete: () => {
-setStickyState(state);
-
-const newState = stickyNote.querySelector(".sticky-note__state.is-active");
-if (!newState) return;
-
-gsap.fromTo(
-newState,
-{ opacity: 0, y: 3 },
-{
-opacity: 1,
-y: 0,
-duration: 0.18,
-ease: "power1.out",
-}
-);
-},
-});
+    gsap.to(current, {
+        opacity: 0,
+        y: -5,
+        duration: 0.2,
+        onComplete: () => {
+            setStickyState(state);
+            const next = stickyNote.querySelector(".sticky-note__state.is-active");
+            gsap.fromTo(next, { opacity: 0, y: 5 }, { opacity: 1, y: 0, duration: 0.3 });
+        }
+    });
 }
 
 
