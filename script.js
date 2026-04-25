@@ -88,15 +88,24 @@ THEME
 
 function applyTimeTheme() {
   const hour = new Date().getHours();
-  document.body.classList.remove("morning", "day", "night");
+document.body.classList.remove("morning", "day", "night");
 
-  if (hour >= 6 && hour < 11) {
-    document.body.classList.add("morning");
-  } else if (hour >= 11 && hour < 20) {
-    document.body.classList.add("day");
-  } else {
-    document.body.classList.add("night");
-  }
+if (hour >= 6 && hour < 11) {
+  document.body.classList.add("morning");
+
+  // Day-Animation sauber stoppen
+  stopDayAtmosphereMotion();
+
+} else if (hour >= 11 && hour < 20) {
+  document.body.classList.add("day");
+
+  startDayAtmosphereMotion();
+
+} else {
+  document.body.classList.add("night");
+
+  // Day-Animation sauber stoppen
+  stopDayAtmosphereMotion();
 }
 
 
@@ -518,6 +527,39 @@ function changeStickyStateWithFade(state) {
   });
 }
 
+
+/*DAYANIMATION*/
+
+function startDayAtmosphereMotion() {
+  if (!window.gsap) return;
+
+  const layer = document.querySelector(".day-atmosphere");
+  if (!layer) return;
+
+  gsap.killTweensOf(layer);
+
+  if (!document.body.classList.contains("day")) {
+    gsap.set(layer, { opacity: 0 });
+    return;
+  }
+
+  gsap.set(layer, {
+    opacity: 0.7,
+    x: 0,
+    y: 0,
+    scale: 1.02
+  });
+
+  gsap.to(layer, {
+    x: 26,
+    y: -18,
+    scale: 1.045,
+    duration: 18,
+    ease: "sine.inOut",
+    repeat: -1,
+    yoyo: true
+  });
+}
 
 /* =========================
 FLIP CLOCK
