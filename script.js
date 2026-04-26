@@ -264,7 +264,7 @@ const TIMING = {
   beautifulPauseTextDelay: 250,
   afterEndGongPause: 3500,
   doneReadingTime: 6000,
-  afterPeelPause: 1400
+  afterPeelPause: 2200
 };
 
 
@@ -596,7 +596,7 @@ function playStickyPeelOutAnimation() {
       y: 10,
       rotation: base + 1.4,
       scale: 1.006,
-      duration: 0.24,
+      duration: 0.5,
       ease: "sine.out"
     });
 
@@ -604,7 +604,7 @@ function playStickyPeelOutAnimation() {
       tl.to(tape, {
         scaleY: 0.84,
         opacity: 0.82,
-        duration: 0.22,
+        duration: 0.5,
         ease: "sine.out"
       }, "<");
     }
@@ -615,7 +615,7 @@ function playStickyPeelOutAnimation() {
       y: -6,
       rotation: base - 2.4,
       scale: 1.01,
-      duration: 0.34,
+      duration: 0.7,
       ease: "sine.inOut"
     });
 
@@ -634,7 +634,7 @@ function playStickyPeelOutAnimation() {
       y: -10,
       rotation: base - 4,
       scale: 0.995,
-      duration: 1.15,
+      duration: 0.95,
       ease: "none"
     });
 
