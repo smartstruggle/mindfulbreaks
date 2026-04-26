@@ -590,51 +590,50 @@ function playStickyPeelOutAnimation() {
       }
     });
 
-    // 1. Kleiner Löse-Ruck nach rechts unten
-    tl.to(stickyNote, {
-      x: 10,
-      y: 10,
-      rotation: base + 1.4,
-      scale: 1.006,
-      duration: 0.5,
-      ease: "sine.out"
-    });
+  // 1. Deutlicher Löse-Ruck
+tl.to(stickyNote, {
+  x: 22,
+  y: 18,
+  rotation: base + 2.6,
+  scale: 1.02,
+  duration: 0.38,
+  ease: "power2.out"
+});
 
-    if (tape) {
-      tl.to(tape, {
-        scaleY: 0.84,
-        opacity: 0.82,
-        duration: 0.5,
-        ease: "sine.out"
-      }, "<");
-    }
+if (tape) {
+  tl.to(tape, {
+    scaleY: 0.65,
+    opacity: 0.7,
+    duration: 0.38,
+    ease: "power2.out"
+  }, "<");
+}
 
-    // 2. Leicht anheben / ablösen
-    tl.to(stickyNote, {
-      x: 24,
-      y: -6,
-      rotation: base - 2.4,
-      scale: 1.01,
-      duration: 0.7,
-      ease: "sine.inOut"
-    });
+    // 2. Sichtbarer ablösen / anheben
+tl.to(stickyNote, {
+  x: 34,
+  y: -22,
+  rotation: base - 4.8,
+  scale: 1.018,
+  duration: 0.52,
+  ease: "power2.inOut"
+});
 
-    if (tape) {
-      tl.to(tape, {
-        scaleY: 0.68,
-        opacity: 0.55,
-        duration: 0.3,
-        ease: "sine.inOut"
-      }, "<");
-    }
-
+if (tape) {
+  tl.to(tape, {
+    scaleY: 0.48,
+    opacity: 0.38,
+    duration: 0.42,
+    ease: "power2.inOut"
+  }, "<");
+}
     // 3. Gleichmäßig nach rechts rausziehen
     tl.to(stickyNote, {
       x: "82vw",
       y: -10,
       rotation: base - 4,
       scale: 0.995,
-      duration: 0.95,
+      duration: 0.7,
       ease: "none"
     });
 
