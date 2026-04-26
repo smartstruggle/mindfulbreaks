@@ -218,6 +218,56 @@ function stopNightAtmosphereMotion() {
   if (sparkles) gsap.to(sparkles, { opacity: 0, duration: 0.7, ease: "sine.out" });
 }
 
+
+
+const TIMING = {
+  // Screens
+  startToTransitionDelay: 0,
+  breakStartDelay: 0,
+
+  // Sticky Motion
+  stickyEntryDuration: 620,
+  stickyPressDuration: 160,
+  stickyReboundDuration: 340,
+  stickyPeelDuration: 1450,
+
+  // Generic text transition
+  textFadeOut: 140,
+  textFadeIn: 220,
+
+  // Per Sticky State handwriting
+  handwriting: {
+    planned: {
+      charDelay: 18,
+      minDuration: 350,
+      maxDuration: 1200
+    },
+    waiting: {
+      charDelay: 16,
+      minDuration: 400,
+      maxDuration: 1400
+    },
+    break: {
+      charDelay: 28,
+      minDuration: 350,
+      maxDuration: 900
+    },
+    done: {
+      charDelay: 14,
+      minDuration: 700,
+      maxDuration: 1900
+    }
+  },
+
+  // Reading / pauses
+  afterReadyClickPause: 180,
+  beautifulPauseTextDelay: 250,
+  afterEndGongPause: 3500,
+  doneReadingTime: 6000,
+  afterPeelPause: 1400
+};
+
+
 /* =========================
 INIT
 ========================= */
@@ -953,15 +1003,22 @@ function triggerBreakEnd() {
     endGongPlayed = true;
   }
 
-  // Gong klingt aus → done-State einblenden → Sticky Note abziehen → Reset
+  // Gong darf kurz nachklingen
   endingTimeout = setTimeout(() => {
     changeStickyStateWithFade("done");
 
+    // Zeit zum Lesen der Danke-Nachricht
     endingTimeout = setTimeout(async () => {
       await playStickyPeelOutAnimation();
-      resetApp();
-    }, 1200);
-  }, 4500);
+
+      // kleiner Atemzug, bevor Startscreen zurückkommt
+      endingTimeout = setTimeout(() => {
+        resetApp();
+      }, TIMING.afterPeelPause);
+
+    }, TIMING.doneReadingTime);
+
+  }, TIMING.afterEndGongPause);
 }
 
 function resetApp() {
