@@ -23,68 +23,72 @@
  
 <main id="app" class="app">
 
-<section id="start-screen" class="screen screen--start is-active">
-<div class="screen__inner">
-<div class="paper-sheet paper-sheet--start">
-<div class="start-panel">
+  <section id="start-screen" class="screen screen--start is-active">
+    <div class="screen__inner">
+      <div class="paper-sheet paper-sheet--start">
+        <img class="paper-bg" src="assets/svg/book.svg" alt="" aria-hidden="true">
 
-<header class="start-header">
-<h1 class="start-title">Wann möchtest du heute Pause machen?</h1>
-<p class="start-subtitle">Lege Start und Ende fest.</p>
-</header>
+        <div class="start-panel">
 
-<form id="time-form" class="time-form">
-<div class="time-row">
+          <header class="start-header">
+            <h1 class="start-title">Wann möchtest du heute Pause machen?</h1>
+            <p class="start-subtitle">Lege Start und Ende fest.</p>
+          </header>
 
-<div class="time-group">
-<label for="start-hour">Start</label>
-<div class="time-inputs">
-<select id="start-hour" name="start-hour">
-<option value="">HH</option>
-</select>
-<span class="colon">:</span>
-<select id="start-minute" name="start-minute">
-<option value="">MM</option>
-</select>
-</div>
-</div>
+          <form id="time-form" class="time-form">
+            <div class="time-row">
 
-<div class="time-group">
-<label for="end-hour">Ende</label>
-<div class="time-inputs">
-<select id="end-hour" name="end-hour">
-<option value="">HH</option>
-</select>
-<span class="colon">:</span>
-<select id="end-minute" name="end-minute">
-<option value="">MM</option>
-</select>
-</div>
-</div>
+              <div class="time-group">
+                <label for="start-hour">Start</label>
+                <div class="time-inputs">
+                  <select id="start-hour" name="start-hour">
+                    <option value="">HH</option>
+                  </select>
+                  <span class="colon">:</span>
+                  <select id="start-minute" name="start-minute">
+                    <option value="">MM</option>
+                  </select>
+                </div>
+              </div>
 
-</div>
+              <div class="time-group">
+                <label for="end-hour">Ende</label>
+                <div class="time-inputs">
+                  <select id="end-hour" name="end-hour">
+                    <option value="">HH</option>
+                  </select>
+                  <span class="colon">:</span>
+                  <select id="end-minute" name="end-minute">
+                    <option value="">MM</option>
+                  </select>
+                </div>
+              </div>
 
-<button id="start-button" class="button button--primary" type="submit">
-Pause planen
-</button>
-</form>
+            </div>
 
-<p class="dedication">
-Für Joanna, Helen, Mirjam, Melanie &amp; Dilek
-</p>
+            <button id="start-button" class="button button--primary" type="submit">
+              Pause planen
+            </button>
+          </form>
 
-</div>
-</div>
-</div>
-</section>
+          <p class="dedication">
+            Für Joanna, Helen, Mirjam, Melanie &amp; Dilek
+          </p>
 
-<section id="transition-screen" class="screen screen--transition">
-<div class="screen__inner">
- <div class="paper-sheet paper-sheet--transition">
- </div>
-  </div>
-</section>
+        </div>
+      </div>
+    </div>
+  </section>
 
+  <section id="transition-screen" class="screen screen--transition">
+    <div class="screen__inner">
+      <div class="paper-sheet paper-sheet--transition">
+        <img class="paper-bg" src="assets/svg/book.svg" alt="" aria-hidden="true">
+        <img class="desk-prop desk-prop--pen" src="assets/svg/pen.svg" alt="" aria-hidden="true">
+      </div>
+    </div>
+  </section>
+ 
 <section id="break-screen" class="screen screen--break">
 <div class="screen__inner">
 <div class="break-layout">
