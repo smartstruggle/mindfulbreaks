@@ -488,6 +488,51 @@ Start + Transition
   justify-content: center;
 }
 
+
+/* =========================
+4B. DESK PROPS
+Transition Decoration
+========================= */
+
+.screen--transition .screen__inner {
+  position: relative;
+}
+
+.desk-props {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.paper-sheet--transition {
+  position: relative;
+  z-index: 2;
+}
+
+.sticky-note {
+  z-index: 3;
+}
+
+.desk-prop {
+  position: absolute;
+  display: block;
+}
+
+.desk-prop--book {
+  width: min(34vw, 360px);
+  left: 8%;
+  top: 12%;
+  transform: rotate(-6deg);
+}
+
+.desk-prop--pen {
+  width: min(5vw, 52px);
+  right: 14%;
+  top: 16%;
+  transform: rotate(18deg);
+}
+
 /* =========================
 5. START SCREEN
 ========================= */
