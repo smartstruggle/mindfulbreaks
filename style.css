@@ -493,43 +493,35 @@ Start + Transition
 4B. DESK PROPS
 Transition Decoration
 ========================= */
-
-.screen--transition .screen__inner {
+.paper-sheet {
   position: relative;
+  background: none;
+  box-shadow: none;
+  overflow: visible;
 }
 
-.desk-props {
+.paper-bg {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  z-index: 0;
   pointer-events: none;
-  z-index: 5;
 }
 
-.paper-sheet--transition {
+.start-panel {
   position: relative;
   z-index: 2;
 }
 
-.sticky-note {
-  z-index: 3;
-}
-
-.desk-prop {
-  position: absolute;
-  display: block;
-}
-
-.desk-prop--book {
-  width: min(34vw, 360px);
-  left: 8%;
-  top: 12%;
-  transform: rotate(-6deg);
-}
-
 .desk-prop--pen {
-  width: min(5vw, 52px);
-  right: 14%;
-  top: 16%;
+  position: absolute;
+  right: -8%;
+  bottom: 3%;
+  width: min(9vw, 70px);
+  z-index: 3;
+  pointer-events: none;
   transform: rotate(18deg);
 }
 
