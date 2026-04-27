@@ -410,8 +410,7 @@ position: relative;
 
 
 /* =========================
-4. SPIRAL NOTEBOOK SHEET
-Start + Transition
+4A. Papersheet
 ========================= */
 
 /*.paper-sheet {
@@ -436,58 +435,6 @@ Start + Transition
   z-index: 2;
 }
 
-/* Spiral-Löcher / Schatten links am Papier */
-/* .paper-sheet::before {
-  content: "";
-  position: absolute;
-  left: -8px;
-  top: 34px;
-  width: 18px;
-  height: calc(100% - 68px);
-  border-radius: 999px;
-
-  background:
-    repeating-linear-gradient(
-      180deg,
-      rgba(42, 42, 38, 0.46) 0 8px,
-      transparent 8px 44px
-    );
-
-  filter: blur(0.2px);
-  opacity: 0.7;
-  z-index: 3;
-}
-
-/* Spiralringe */
-/* .paper-sheet::after {
-  content: "";
-  position: absolute;
-  left: -34px;
-  top: 31px;
-  width: 42px;
-  height: calc(100% - 62px);
-
-  background:
-    repeating-linear-gradient(
-      180deg,
-      transparent 0 13px,
-      rgba(92, 88, 78, 0.92) 13px 17px,
-      rgba(245, 241, 226, 0.96) 17px 21px,
-      rgba(75, 72, 65, 0.78) 21px 25px,
-      transparent 25px 44px
-    );
-
-  border-radius: 999px;
-  filter: drop-shadow(0 4px 4px rgba(42, 58, 42, 0.20));
-  z-index: 4;
-}
-
-.paper-sheet--start {
-  display: flex;
-  align-items: stretch;
-  justify-content: center;
-}
-*/
 
 /* =========================
 4B. DESK PROPS
@@ -495,9 +442,12 @@ Transition Decoration
 ========================= */
 .paper-sheet {
   position: relative;
+  width: min(82vw, calc((100vh - 56px) * 210 / 297), 720px);
+  aspect-ratio: 210 / 297;
   background: none;
   box-shadow: none;
   overflow: visible;
+  z-index: 2;
 }
 
 .paper-bg {
@@ -515,16 +465,19 @@ Transition Decoration
   z-index: 2;
 }
 
+.screen__inner--desk {
+  position: relative;
+}
+
 .desk-prop--pen {
   position: absolute;
-  right: -8%;
-  bottom: 3%;
-  width: min(9vw, 70px);
-  z-index: 3;
+  right: 14%;
+  top: 18%;
+  width: min(6vw, 56px);
+  z-index: 4;
   pointer-events: none;
   transform: rotate(18deg);
 }
-
 /* =========================
 5. START SCREEN
 ========================= */
