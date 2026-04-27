@@ -495,12 +495,11 @@ Transition Decoration
   width: 100%;
   height: 100%;
 
-  /* Innenfläche vom Buch: links wegen Spirale mehr Abstand */
   padding:
-    5.5%   /* top */
-    7%     /* right */
-    6%     /* bottom */
-    15%;   /* left */
+    5.5%
+    7%
+    6%
+    15%;
 
   display: grid;
   grid-template-rows: auto auto auto;
@@ -508,6 +507,9 @@ Transition Decoration
   align-content: start;
 
   gap: 2.2%;
+
+  /* ✨ NEU */
+  transform: translate(-5%, 20%);
 }
 
 .start-header {
