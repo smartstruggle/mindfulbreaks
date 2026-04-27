@@ -437,7 +437,7 @@ Start + Transition
 }
 
 /* Spiral-Löcher / Schatten links am Papier */
-.paper-sheet::before {
+/* .paper-sheet::before {
   content: "";
   position: absolute;
   left: -8px;
@@ -459,7 +459,7 @@ Start + Transition
 }
 
 /* Spiralringe */
-.paper-sheet::after {
+/* .paper-sheet::after {
   content: "";
   position: absolute;
   left: -34px;
