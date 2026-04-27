@@ -414,7 +414,7 @@ position: relative;
 Start + Transition
 ========================= */
 
-.paper-sheet {
+/*.paper-sheet {
   position: relative;
   width: min(82vw, calc((100vh - 56px) * 210 / 297), 720px);
   aspect-ratio: 210 / 297;
@@ -487,7 +487,7 @@ Start + Transition
   align-items: stretch;
   justify-content: center;
 }
-
+*/
 
 /* =========================
 4B. DESK PROPS
