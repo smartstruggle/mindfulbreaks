@@ -702,7 +702,7 @@ place-items: center;
 position: relative;
 z-index: 20;
 
-width: clamp(260px, 52vw, 480px);
+  width: clamp(234px, 47vw, 432px);
 aspect-ratio: 2635 / 2515;
 
 transform: rotate(-7deg);
