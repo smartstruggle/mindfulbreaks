@@ -491,6 +491,13 @@ body.night .paper-sheet {
   ) rotate(18deg);
   z-index: 4;
 }
+
+.book-wrap,
+.notebook-wrap,
+.book-shell {
+  filter: drop-shadow(0 18px 34px rgba(34, 20, 12, 0.22))
+          drop-shadow(0 4px 10px rgba(34, 20, 12, 0.18));
+}
 /* =========================
    5. START SCREEN
 ========================= */
@@ -510,38 +517,42 @@ body.night .paper-sheet {
 ========================= */
 .start-panel {
   position: absolute;
-  /* Lässt die Ringe links frei, sitzt auf dem weißen Papierbereich */
   top: 6%;
   left: 17%;
   right: 12%;
-  bottom: 4%;
+  bottom: 6%;
+
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;  /* gleichmäßige Verteilung */
+  justify-content: flex-start;
+
   transform: none;
   width: auto;
   max-width: none;
   margin: 0;
-  padding: clamp(6px, 3%, 24px) clamp(4px, 2%, 16px);
-  overflow: hidden;
+
+  padding: clamp(10px, 3%, 26px) clamp(6px, 2%, 18px);
+  overflow: visible;
 }
+
 .start-header {
   text-align: center;
   width: 100%;
   flex-shrink: 0;
-  margin-bottom: clamp(4px, 2.5%, 18px);
+  margin-bottom: clamp(12px, 3.2%, 28px);
 }
+
 .start-title {
-  margin: 0 0 clamp(2px, 1%, 8px);
+  margin: 0 0 clamp(3px, 1%, 9px);
   font-family: "Caveat", cursive;
-  /* Skaliert mit dem Notebook (das mit vw skaliert) */
   font-size: clamp(20px, 3.2vw, 44px);
   font-weight: 500;
   line-height: 1.06;
   color: #2f3440;
   text-align: center;
 }
+
 .start-subtitle {
   margin: 0;
   font-size: clamp(11px, 0.95vw, 15px);
@@ -549,88 +560,111 @@ body.night .paper-sheet {
   color: #7d8693;
   text-align: center;
 }
-/* Formular füllt den verfügbaren Raum besser */
+
 .time-form {
   width: 94%;
-  flex: 1;                          /* nimmt verfügbaren Platz */
-  margin-top: 0;
+  flex: 1;
+  min-height: 0;
+
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;          /* vertikal zentriert im Panel */
-  gap: clamp(6px, 2%, 14px);
+  justify-content: flex-start;
+
+  margin-top: clamp(2px, 1.2%, 12px);
+  gap: clamp(14px, 4.2%, 34px);
 }
+
 .time-row {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(6px, 2%, 14px);
+  gap: clamp(14px, 4.2%, 34px);
 }
+
 .time-group {
   width: 100%;
-  padding: clamp(8px, 1.8%, 18px) clamp(10px, 2vw, 20px);
+  padding: clamp(10px, 2%, 18px) clamp(10px, 2vw, 20px);
   border-radius: clamp(10px, 1.4vw, 18px);
   text-align: left;
+
   background: rgba(255, 255, 255, 0.76);
   backdrop-filter: blur(4px);
+
   box-shadow:
     0 12px 24px rgba(0, 0, 0, 0.06),
     inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
+
 .time-group label {
   display: block;
-  margin: 0 0 clamp(5px, 1%, 12px);
+  margin: 0 0 clamp(7px, 1.5%, 14px);
   font-size: clamp(11px, 1vw, 15px);
   font-weight: 500;
   color: #9aa0aa;
   text-align: center;
 }
+
 .time-inputs {
   width: 100%;
   margin: 0 auto;
+
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  gap: clamp(5px, 0.8vw, 12px);
+  gap: clamp(6px, 1vw, 14px);
 }
+
 .time-inputs select {
   width: 100%;
   min-width: 0;
-  height: clamp(36px, 6.5%, 68px);
+  height: clamp(36px, 4.4vw, 58px);
+
   padding: 0 clamp(4px, 0.8vw, 12px);
   border: 1px solid rgba(80, 90, 110, 0.08);
   border-radius: clamp(10px, 1.2vw, 16px);
   outline: none;
+
   background: rgba(255, 255, 255, 0.96);
   color: #2f3440;
+
   font-size: clamp(16px, 2vw, 28px);
   font-weight: 500;
   text-align: center;
+
   box-shadow:
     0 8px 16px rgba(0, 0, 0, 0.06),
     inset 0 1px 0 rgba(255, 255, 255, 0.82),
     inset 0 -2px 4px rgba(0, 0, 0, 0.03);
 }
+
 .colon {
   font-size: clamp(20px, 2.4vw, 34px);
   color: #383d46;
 }
+
 .button,
 #start-button {
-  margin-top: clamp(6px, 2%, 18px);
+  margin-top: clamp(16px, 4.5%, 36px);
+
   padding: clamp(9px, 1.4%, 15px) clamp(18px, 2.5vw, 38px);
   width: 72%;
   max-width: 320px;
+
   border: none;
   border-radius: 999px;
+
   background: linear-gradient(180deg, #454b59 0%, #313746 100%);
   color: #ffffff;
+
   font-size: clamp(13px, 1.1vw, 17px);
   font-weight: 500;
+
   box-shadow:
     0 12px 24px rgba(0, 0, 0, 0.18),
     inset 0 1px 0 rgba(255, 255, 255, 0.10);
+
   transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 .button:hover,
