@@ -498,31 +498,32 @@ body.night .paper-sheet {
   display: block;
   position: relative;
 }
-/*
-  .start-panel sitzt absolut auf dem Notebook.
-  Das Notebook (777×1023) hat einen inneren "Papier"-Bereich,
-  der ca. ab 8% von links/rechts und 9% von oben beginnt.
-  Wir definieren den Panel-Bereich als inset.
-*/
+/* =========================
+   START PANEL — SVG-präzise Platzierung
+   Basiert auf book.svg Geometrie:
+   Weißer Innenbereich: x=40–702, y=14–972
+   Nutzbar (nach Ringen): x=121–664
+   In Prozent des SVG (755×988):
+   Links der Ringe: 121/755 = 16%
+   Rechts vor Buchrücken: (755-91)/755 = 88%
+   Oben: 14/988 = ~1.5%
+========================= */
 .start-panel {
   position: absolute;
-  /* Innerer Buchbereich — angepasst ans Book-SVG */
-  top: 9%;
-  left: 9%;
-  right: 9%;
-  bottom: 5%;
+  /* Lässt die Ringe links frei, sitzt auf dem weißen Papierbereich */
+  top: 6%;
+  left: 17%;
+  right: 12%;
+  bottom: 4%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  /* kein transform-Hack mehr */
+  justify-content: space-between;  /* gleichmäßige Verteilung */
   transform: none;
   width: auto;
   max-width: none;
   margin: 0;
-  /* Padding relativ zur Panel-Größe */
-  padding: clamp(8px, 4%, 32px) clamp(6px, 5%, 28px);
-  gap: 0;
+  padding: clamp(6px, 3%, 24px) clamp(4px, 2%, 16px);
   overflow: hidden;
 }
 .start-header {
@@ -548,21 +549,23 @@ body.night .paper-sheet {
   color: #7d8693;
   text-align: center;
 }
+/* Formular füllt den verfügbaren Raum besser */
 .time-form {
-  width: 88%;
-  flex-shrink: 0;
-  margin-top: clamp(4px, 3%, 20px);
+  width: 94%;
+  flex: 1;                          /* nimmt verfügbaren Platz */
+  margin-top: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(6px, 1.8%, 14px);
+  justify-content: center;          /* vertikal zentriert im Panel */
+  gap: clamp(6px, 2%, 14px);
 }
 .time-row {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(6px, 1.8%, 14px);
+  gap: clamp(6px, 2%, 14px);
 }
 .time-group {
   width: 100%;
@@ -1391,4 +1394,14 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
   }
 }
    
+}
+
+@media (max-width: 768px) {
+  .start-panel {
+    top: 5%;
+    left: 16%;
+    right: 10%;
+    bottom: 3%;
+    padding: clamp(4px, 2%, 12px) clamp(4px, 2%, 10px);
+  }
 }
