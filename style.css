@@ -1436,7 +1436,8 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
   }
   /* Notebook: fast fullwidth auf Mobile */
   .paper-sheet {
-    width: clamp(280px, 88vw, 420px);
+    width: clamp(260px, 82vw, 400px);
+  margin: 0 auto;
     /* overflow:hidden clippt SVG-Filter-Bleed = kein braunes Rechteck */
     overflow: hidden;
   }
