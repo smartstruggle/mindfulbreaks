@@ -415,7 +415,7 @@ position: relative;
 
 .paper-sheet {
   position: relative;
-  width: min(78vw, 680px);
+ width: min(74vw, 640px); /* vorher 78vw / 680px */
   aspect-ratio: 777 / 1023;
 
   background: transparent;
@@ -472,10 +472,7 @@ position: relative;
   transform: rotate(18deg);
 }
 
-.start-panel {
-  position: relative;
-  z-index: 2;
-}
+
 /* =========================
 5. START SCREEN
 ========================= */
@@ -485,6 +482,15 @@ position: relative;
   position: relative;
 }
 
+
+.start-panel {
+  position: relative;
+  z-index: 2;
+
+  transform: translate(-5%, 6%); /* vorher 0% → jetzt runter */
+  width: 92%;                   /* leicht kleiner */
+  margin: 0 auto;
+}
 
 .start-header {
   text-align: center;
