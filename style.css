@@ -863,10 +863,6 @@ place-items: center;
 grid-area: 1 / 1;
 }
 
-/* Break Layout */
-.break-layout {
-width: 100%;
-min-height: calc(100vh - 84px);
 
 display: flex;
 flex-direction: column;
@@ -874,12 +870,6 @@ align-items: center;
 justify-content: flex-start;
 
 gap: 42px;
-}
-
-/* Sticky im Break */
-.screen--break .sticky-note {
-width: min(58vw, 400px);
-transform: rotate(-5deg);
 }
 
 
