@@ -485,8 +485,8 @@ position: relative;
 
 .start-panel {
   transform: translate(5%, 8%);
-   width: 82%;   /* vorher 90% → kleiner */
-  max-width: 480px; /* begrenzt Gesamtgröße */
+   width: 78%;   /* vorher 90% → kleiner */
+  max-width: 450px; /* begrenzt Gesamtgröße */
   margin: 0 auto;
 
   display: grid;
