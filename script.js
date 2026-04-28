@@ -745,17 +745,10 @@ function changeStickyStateWithFade(state) {
 
 
 /* =========================
-   FLIP CLOCK (MASTER)
-   ========================= */
+   FLIP CLOCK
+========================= */
 
-/* ============================================================
-   FLIP CLOCK SYSTEM (MASTER CONTROL)
-   ============================================================ */
-
-// 1. Setup & Variablen
-const DURATION = 0.6; // Dauer der Klapp-Animation in Sekunden
-let flipTimerId = null; 
-let lastFormattedTime = "";
+const FLIP_DURATION = 0.6;
 
 const cardElements = {
   minTens: document.getElementById("flip-min-tens"),
@@ -764,110 +757,123 @@ const cardElements = {
   secOnes: document.getElementById("flip-sec-ones")
 };
 
-/**
- * Kern-Mechanik: Animiert eine einzelne Ziffern-Karte
- */
+let lastFormattedTime = "";
+
+/* Hilfsfunktion: holt alle wichtigen Teile einer Karte */
+function getFlipParts(card) {
+  if (!card) return null;
+
+  return {
+    top: card.querySelector(".flip-panel-top span"),
+    bottom: card.querySelector(".flip-panel-bottom span"),
+    leaf: card.querySelector(".flip-leaf"),
+    leafFront: card.querySelector(".flip-leaf-front span"),
+    leafBack: card.querySelector(".flip-leaf-back span")
+  };
+}
+
+/* Setzt eine Karte sofort, ohne Animation */
+function setDigitInstant(card, value) {
+  const parts = getFlipParts(card);
+  if (!parts) return;
+
+  card.dataset.current = value;
+
+  parts.top.textContent = value;
+  parts.bottom.textContent = value;
+  parts.leafFront.textContent = value;
+  parts.leafBack.textContent = value;
+
+  if (window.gsap && parts.leaf) {
+    gsap.killTweensOf(parts.leaf);
+    gsap.set(parts.leaf, { rotationX: 0 });
+  } else if (parts.leaf) {
+    parts.leaf.style.transform = "rotateX(0deg)";
+  }
+
+  card.classList.remove("is-flipping");
+}
+
+/* Animiert eine einzelne Ziffer */
 function animateDigit(card, newValue) {
   if (!card) return;
-  const currentValue = card.getAttribute("data-current");
+
+  const currentValue = card.dataset.current || "0";
   if (currentValue === newValue) return;
 
-  card.setAttribute("data-current", newValue);
+  const parts = getFlipParts(card);
+  if (!parts || !parts.leaf) return;
 
-  const top = card.querySelector(".flip-panel-top");
-  const bottom = card.querySelector(".flip-panel-bottom");
-  const leaf = card.querySelector(".flip-leaf");
-  const leafFront = card.querySelector(".flip-leaf-front");
-  const leafBack = card.querySelector(".flip-leaf-back");
+  card.dataset.current = newValue;
 
-  // A. Vorbereitung: Neue Zahl "hinter" die Kulissen legen
-  top.textContent = newValue;
-  leafBack.textContent = newValue;
-  
-  // B. Aktuelle Zahl bleibt vorne auf der Klappe sichtbar
-  leafFront.textContent = currentValue;
+  /*
+    Logik:
+    - Leaf-Front zeigt alte Zahl
+    - Leaf-Back zeigt neue Zahl
+    - Top liegt schon mit neuer Zahl dahinter
+    - Bottom wird erst nach der Animation aktualisiert
+  */
 
-  // C. Die Klappe fällt um 180 Grad
-  gsap.to(leaf, {
+  parts.top.textContent = newValue;
+  parts.leafFront.textContent = currentValue;
+  parts.leafBack.textContent = newValue;
+
+  if (!window.gsap) {
+    setDigitInstant(card, newValue);
+    return;
+  }
+
+  gsap.killTweensOf(parts.leaf);
+  gsap.set(parts.leaf, { rotationX: 0 });
+
+  card.classList.add("is-flipping");
+
+  gsap.to(parts.leaf, {
     rotationX: -180,
-    duration: DURATION,
+    duration: FLIP_DURATION,
     ease: "power2.inOut",
     onComplete: () => {
-      // D. Erst wenn die Klappe unten liegt, wird die Basis-Zahl unten aktualisiert
-      bottom.textContent = newValue;
-      // E. Klappe wird unsichtbar in Startposition zurückgesetzt
-      gsap.set(leaf, { rotationX: 0 });
-      leafFront.textContent = newValue;
+      parts.bottom.textContent = newValue;
+      parts.leafFront.textContent = newValue;
+
+      gsap.set(parts.leaf, { rotationX: 0 });
+      card.classList.remove("is-flipping");
     }
   });
 }
 
-/**
- * Brücke zwischen App-Logik und Flip-System
- */
+/* Hauptfunktion: wird von deiner App-Logik aufgerufen */
 function updateFlipClock(totalSeconds) {
-  // Fall 1: Timer wird initialisiert oder auf 0 gesetzt (keine Animation)
-  if (totalSeconds <= 0) {
-    if (flipTimerId) cancelAnimationFrame(flipTimerId);
+  const safeSeconds = Math.max(0, Math.floor(totalSeconds));
+
+  const minutes = String(Math.floor(safeSeconds / 60)).padStart(2, "0");
+  const seconds = String(safeSeconds % 60).padStart(2, "0");
+
+  const formattedTime = minutes + seconds;
+
+  if (formattedTime === lastFormattedTime) return;
+
+  if (safeSeconds <= 0) {
     lastFormattedTime = "0000";
 
-    Object.values(cardElements).forEach(card => {
-      if (!card) return;
-      const panels = card.querySelectorAll('.flip-panel-top, .flip-panel-bottom, .flip-leaf-front, .flip-leaf-back');
-      panels.forEach(p => p.textContent = "0");
-      card.setAttribute("data-current", "0");
-      const leaf = card.querySelector(".flip-leaf");
-      if (leaf) gsap.set(leaf, { rotationX: 0 });
+    Object.values(cardElements).forEach((card) => {
+      setDigitInstant(card, "0");
     });
+
+    if (timer) timer.textContent = "00:00";
     return;
   }
 
-  // Fall 2: Startet den echten Countdown-Loop
-  startFlipTimer(totalSeconds);
-}
+  animateDigit(cardElements.minTens, minutes[0]);
+  animateDigit(cardElements.minOnes, minutes[1]);
+  animateDigit(cardElements.secTens, seconds[0]);
+  animateDigit(cardElements.secOnes, seconds[1]);
 
-/**
- * Der Master-Controller: Berechnet die Zeit und steuert die Animationen
- */
-function startFlipTimer(seconds) {
-  if (flipTimerId) cancelAnimationFrame(flipTimerId);
-  
-  // Wir berechnen den exakten Ziel-Zeitstempel
-  const targetTimestamp = Date.now() + (seconds * 1000);
-  
-  function tick() {
-    const now = Date.now();
-    const remaining = Math.max(0, Math.floor((targetTimestamp - now) / 1000));
+  lastFormattedTime = formattedTime;
 
-    const m = String(Math.floor(remaining / 60)).padStart(2, "0");
-    const s = String(remaining % 60).padStart(2, "0");
-    const currentTimeString = m + s;
-
-    // Nur animieren, wenn sich die Anzeige tatsächlich ändert
-    if (currentTimeString !== lastFormattedTime) {
-      animateDigit(cardElements.minTens, m[0]);
-      animateDigit(cardElements.minOnes, m[1]);
-      animateDigit(cardElements.secTens, s[0]);
-      animateDigit(cardElements.secOnes, s[1]);
-      
-      lastFormattedTime = currentTimeString;
-      
-      // Update für Screenreader (Barrierefreiheit)
-      const timerLabel = document.getElementById("timer");
-      if (timerLabel) timerLabel.textContent = `${m}:${s}`;
-    }
-
-    if (remaining > 0) {
-      flipTimerId = requestAnimationFrame(tick);
-    } else {
-      // Wenn der Timer abläuft
-      if (typeof triggerBreakEnd === "function") {
-        triggerBreakEnd();
-      }
-    }
+  if (timer) {
+    timer.textContent = `${minutes}:${seconds}`;
   }
-  
-  tick();
 }
 
 /* =========================
