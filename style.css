@@ -415,7 +415,7 @@ position: relative;
 
 .paper-sheet {
   position: relative;
-  width: min(82vw, calc((100vh - 56px) * 210 / 297), 720px);
+  width: min(72vw, calc((100vh - 120px) * 210 / 297), 640px);
   aspect-ratio: 210 / 297;
   background: transparent;
   box-shadow: none;
@@ -453,11 +453,11 @@ position: relative;
 }
 
 .desk-prop--book {
-  width: min(90vw, 800px);
+  width: min(86vw, 760px);
   left: 50%;
-  top: 50%;
+  top: 46%;
   z-index: 1;
-  transform: translate(-50%, -50%) scale(1.12);
+  transform: translate(-50%, -50%) scale(1.04);
 }
 
 .desk-prop--pen {
