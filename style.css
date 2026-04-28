@@ -484,7 +484,7 @@ position: relative;
 
 
 .start-panel {
-  transform: translate(-5%, 8%); /* etwas weiter runter */
+  transform: translate(-8%, 8%); /* etwas weiter runter */
   width: 90%;
   margin: 0 auto;
 
