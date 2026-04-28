@@ -1250,6 +1250,35 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
   height: 100%; /* Wichtig für die Drehung */
 }
 
+
+/* Das sorgt dafür, dass die Zahlen in der Mitte "geschnitten" werden */
+.flip-panel-top, 
+.flip-leaf-front {
+  top: 0;
+  height: 50%;
+  overflow: hidden; /* CRITICAL: Schneidet die untere Zahlenhälfte ab */
+  align-items: flex-end; /* Schiebt die Zahl an die Schnittkante */
+  display: flex;
+  justify-content: center;
+}
+
+.flip-panel-bottom, 
+.flip-leaf-back {
+  bottom: 0;
+  height: 50%;
+  overflow: hidden; /* CRITICAL: Schneidet die obere Zahlenhälfte ab */
+  align-items: flex-start; /* Schiebt die Zahl an die Schnittkante */
+  display: flex;
+  justify-content: center;
+}
+
+/* Damit die Zahlen an der Schnittkante zusammenpassen */
+.flip-card {
+  font-family: Arial, sans-serif;
+  line-height: 156px; /* Muss der Gesamthöhe der flip-card entsprechen */
+}
+
+
 /* =========================
    LARGE DESKTOP (≥ 1600px)
 ========================= */
