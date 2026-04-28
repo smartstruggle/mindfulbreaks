@@ -110,29 +110,37 @@
 
       <div class="flip-clock-wrap">
         <div class="flip-clock-panel">
+
           <div id="flip-label" class="flip-label">Break ends in</div>
 
           <div class="flip-display" aria-hidden="true">
-            
+
+            <!-- MINUTES -->
             <div class="flip-group">
+
               <div id="flip-min-tens" class="flip-card" data-current="0">
-                <div class="flip-panel-top">0</div>
-                <div class="flip-panel-bottom">0</div>
+                <div class="flip-panel-top"><span>0</span></div>
+                <div class="flip-panel-bottom"><span>0</span></div>
+
                 <div class="flip-leaf">
-                  <div class="flip-leaf-front">0</div>
-                  <div class="flip-leaf-back">0</div>
+                  <div class="flip-leaf-front"><span>0</span></div>
+                  <div class="flip-leaf-back"><span>0</span></div>
                 </div>
               </div>
+
               <div id="flip-min-ones" class="flip-card" data-current="0">
-                <div class="flip-panel-top">0</div>
-                <div class="flip-panel-bottom">0</div>
+                <div class="flip-panel-top"><span>0</span></div>
+                <div class="flip-panel-bottom"><span>0</span></div>
+
                 <div class="flip-leaf">
-                  <div class="flip-leaf-front">0</div>
-                  <div class="flip-leaf-back">0</div>
+                  <div class="flip-leaf-front"><span>0</span></div>
+                  <div class="flip-leaf-back"><span>0</span></div>
                 </div>
               </div>
+
             </div>
 
+            <!-- SEPARATOR -->
             <div class="flip-middle-panel">
               <div class="flip-separator">
                 <span></span>
@@ -140,26 +148,38 @@
               </div>
             </div>
 
+            <!-- SECONDS -->
             <div class="flip-group">
+
               <div id="flip-sec-tens" class="flip-card" data-current="0">
-                <div class="flip-panel-top">0</div>
-                <div class="flip-panel-bottom">0</div>
+                <div class="flip-panel-top"><span>0</span></div>
+                <div class="flip-panel-bottom"><span>0</span></div>
+
                 <div class="flip-leaf">
-                  <div class="flip-leaf-front">0</div>
-                  <div class="flip-leaf-back">0</div>
+                  <div class="flip-leaf-front"><span>0</span></div>
+                  <div class="flip-leaf-back"><span>0</span></div>
                 </div>
               </div>
+
               <div id="flip-sec-ones" class="flip-card" data-current="0">
-                <div class="flip-panel-top">0</div>
-                <div class="flip-panel-bottom">0</div>
+                <div class="flip-panel-top"><span>0</span></div>
+                <div class="flip-panel-bottom"><span>0</span></div>
+
                 <div class="flip-leaf">
-                  <div class="flip-leaf-front">0</div>
-                  <div class="flip-leaf-back">0</div>
+                  <div class="flip-leaf-front"><span>0</span></div>
+                  <div class="flip-leaf-back"><span>0</span></div>
                 </div>
               </div>
+
             </div>
 
-          </div> </div> </div> <div id="timer" class="sr-only" aria-live="polite">00:00</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Screenreader Timer -->
+      <div id="timer" class="sr-only" aria-live="polite">00:00</div>
 
     </div>
   </div>
