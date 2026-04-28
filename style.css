@@ -484,17 +484,17 @@ position: relative;
 
 
 .start-panel {
-  transform: translate(30%, 8%); /* etwas weiter runter */
-  width: 80%;
+  transform: translate(-5%, 8%);
+  width: 90%;
   margin: 0 auto;
 
   display: grid;
   grid-template-rows: auto auto auto;
   align-content: start;
 
-  gap: 3.5%; /* war ~2% → mehr Luft insgesamt */
+  gap: 3.5%;
 }
-}
+
 
 .start-header {
   text-align: center;
