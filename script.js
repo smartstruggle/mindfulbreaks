@@ -747,25 +747,91 @@ function changeStickyStateWithFade(state) {
 
 
 /* =========================
-FLIP CLOCK
-========================= */
+   FLIP CLOCK (MASTER)
+   ========================= */
 
-function updateFlipClock(totalSeconds) {
-  const safeSeconds = Math.max(0, totalSeconds);
-  const minutes = Math.floor(safeSeconds / 60);
-  const seconds = safeSeconds % 60;
+// 1. Variablen-Setup
+const DURATION = 0.6; 
+let flipTimerId = null; // Um den Loop stoppen zu können
+let lastFormattedTime = "";
 
-  const minString = String(minutes).padStart(2, "0");
-  const secString = String(seconds).padStart(2, "0");
+const cardElements = {
+  minTens: document.getElementById("flip-min-tens"),
+  minOnes: document.getElementById("flip-min-ones"),
+  secTens: document.getElementById("flip-sec-tens"),
+  secOnes: document.getElementById("flip-sec-ones")
+};
 
-  if (flipMinTens) flipMinTens.textContent = minString[0];
-  if (flipMinOnes) flipMinOnes.textContent = minString[1];
-  if (flipSecTens) flipSecTens.textContent = secString[0];
-  if (flipSecOnes) flipSecOnes.textContent = secString[1];
+// 2. Die Animations-Funktion (Kern der Mechanik)
+function animateDigit(card, newValue) {
+  if (!card) return;
+  const currentValue = card.getAttribute("data-current");
+  if (currentValue === newValue) return;
 
-  if (timer) timer.textContent = `${minString}:${secString}`;
+  card.setAttribute("data-current", newValue);
+
+  const top = card.querySelector(".flip-panel-top");
+  const bottom = card.querySelector(".flip-panel-bottom");
+  const leaf = card.querySelector(".flip-leaf");
+  const leafFront = card.querySelector(".flip-leaf-front");
+  const leafBack = card.querySelector(".flip-leaf-back");
+
+  // Vorbereitung
+  top.textContent = newValue;
+  leafBack.textContent = newValue;
+  leafFront.textContent = currentValue;
+
+  // GSAP Flip
+  gsap.to(leaf, {
+    rotationX: -180,
+    duration: DURATION,
+    ease: "power2.inOut",
+    onComplete: () => {
+      bottom.textContent = newValue;
+      gsap.set(leaf, { rotationX: 0 });
+      leafFront.textContent = newValue;
+    }
+  });
 }
 
+// 3. Der Master-Controller für den Timer
+// Du kannst diese Funktion aufrufen, wenn die Pause startet: startFlipTimer(600) für 10 Min.
+function startFlipTimer(seconds) {
+  // Alten Loop stoppen, falls vorhanden
+  if (flipTimerId) cancelAnimationFrame(flipTimerId);
+  
+  const targetTimestamp = Date.now() + (seconds * 1000);
+  
+  function tick() {
+    const now = Date.now();
+    const remaining = Math.max(0, Math.floor((targetTimestamp - now) / 1000));
+
+    const m = String(Math.floor(remaining / 60)).padStart(2, "0");
+    const s = String(remaining % 60).padStart(2, "0");
+    const currentTimeString = m + s;
+
+    if (currentTimeString !== lastFormattedTime) {
+      animateDigit(cardElements.minTens, m[0]);
+      animateDigit(cardElements.minOnes, m[1]);
+      animateDigit(cardElements.secTens, s[0]);
+      animateDigit(cardElements.secOnes, s[1]);
+      lastFormattedTime = currentTimeString;
+      
+      // Update für Screenreader (sr-only timer)
+      const timerLabel = document.getElementById("timer");
+      if (timerLabel) timerLabel.textContent = `${m}:${s}`;
+    }
+
+    if (remaining > 0) {
+      flipTimerId = requestAnimationFrame(tick);
+    } else {
+      console.log("Timer abgelaufen!");
+      // Hier könntest du dein Gong-Event triggern
+    }
+  }
+  
+  tick();
+}
 
 /* =========================
 AUDIO / NOTIFICATIONS
