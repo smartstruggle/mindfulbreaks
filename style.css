@@ -471,13 +471,26 @@ Transition Decoration
 
 .desk-prop--pen {
   position: absolute;
-  right: 14%;
-  top: 18%;
-  width: min(6vw, 56px);
+  right: 18%;
+  top: 22%;
+  width: min(5.4vw, 50px);
   z-index: 4;
   pointer-events: none;
   transform: rotate(18deg);
 }
+
+
+.desk-prop--book {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(90vw, 790px);
+  z-index: 1;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+
 /* =========================
 5. START SCREEN
 ========================= */
@@ -670,7 +683,7 @@ place-items: center;
 position: relative;
 z-index: 20;
 
-width: min(82vw, 540px);
+width: min(76vw, 500px);
 aspect-ratio: 2635 / 2515;
 
 transform: rotate(-7deg);
@@ -1186,7 +1199,7 @@ justify-content: center;
 }
 
 /* START + TRANSITION PAPER */
-.paper-sheet {
+/*.paper-sheet {
 width: min(88vw, 420px);
 aspect-ratio: auto;
 min-height: auto;
@@ -1201,7 +1214,7 @@ min-height: auto;
 .paper-sheet--transition {
 margin-top: 70px;
 aspect-ratio: 210 / 297;
-}
+}*/
 
 /* START CONTENT */
 .start-panel {
