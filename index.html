@@ -105,43 +105,64 @@
   </section>
 
 <section id="break-screen" class="screen screen--break">
-<div class="screen__inner">
-<div class="break-layout">
+  <div class="screen__inner">
+    <div class="break-layout">
 
-<div class="flip-clock-wrap">
-<div class="flip-clock-panel">
+      <div class="flip-clock-wrap">
+        <div class="flip-clock-panel">
+          <div id="flip-label" class="flip-label">Break ends in</div>
 
-<div id="flip-label" class="flip-label">Break ends in</div>
+          <div class="flip-display" aria-hidden="true">
+            
+            <div class="flip-group">
+              <div id="flip-min-tens" class="flip-card" data-current="0">
+                <div class="flip-panel-top">0</div>
+                <div class="flip-panel-bottom">0</div>
+                <div class="flip-leaf">
+                  <div class="flip-leaf-front">0</div>
+                  <div class="flip-leaf-back">0</div>
+                </div>
+              </div>
+              <div id="flip-min-ones" class="flip-card" data-current="0">
+                <div class="flip-panel-top">0</div>
+                <div class="flip-panel-bottom">0</div>
+                <div class="flip-leaf">
+                  <div class="flip-leaf-front">0</div>
+                  <div class="flip-leaf-back">0</div>
+                </div>
+              </div>
+            </div>
 
-<div class="flip-display" aria-hidden="true">
-<div class="flip-group">
-<div id="flip-min-tens" class="flip-card">0</div>
-<div id="flip-min-ones" class="flip-card">0</div>
-</div>
+            <div class="flip-middle-panel">
+              <div class="flip-separator">
+                <span></span>
+                <span></span>
+              </div>
+            </div>
 
-<div class="flip-middle-panel">
-<div class="flip-separator">
-<span></span>
-<span></span>
-</div>
-</div>
+            <div class="flip-group">
+              <div id="flip-sec-tens" class="flip-card" data-current="0">
+                <div class="flip-panel-top">0</div>
+                <div class="flip-panel-bottom">0</div>
+                <div class="flip-leaf">
+                  <div class="flip-leaf-front">0</div>
+                  <div class="flip-leaf-back">0</div>
+                </div>
+              </div>
+              <div id="flip-sec-ones" class="flip-card" data-current="0">
+                <div class="flip-panel-top">0</div>
+                <div class="flip-panel-bottom">0</div>
+                <div class="flip-leaf">
+                  <div class="flip-leaf-front">0</div>
+                  <div class="flip-leaf-back">0</div>
+                </div>
+              </div>
+            </div>
 
-<div id="flip-min-tens" class="flip-card" data-current="0">
-  <div class="flip-panel-top">0</div>
-  <div class="flip-panel-bottom">0</div>
-  <div class="flip-leaf">
-    <div class="flip-leaf-front">0</div>
-    <div class="flip-leaf-back">0</div>
+          </div> </div> </div> <div id="timer" class="sr-only" aria-live="polite">00:00</div>
+
+    </div>
   </div>
-</div>
-
-</div>
-</div>
-
-<div id="timer" class="sr-only" aria-live="polite">00:00</div>
-
-</div>
-</div>
 </section>
 
 <aside
@@ -150,6 +171,7 @@ class="sticky-note is-hidden"
 data-state="planned"
 aria-live="polite"
 >
+  
 <div class="sticky-note__visual" aria-hidden="true">
 <svg class="sticky-note__svg" width="2635" height="2515" viewBox="0 0 2635 2515" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="Group 1">
