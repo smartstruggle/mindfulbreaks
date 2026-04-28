@@ -464,7 +464,7 @@ Transition Decoration
 .desk-prop--pen {
   position: absolute;
 
-  right: 20%;   /* vorher 14 → näher ran */
+  right: 25%;   /* vorher 14 → näher ran */
   top: 22%;     /* leicht runter */
 
   width: min(5vw, 48px);
