@@ -509,7 +509,7 @@ Transition Decoration
   gap: 2.2%;
 
   /* ✨ NEU */
-  transform: translate(-5%, -8%);
+  transform: translate(-5%, 10%);
 }
 
 .start-header {
