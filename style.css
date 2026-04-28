@@ -1357,6 +1357,16 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
   }
 }
 
+
+
+.app-credit {
+  position: fixed;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+}
+
 /* =========================
    LARGE DESKTOP (≥ 1600px)
 ========================= */
