@@ -419,10 +419,6 @@ function getStickyBaseRotation() {
 }
 
 
-/* =========================
-STICKY NOTE – IDLE MOTION
-========================= */
-
 function startStickyIdleMotion() {
   if (!stickyNote || !window.gsap) return;
 
@@ -435,39 +431,49 @@ function startStickyIdleMotion() {
 
   gsap.killTweensOf(stickyNote);
 
+  gsap.set(stickyNote, {
+    transformOrigin: "50% 8%",
+    transformPerspective: 900,
+    force3D: true
+  });
+
   idleTimeline = gsap.timeline({ repeat: -1 });
 
   idleTimeline
     .to(stickyNote, {
-      y: "+=7",
-      x: "+=2.5",
-      rotation: base + 1.05,
-      scale: 1.004,
-      duration: 4.2,
+      rotationX: 1.8,
+      rotationY: -0.9,
+      rotationZ: base + 0.35,
+      y: 2,
+      scale: 1.002,
+      duration: 4.8,
       ease: "sine.inOut"
     })
     .to(stickyNote, {
-      y: "-=6",
-      x: "-=2",
-      rotation: base - 0.75,
+      rotationX: -1.2,
+      rotationY: 0.7,
+      rotationZ: base - 0.25,
+      y: -1,
       scale: 1,
-      duration: 4.0,
+      duration: 5.2,
       ease: "sine.inOut"
     })
     .to(stickyNote, {
-      y: "+=4",
-      x: "+=1",
-      rotation: base + 0.45,
-      scale: 1.003,
-      duration: 4.4,
+      rotationX: 1.1,
+      rotationY: 0.4,
+      rotationZ: base + 0.18,
+      y: 1.5,
+      scale: 1.001,
+      duration: 5.0,
       ease: "sine.inOut"
     })
     .to(stickyNote, {
-      y: "-=5",
-      x: "-=1.5",
-      rotation: base,
+      rotationX: 0,
+      rotationY: 0,
+      rotationZ: base,
+      y: 0,
       scale: 1,
-      duration: 4.6,
+      duration: 5.4,
       ease: "sine.inOut"
     });
 }
@@ -480,6 +486,14 @@ function stopStickyIdleMotion() {
 
   if (stickyNote && window.gsap) {
     gsap.killTweensOf(stickyNote);
+
+    gsap.set(stickyNote, {
+      rotationX: 0,
+      rotationY: 0,
+      rotationZ: getStickyBaseRotation(),
+      y: 0,
+      scale: 1
+    });
   }
 }
 
@@ -748,7 +762,7 @@ function changeStickyStateWithFade(state) {
    FLIP CLOCK
 ========================= */
 
-const FLIP_DURATION = 0.44;
+const FLIP_DURATION = 0.46;
 const cardElements = {
   minTens: document.getElementById("flip-min-tens"),
   minOnes: document.getElementById("flip-min-ones"),
