@@ -410,80 +410,68 @@ position: relative;
 
 
 /* =========================
-4A. Papersheet
+4A. PAPER LAYOUT BOX
 ========================= */
 
-/*.paper-sheet {
+.paper-sheet {
   position: relative;
   width: min(82vw, calc((100vh - 56px) * 210 / 297), 720px);
   aspect-ratio: 210 / 297;
-  border-radius: 18px 12px 18px 18px;
-
-  background-color: rgba(252, 250, 244, 0.97);
-  background-image:
-    linear-gradient(rgba(60, 70, 64, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(60, 70, 64, 0.045) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
   z-index: 2;
-}*/
+}
+
+.paper-sheet--start {
+  display: block;
+  position: relative;
+}
 
 
 /* =========================
 4B. DESK PROPS
-Transition Decoration
 ========================= */
-/*.paper-sheet {
-  position: relative;
-  width: min(82vw, calc((100vh - 56px) * 210 / 297), 720px);
-  aspect-ratio: 210 / 297;
-  background: none;
-  box-shadow: none;
-  overflow: visible;
-  z-index: 2;
-}*/
 
-.paper-bg {
+.screen__inner--desk,
+.screen--start .screen__inner,
+.screen--transition .screen__inner {
+  position: relative;
+}
+
+.desk-props {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  z-index: 0;
   pointer-events: none;
+  z-index: 1;
+}
+
+.desk-prop {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+
+.desk-prop--book {
+  width: min(90vw, 800px);
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  transform: translate(-50%, -50%) scale(1.12);
+}
+
+.desk-prop--pen {
+  width: min(5vw, 48px);
+  right: 24%;
+  top: 22%;
+  z-index: 4;
+  transform: rotate(18deg);
 }
 
 .start-panel {
   position: relative;
   z-index: 2;
 }
-
-.screen__inner--desk {
-  position: relative;
-}
-
-.desk-prop--pen {
-  position: absolute;
-
-  right: 30%;   /* vorher 14 → näher ran */
-  top: 22%;     /* leicht runter */
-
-  width: min(5vw, 48px);
-
-  transform: rotate(18deg);
-}
-
-
-.desk-prop--book {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-
-  width: min(98vw, 850px) !important;
-
-  transform: translate(-50%, -50%) scale(1.12);
-}
-
-
 /* =========================
 5. START SCREEN
 ========================= */
