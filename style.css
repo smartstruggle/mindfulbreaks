@@ -484,17 +484,22 @@ position: relative;
 
 
 .start-panel {
-  position: relative;
-  z-index: 2;
-
-  transform: translate(-5%, 6%); /* vorher 0% → jetzt runter */
-  width: 92%;                   /* leicht kleiner */
+  transform: translate(-5%, 8%); /* etwas weiter runter */
+  width: 90%;
   margin: 0 auto;
+
+  display: grid;
+  grid-template-rows: auto auto auto;
+  align-content: start;
+
+  gap: 3.5%; /* war ~2% → mehr Luft insgesamt */
+}
 }
 
 .start-header {
   text-align: center;
   width: 100%;
+    margin-bottom: 2.5%;
 }
 
 .start-title {
@@ -518,8 +523,7 @@ position: relative;
 
 .time-form {
   width: 86%;
-  margin-top: 5%;
-
+ margin-top: 6%;  /* war 5% */
   display: flex;
   flex-direction: column;
   align-items: center;
