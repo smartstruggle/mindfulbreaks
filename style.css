@@ -1188,15 +1188,17 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
 ========================= */
 @media (min-width: 1600px) {
   .paper-sheet {
-    /* Auf großen Screens absolut deckeln */
-    width: clamp(520px, 36vw, 720px);
+    width: clamp(500px, 32vw, 640px);
   }
+
   .start-title {
     font-size: clamp(28px, 2.6vw, 46px);
   }
+
   .desk-prop--pen {
     width: clamp(38px, 2.8vw, 58px);
   }
+
   .sticky-note {
     width: clamp(340px, 38vw, 520px);
   }
