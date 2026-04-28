@@ -1369,39 +1369,6 @@ width: min(72vw, 320px);
   display: none;
 }  
 
-   /* TEMP HARD OVERRIDE — BOOK/PEN POSITION */
-#book-prop {
-  position: absolute !important;
-  width: 660px !important;
-  max-width: 70vw !important;
-  left: 50% !important;
-  top: 48% !important;
-  transform: translate(-50%, -50%) !important;
-  z-index: 1 !important;
-  pointer-events: none !important;
-}
 
-#pen-prop {
-  position: absolute !important;
-  width: 44px !important;
-  right: 26% !important;
-  top: 22% !important;
-  transform: rotate(18deg) !important;
-  z-index: 4 !important;
-  pointer-events: none !important;
-}
-
-   /* TEMP HARD OVERRIDE — START CONTENT BACK ON BOOK */
-.paper-sheet {
-  position: relative !important;
-  width: 660px !important;
-  max-width: 70vw !important;
-  aspect-ratio: 210 / 297 !important;
-  z-index: 2 !important;
-}
-
-.start-panel {
-  transform: translate(-5%, -4%) !important;
-}
    
 }
