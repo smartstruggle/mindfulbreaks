@@ -378,58 +378,59 @@ body.night .paper-sheet {
   z-index: 2;
 }
 /* =========================
-3. APP / SCREEN SYSTEM
+   3. APP / SCREEN SYSTEM
 ========================= */
-
 .app {
-position: relative;
-z-index: 1;
-min-height: 100vh;
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
 }
-
 .screen {
-display: none;
-min-height: 100vh;
-width: 100%;
-position: relative;
-overflow: hidden;
+  display: none;
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
 }
-
 .screen.is-active {
-display: grid;
+  display: grid;
 }
-
 .screen__inner {
-width: 100%;
-min-height: 100vh;
-padding: 28px 20px;
-display: grid;
-place-items: center;
-position: relative;
+  width: 100%;
+  min-height: 100vh;
+  padding: clamp(16px, 3vh, 40px) clamp(16px, 3vw, 48px);
+  display: grid;
+  place-items: center;
+  position: relative;
 }
-
-
 /* =========================
-4A. PAPER / BOOK LAYOUT BOX
+   4A. PAPER / BOOK LAYOUT
 ========================= */
-
+/*
+  Fluid sizing:
+  - Mobile:       ~90vw  (aber max 420px)
+  - Small laptop: ~60vw
+  - Desktop:      ~44vw  (aber max 620px)
+  - Large screen: capped bei 680px
+  clamp(min, preferred, max)
+*/
 .paper-sheet {
   position: relative;
- width: min(74vw, 640px); /* vorher 78vw / 680px */
+  width: clamp(300px, 46vw, 680px);
   aspect-ratio: 777 / 1023;
-
   background: transparent;
   box-shadow: none;
+  /* overflow: visible ist Standard — Stift darf rausragen */
   overflow: visible;
   z-index: 2;
+  /* Isoliert Stacking Context → verhindert SVG-Filter-Bleed */
+  isolation: isolate;
 }
-
 .paper-sheet--start,
 .paper-sheet--transition {
   display: block;
   position: relative;
 }
-
 .paper-bg {
   position: absolute;
   inset: 0;
@@ -438,189 +439,197 @@ position: relative;
   object-fit: contain;
   z-index: 0;
   pointer-events: none;
+  /* Verhindert subpixel-Gap unter dem SVG */
+  display: block;
 }
-
-
 /* =========================
-4B. DESK PROPS
+   4B. DESK PROPS
 ========================= */
-
 .screen__inner--desk,
 .screen--start .screen__inner,
 .screen--transition .screen__inner {
   position: relative;
 }
-
+/*
+  Der Pen liegt NICHT mehr im screen__inner-Koordinatensystem,
+  sondern wird via JS oder direkt als Kind von .paper-sheet behandelt.
+  Da er im HTML ein Geschwisterkind von .paper-sheet ist,
+  positionieren wir ihn relativ zum screen__inner —
+  aber mit Werten, die sich am paper-sheet orientieren.
+  Trick: screen__inner ist place-items:center → das paper-sheet
+  sitzt mittig. Wir nutzen transform auf dem pen, um ihn
+  relativ zum Notebook zu halten.
+*/
 .desk-props {
   position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 1;
 }
-
 .desk-prop {
   position: absolute;
   display: block;
   pointer-events: none;
 }
-
+/*
+  Pen: sitzt rechts vom Notebook.
+  Wir nutzen left: 50% als Ausgangspunkt (Mitte des screen__inner)
+  und schieben ihn dann per translate relativ zum Notebook-Rand.
+  Das paper-sheet hat width: clamp(300px, 46vw, 680px),
+  also halbe Breite = clamp(150px, 23vw, 340px).
+  Pen soll ca. 5% über den rechten Rand ragen.
+*/
 .desk-prop--pen {
-  width: min(5vw, 48px);
-  right: 26%;
-  top: 22%;
+  width: clamp(28px, 3.2vw, 52px);
+  /* Vertikale Mitte: leicht über Notebook-Mitte */
+  top: 50%;
+  /* Horizontale Position: Mitte + halbe Notebook-Breite + kleiner Offset */
+  left: 50%;
+  transform: translate(
+    calc(clamp(150px, 23vw, 340px) - clamp(20px, 2.5vw, 36px)),
+    calc(-50% - clamp(40px, 6vh, 90px))
+  ) rotate(18deg);
   z-index: 4;
-  transform: rotate(18deg);
 }
-
-
 /* =========================
-5. START SCREEN
+   5. START SCREEN
 ========================= */
-
 .paper-sheet--start {
   display: block;
   position: relative;
 }
-
-
+/*
+  .start-panel sitzt absolut auf dem Notebook.
+  Das Notebook (777×1023) hat einen inneren "Papier"-Bereich,
+  der ca. ab 8% von links/rechts und 9% von oben beginnt.
+  Wir definieren den Panel-Bereich als inset.
+*/
 .start-panel {
-  transform: translate(5%, 8%);
-   width: 78%;   /* vorher 90% → kleiner */
-  max-width: 450px; /* begrenzt Gesamtgröße */
-  margin: 0 auto;
-
-  display: grid;
-  grid-template-rows: auto auto auto;
-  align-content: start;
-
-  gap: 3.5%;
+  position: absolute;
+  /* Innerer Buchbereich — angepasst ans Book-SVG */
+  top: 9%;
+  left: 9%;
+  right: 9%;
+  bottom: 5%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  /* kein transform-Hack mehr */
+  transform: none;
+  width: auto;
+  max-width: none;
+  margin: 0;
+  /* Padding relativ zur Panel-Größe */
+  padding: clamp(8px, 4%, 32px) clamp(6px, 5%, 28px);
+  gap: 0;
+  overflow: hidden;
 }
-
-
 .start-header {
   text-align: center;
   width: 100%;
-    margin-bottom: 2.5%;
+  flex-shrink: 0;
+  margin-bottom: clamp(4px, 2.5%, 18px);
 }
-
 .start-title {
-  margin: 0 0 1%;
+  margin: 0 0 clamp(2px, 1%, 8px);
   font-family: "Caveat", cursive;
-  font-size: clamp(30px, 4.1vw, 48px);
+  /* Skaliert mit dem Notebook (das mit vw skaliert) */
+  font-size: clamp(20px, 3.2vw, 44px);
   font-weight: 500;
-  line-height: 1.03;
+  line-height: 1.06;
   color: #2f3440;
   text-align: center;
-  max-width: 92%;
 }
-
 .start-subtitle {
   margin: 0;
-  font-size: clamp(13px, 1.1vw, 16px);
+  font-size: clamp(11px, 0.95vw, 15px);
   line-height: 1.3;
   color: #7d8693;
   text-align: center;
 }
-
 .time-form {
-  width: 86%;
- margin-top: 6%;  /* war 5% */
+  width: 88%;
+  flex-shrink: 0;
+  margin-top: clamp(4px, 3%, 20px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(10px, 1.6vh, 16px);
+  gap: clamp(6px, 1.8%, 14px);
 }
-
 .time-row {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(10px, 1.6vh, 16px);
+  gap: clamp(6px, 1.8%, 14px);
 }
-
 .time-group {
   width: 100%;
-  padding: clamp(14px, 2.1vw, 22px);
-  border-radius: clamp(14px, 1.5vw, 18px);
+  padding: clamp(8px, 1.8%, 18px) clamp(10px, 2vw, 20px);
+  border-radius: clamp(10px, 1.4vw, 18px);
   text-align: left;
-
   background: rgba(255, 255, 255, 0.76);
   backdrop-filter: blur(4px);
-
   box-shadow:
     0 12px 24px rgba(0, 0, 0, 0.06),
     inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
-
 .time-group label {
   display: block;
-  margin: 0 0 clamp(10px, 1.3vh, 16px);
-  font-size: clamp(14px, 1.2vw, 17px);
+  margin: 0 0 clamp(5px, 1%, 12px);
+  font-size: clamp(11px, 1vw, 15px);
   font-weight: 500;
   color: #9aa0aa;
   text-align: center;
 }
-
 .time-inputs {
   width: 100%;
   margin: 0 auto;
-
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  gap: clamp(8px, 1vw, 14px);
+  gap: clamp(5px, 0.8vw, 12px);
 }
-
 .time-inputs select {
   width: 100%;
   min-width: 0;
-  height: clamp(58px, 8vh, 78px);
-  padding: 0 12px;
-
+  height: clamp(36px, 6.5%, 68px);
+  padding: 0 clamp(4px, 0.8vw, 12px);
   border: 1px solid rgba(80, 90, 110, 0.08);
-  border-radius: clamp(14px, 1.5vw, 18px);
+  border-radius: clamp(10px, 1.2vw, 16px);
   outline: none;
-
   background: rgba(255, 255, 255, 0.96);
   color: #2f3440;
-  font-size: clamp(22px, 2.4vw, 30px);
+  font-size: clamp(16px, 2vw, 28px);
   font-weight: 500;
   text-align: center;
-
   box-shadow:
     0 8px 16px rgba(0, 0, 0, 0.06),
     inset 0 1px 0 rgba(255, 255, 255, 0.82),
     inset 0 -2px 4px rgba(0, 0, 0, 0.03);
 }
-
 .colon {
-  font-size: clamp(28px, 3vw, 38px);
+  font-size: clamp(20px, 2.4vw, 34px);
   color: #383d46;
 }
-
 .button,
 #start-button {
-  margin-top: clamp(10px, 2.2vh, 22px);
-  padding: clamp(13px, 1.8vh, 17px) clamp(28px, 3vw, 42px);
+  margin-top: clamp(6px, 2%, 18px);
+  padding: clamp(9px, 1.4%, 15px) clamp(18px, 2.5vw, 38px);
   width: 72%;
-  max-width: 340px;
-
+  max-width: 320px;
   border: none;
   border-radius: 999px;
-
   background: linear-gradient(180deg, #454b59 0%, #313746 100%);
   color: #ffffff;
-  font-size: clamp(16px, 1.4vw, 19px);
+  font-size: clamp(13px, 1.1vw, 17px);
   font-weight: 500;
-
   box-shadow:
     0 12px 24px rgba(0, 0, 0, 0.18),
     inset 0 1px 0 rgba(255, 255, 255, 0.10);
-
   transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
-
 .button:hover,
 #start-button:hover {
   transform: translateY(-1px);
@@ -628,13 +637,13 @@ position: relative;
     0 14px 28px rgba(0, 0, 0, 0.20),
     inset 0 1px 0 rgba(255, 255, 255, 0.10);
 }
-
 .dedication {
-  margin: 1% 0 0;
-  font-size: clamp(9px, 0.8vw, 11.5px);
+  margin: clamp(2px, 1%, 8px) 0 0;
+  font-size: clamp(8px, 0.65vw, 11px);
   color: #aab1bc;
   opacity: 0.65;
   text-align: center;
+  flex-shrink: 0;
 }
 
 /* =========================
@@ -648,77 +657,60 @@ place-items: center;
 
 
 /* =========================
-7. STICKY NOTE SYSTEM (FINAL POLISH)
+   7. STICKY NOTE — RESPONSIVE
+   (nur Größen/Positionen, keine Logik-Änderung)
 ========================= */
-
 .sticky-note {
-position: relative;
-z-index: 20;
-
-width: min(76vw, 500px);
-aspect-ratio: 2635 / 2515;
-
-transform: rotate(-7deg);
-transform-origin: 50% 40%;
+  position: relative;
+  z-index: 20;
+  /* Fluid: auf Desktop max 480px, auf Mobile nicht zu groß */
+  width: clamp(260px, 52vw, 480px);
+  aspect-ratio: 2635 / 2515;
+  transform: rotate(-7deg);
+  transform-origin: 50% 40%;
+  /* Verhindert SVG-Filter-Bleed ins Layout */
+  isolation: isolate;
 }
-
 .sticky-note.is-hidden {
-display: none;
+  display: none;
 }
-
 .sticky-note__visual,
 .sticky-note__svg {
-position: absolute;
-inset: 0;
-width: 100%;
-height: 100%;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
-
 .sticky-note__svg {
-display: block;
+  display: block;
+  /* Overflow des SVG-Filters clippen, verhindert braunes Rechteck */
+  overflow: visible;
 }
-
-/* leichte Papiertextur */
-.sticky-note::after {
-content: "";
-position: absolute;
-inset: 10% 8% 8%;
-pointer-events: none;
-z-index: 1;
-
-opacity: 0.12;
-mix-blend-mode: multiply;
-
-background-image:
-radial-gradient(circle, rgba(70, 45, 10, 0.14) 0 0.7px, transparent 0.8px),
-linear-gradient(135deg, rgba(255,255,255,0.10), rgba(0,0,0,0.04));
-background-size: 14px 14px, 100% 100%;
-}
-
 .sticky-note__content {
-position: absolute;
-inset: 25% 15% 13%;
-z-index: 2;
-
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: flex-start;
-
-text-align: center;
-font-family: "Caveat", cursive;
-color: #3a2f1f;
+  position: absolute;
+  inset: 25% 15% 13%;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  font-family: "Caveat", cursive;
+  color: #3a2f1f;
 }
-
-.sticky-note__state {
-display: none;
-width: 100%;
+/* Break Screen: Sticky etwas kleiner */
+.screen--break .sticky-note {
+  width: clamp(220px, 40vw, 380px);
+  transform: rotate(-5deg);
 }
-
-.sticky-note__state.is-active {
-display: flex;
-flex-direction: column;
-align-items: center;
+/* Transition Screen: Sticky überlagert Notebook */
+.screen--transition .screen__inner {
+  display: grid;
+  place-items: center;
+}
+.screen--transition .paper-sheet,
+.screen--transition .sticky-note {
+  grid-area: 1 / 1;
 }
 
 /* =========================
@@ -1154,222 +1146,249 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
 
 
 /* =========================
-11. MOBILE
+   LARGE DESKTOP (≥ 1600px)
 ========================= */
-
+@media (min-width: 1600px) {
+  .paper-sheet {
+    /* Auf großen Screens absolut deckeln */
+    width: clamp(520px, 36vw, 720px);
+  }
+  .start-title {
+    font-size: clamp(28px, 2.6vw, 46px);
+  }
+  .desk-prop--pen {
+    width: clamp(38px, 2.8vw, 58px);
+  }
+  .sticky-note {
+    width: clamp(340px, 38vw, 520px);
+  }
+}
+/* =========================
+   SMALL LAPTOP (≤ 1280px)
+========================= */
+@media (max-width: 1280px) {
+  .paper-sheet {
+    width: clamp(300px, 52vw, 580px);
+  }
+  .start-title {
+    font-size: clamp(18px, 3.4vw, 36px);
+  }
+  .start-subtitle {
+    font-size: clamp(10px, 1vw, 14px);
+  }
+}
+/* =========================
+   TABLET (≤ 900px)
+========================= */
+@media (max-width: 900px) {
+  .screen__inner {
+    padding: clamp(12px, 2vh, 24px) clamp(12px, 3vw, 28px);
+  }
+  .paper-sheet {
+    width: clamp(300px, 70vw, 480px);
+  }
+  /* Pen auf Tablet: kleiner, engere Anbindung ans Notebook */
+  .desk-prop--pen {
+    width: clamp(24px, 2.8vw, 38px);
+    transform: translate(
+      calc(clamp(150px, 35vw, 240px) - clamp(16px, 2vw, 28px)),
+      calc(-50% - clamp(30px, 4vh, 60px))
+    ) rotate(18deg);
+  }
+  .sticky-note {
+    width: clamp(240px, 58vw, 400px);
+  }
+  .screen--break .sticky-note {
+    width: clamp(200px, 48vw, 320px);
+  }
+}
+/* =========================
+   MOBILE (≤ 768px)
+========================= */
 @media (max-width: 768px) {
-.screen {
-min-height: 100svh;
+  /* Layout */
+  .screen {
+    min-height: 100svh;
+  }
+  .screen__inner {
+    min-height: 100svh;
+    padding: clamp(12px, 3vw, 20px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  /* Notebook: fast fullwidth auf Mobile */
+  .paper-sheet {
+    width: clamp(280px, 88vw, 420px);
+    /* overflow:hidden clippt SVG-Filter-Bleed = kein braunes Rechteck */
+    overflow: hidden;
+  }
+  /* start-panel: auf Mobile relative statt absolute,
+     damit es sich ins normale flow-Layout einfügt
+     und nicht über den Notebook-Rand rutscht */
+  .start-panel {
+    position: absolute;
+    top: 8%;
+    left: 8%;
+    right: 8%;
+    bottom: 4%;
+    padding: clamp(6px, 3%, 16px) clamp(8px, 4%, 16px);
+    gap: 0;
+    overflow: hidden;
+  }
+  .start-title {
+    font-size: clamp(16px, 5.2vw, 26px);
+    line-height: 1.08;
+  }
+  .start-subtitle {
+    font-size: clamp(10px, 2.8vw, 13px);
+  }
+  .time-form {
+    width: 92%;
+    margin-top: clamp(4px, 2%, 12px);
+    gap: clamp(4px, 1.5%, 10px);
+  }
+  .time-row {
+    gap: clamp(4px, 1.5%, 10px);
+  }
+  .time-group {
+    padding: clamp(6px, 1.5%, 12px) clamp(8px, 2%, 14px);
+    border-radius: clamp(8px, 2vw, 14px);
+  }
+  .time-group label {
+    font-size: clamp(10px, 2.8vw, 13px);
+    margin-bottom: clamp(4px, 1%, 8px);
+  }
+  .time-inputs select {
+    height: clamp(30px, 8vw, 52px);
+    font-size: clamp(14px, 4.2vw, 22px);
+    border-radius: clamp(8px, 1.8vw, 14px);
+  }
+  .colon {
+    font-size: clamp(18px, 4.8vw, 26px);
+  }
+  .button,
+  #start-button {
+    margin-top: clamp(4px, 1.5%, 12px);
+    padding: clamp(8px, 1.8%, 12px) clamp(14px, 4vw, 24px);
+    width: 78%;
+    font-size: clamp(12px, 3.4vw, 15px);
+  }
+  .dedication {
+    display: none;
+  }
+  /* Pen: auf Mobile ausblenden — zu wenig Platz, wirkt unruhig */
+  .desk-prop--pen {
+    display: none;
+  }
+  /* Transition Screen */
+  .screen--transition .screen__inner {
+    display: grid;
+    place-items: start center;
+    padding-top: clamp(24px, 5vh, 48px);
+  }
+  .screen--transition .sticky-note {
+    margin-top: clamp(90px, 22vw, 140px);
+    width: clamp(220px, 72vw, 340px);
+  }
+  /* Sticky Note */
+  .sticky-note {
+    width: clamp(220px, 72vw, 340px);
+    /* Auf Mobile SVG-Filter containen */
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .sticky-note__content {
+    inset: 23% 12% 12%;
+  }
+  .sticky-note__title {
+    font-size: clamp(18px, 5.2vw, 26px);
+    line-height: 1.12;
+  }
+  .sticky-note__checklist {
+    margin: clamp(8px, 2%, 16px) 0 clamp(8px, 2%, 16px);
+    font-size: clamp(15px, 4.2vw, 22px);
+    line-height: 1.2;
+  }
+  .sticky-note__button {
+    padding: clamp(8px, 2%, 12px) clamp(16px, 4vw, 24px);
+    font-size: clamp(12px, 3vw, 15px);
+  }
+  .screen--break .sticky-note {
+    width: clamp(190px, 62vw, 300px);
+  }
+  /* Break Screen */
+  .screen--break .screen__inner {
+    padding: clamp(20px, 4vh, 40px) 0 clamp(16px, 3vh, 32px);
+    align-items: flex-start;
+    overflow-x: hidden;
+  }
+  .break-layout {
+    width: 100%;
+    min-height: auto;
+    gap: clamp(24px, 5vh, 42px);
+    overflow: hidden;
+  }
+  .flip-clock-wrap {
+    width: min(92vw, 390px);
+    max-width: 92vw;
+    padding: 8px;
+    border-radius: 28px;
+    margin: 0;
+  }
+  .flip-clock-panel {
+    padding: clamp(18px, 4vw, 28px) clamp(10px, 2.5vw, 18px) clamp(16px, 3.5vw, 24px);
+    border-radius: 22px;
+  }
+  .flip-label {
+    font-size: clamp(18px, 5vw, 26px);
+    margin-bottom: 14px;
+  }
+  .flip-display {
+    width: 100%;
+    gap: 4px;
+  }
+  .flip-card {
+    width: clamp(52px, 16vw, 72px);
+    height: clamp(78px, 22vw, 104px);
+    font-size: clamp(52px, 15vw, 74px);
+  }
+  .flip-middle-panel {
+    width: clamp(44px, 12vw, 60px);
+    min-height: clamp(90px, 24vw, 120px);
+    margin: 0 -4px;
+  }
+  .flip-middle-panel::before,
+  .flip-middle-panel::after {
+    width: clamp(44px, 12vw, 60px);
+  }
+  .flip-separator span {
+    width: 9px;
+    height: 9px;
+  }
+} /* end @media mobile */
+/* =========================
+   VERY SMALL MOBILE (≤ 390px)
+   z.B. iPhone SE
+========================= */
+@media (max-width: 390px) {
+  .paper-sheet {
+    width: 92vw;
+  }
+  .start-title {
+    font-size: clamp(14px, 4.8vw, 20px);
+  }
+  .time-inputs select {
+    height: clamp(28px, 9vw, 44px);
+    font-size: clamp(13px, 4.8vw, 20px);
+  }
+  .colon {
+    font-size: clamp(16px, 4.8vw, 22px);
+  }
+  .sticky-note {
+    width: 84vw;
+  }
 }
-
-.screen__inner {
-min-height: 100svh;
-padding: 18px 14px 24px;
-display: flex;
-align-items: flex-start;
-justify-content: center;
-}
-
-/* START + TRANSITION PAPER */
-/*.paper-sheet {
-width: min(88vw, 420px);
-aspect-ratio: auto;
-min-height: auto;
-border-radius: 8px;
-}
-
-.paper-sheet--start {
-margin-top: 34px;
-min-height: auto;
-}
-
-.paper-sheet--transition {
-margin-top: 70px;
-aspect-ratio: 210 / 297;
-}*/
-
-/* START CONTENT */
-.start-panel {
-height: auto;
-padding: 24px 26px 28px;
-justify-content: flex-start;
-gap: 14px;
-}
-
-.start-title {
-font-size: clamp(32px, 8.4vw, 42px);
-line-height: 1.02;
-max-width: 100%;
-margin: 0;
-}
-
-.start-subtitle {
-font-size: 16px;
-margin: 0 0 8px;
-}
-
-.time-form {
-width: 100%;
-max-width: 330px;
-gap: 14px;
-}
-
-.time-row {
-gap: 14px;
-}
-
-.time-group {
-width: 100%;
-padding: 18px 16px;
-border-radius: 18px;
-}
-
-.time-group label {
-font-size: 18px;
-margin-bottom: 14px;
-}
-
-.time-inputs {
-gap: 10px;
-}
-
-.time-inputs select {
-height: 68px;
-font-size: 32px;
-border-radius: 18px;
-}
-
-.colon {
-font-size: 36px;
-}
-
-#start-button,
-.button {
-width: 100%;
-max-width: 330px;
-padding: 17px 28px;
-font-size: 20px;
-}
-
-.dedication {
-display: none;
-}
-
-/* TRANSITION: PAPER + STICKY STACKED */
-.screen--transition .screen__inner {
-display: grid;
-place-items: start center;
-padding-top: 34px;
-}
-
-.screen--transition .paper-sheet,
-.screen--transition .sticky-note {
-grid-area: 1 / 1;
-}
-
-.screen--transition .sticky-note {
-margin-top: 118px;
-width: min(78vw, 360px);
-}
-
-/* STICKY TEXT */
-.sticky-note__content {
-inset: 23% 13% 14%;
-}
-
-.sticky-note__title {
-font-size: clamp(24px, 6.2vw, 32px);
-line-height: 1.1;
-}
-
-.sticky-note__checklist {
-margin: 16px 0 18px;
-font-size: clamp(20px, 5.4vw, 28px);
-line-height: 1.16;
-}
-
-.sticky-note__button {
-padding: 10px 22px;
-font-size: 14px;
-}
-
-/* BREAK SCREEN */
-.screen--break .screen__inner {
-padding: 32px 0 24px;
-align-items: flex-start;
-overflow-x: hidden;
-}
-
-.break-layout {
-width: 100%;
-min-height: auto;
-gap: 38px;
-overflow: hidden;
-}
-
-.flip-clock-wrap {
-width: min(92vw, 390px);
-max-width: 92vw;
-padding: 8px;
-border-radius: 28px;
-margin: 0;
-}
-
-.flip-clock-panel {
-padding: 28px 16px 24px;
-border-radius: 22px;
-}
-
-.flip-label {
-font-size: 26px;
-margin-bottom: 14px;
-}
-
-.flip-display {
-width: 100%;
-gap: 4px;
-}
-
-.flip-card {
-width: clamp(58px, 18vw, 76px);
-height: clamp(88px, 24vw, 110px);
-font-size: clamp(58px, 17vw, 78px);
-}
-
-.flip-middle-panel {
-width: 54px;
-min-height: 110px;
-margin: 0 -4px;
-}
-
-.flip-middle-panel::before,
-.flip-middle-panel::after {
-width: 54px;
-}
-
-.flip-separator span {
-width: 9px;
-height: 9px;
-}
-
-.screen--break .sticky-note {
-width: min(72vw, 320px);
-}
-
- /* MOBILE DESK PROPS */
-.desk-prop--book {
-  width: min(92vw, 520px);
-  left: 50%;
-  top: 54px;
-  transform: translateX(-50%) scale(1.08);
-  opacity: 0.75;
-  filter: brightness(1.18) saturate(0.75);
-}
-
-.desk-prop--pen {
-  display: none;
-}  
-
-
    
 }
