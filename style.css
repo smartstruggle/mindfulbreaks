@@ -1202,80 +1202,101 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
 
 
 
-/* Den bestehenden .flip-card Style ergänzen/überschreiben */
+/* ============================================================
+   FLIP CLOCK - CORE MECHANICS (CLEANED)
+   ============================================================ */
+
 .flip-card {
-  perspective: 500px; /* Erzeugt 3D-Tiefe */
-  background: none !important; /* Hintergrund kommt jetzt von den Panels */
-  border: none !important;
-  box-shadow: none !important;
+  position: relative;
+  width: 118px;
+  height: 156px;
+  perspective: 1000px; /* Erzeugt echte 3D-Tiefe */
+  font-family: Arial, sans-serif;
+  font-size: 104px;
+  font-weight: 700;
+  /* Wir entfernen hier Background/Border, da die Panels das übernehmen */
 }
 
-/* Gemeinsame Styles für alle Hälften */
-.flip-panel-top, .flip-panel-bottom, .flip-leaf-front, .flip-leaf-back {
+/* Die Trennlinie in der Mitte (Optik) */
+.flip-card::after {
+  content: "";
   position: absolute;
-  left: 0; width: 100%; height: 50%;
-  overflow: hidden;
-  background: linear-gradient(180deg, #43433f 0%, #282925 100%); /* Dein Original-Style */
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  transform: translateY(-50%);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.15) 0%,
+    rgba(0, 0, 0, 0.5) 100%
+  );
+  z-index: 10; /* Über allen anderen Layern */
+  pointer-events: none;
+}
+
+/* Gemeinsame Styles für alle vier Hälften-Layer */
+.flip-panel-top, 
+.flip-panel-bottom, 
+.flip-leaf-front, 
+.flip-leaf-back {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  overflow: hidden; /* Schneidet die Zahl ab */
+  background: linear-gradient(180deg, #43433f 0%, #343530 42%, #282925 100%);
   color: #f4efe5;
-  display: flex; justify-content: center;
+  display: flex;
+  justify-content: center;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
+  box-sizing: border-box;
+  border: 1px solid #171715;
 }
 
-.flip-panel-top, .flip-leaf-front {
-  top: 0;
-  align-items: flex-end;
-  border-radius: 8px 8px 0 0;
-  border-bottom: 1px solid rgba(0,0,0,0.5);
-}
-
-.flip-panel-bottom, .flip-leaf-back {
-  bottom: 0;
-  align-items: flex-start;
-  border-radius: 0 0 8px 8px;
-  line-height: 0; /* Schiebt Text in der unteren Hälfte nach oben */
-}
-
-/* Die bewegliche Klappe */
-.flip-leaf {
-  position: absolute;
-  top: 0; left: 0; width: 100%; height: 50%;
-  z-index: 4;
-  transform-origin: bottom;
-  transform-style: preserve-3d;
-}
-
-.flip-leaf-back {
-  transform: rotateX(-180deg);
-  height: 100%; /* Wichtig für die Drehung */
-}
-
-
-/* Das sorgt dafür, dass die Zahlen in der Mitte "geschnitten" werden */
+/* OBERE HÄLFTEN (Clipping & Ausrichtung) */
 .flip-panel-top, 
 .flip-leaf-front {
   top: 0;
-  height: 50%;
-  overflow: hidden; /* CRITICAL: Schneidet die untere Zahlenhälfte ab */
-  align-items: flex-end; /* Schiebt die Zahl an die Schnittkante */
-  display: flex;
-  justify-content: center;
+  align-items: flex-end; /* Zahl klebt unten an der Mitte */
+  border-radius: 8px 8px 0 0;
+  /* Korrektur: Wir brauchen hier eine feste Line-Height für den Text-Schnitt */
+  line-height: 156px; 
 }
 
+/* UNTERE HÄLFTEN (Clipping & Ausrichtung) */
 .flip-panel-bottom, 
 .flip-leaf-back {
   bottom: 0;
-  height: 50%;
-  overflow: hidden; /* CRITICAL: Schneidet die obere Zahlenhälfte ab */
-  align-items: flex-start; /* Schiebt die Zahl an die Schnittkante */
-  display: flex;
-  justify-content: center;
+  align-items: flex-start; /* Zahl klebt oben an der Mitte */
+  border-radius: 0 0 8px 8px;
+  /* Korrektur: Schiebt die Zahl genau in die obere Hälfte zurück */
+  line-height: 0; 
 }
 
-/* Damit die Zahlen an der Schnittkante zusammenpassen */
-.flip-card {
-  font-family: Arial, sans-serif;
-  line-height: 156px; /* Muss der Gesamthöhe der flip-card entsprechen */
+/* DIE BEWEGLICHE KLAPPE (The Leaf) */
+.flip-leaf {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  z-index: 5;
+  transform-origin: bottom;
+  transform-style: preserve-3d;
+  transition: transform 0.6s; /* Nur als Backup für GSAP */
+}
+
+/* Rückseite der Klappe (muss um 180 Grad gedreht sein) */
+.flip-leaf-back {
+  transform: rotateX(-180deg);
+  height: 100%; /* Füllt die Klappe komplett aus */
+}
+
+/* Hilfs-Styles für die Schatten-Optik während des Flips */
+.flip-card[data-current] {
+    /* Dein Schatten-Effekt von vorhin kann hier bleiben */
 }
 
 
