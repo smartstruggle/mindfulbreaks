@@ -1093,7 +1093,7 @@ async function startBreakPhase(playStartGong = true) {
   }
 
   renderRemainingTime();
-  breakInterval = setInterval(renderRemainingTime, 250);
+  breakInterval = setInterval(renderRemainingTime, 100);
 }
 
 function triggerBreakEnd() {
