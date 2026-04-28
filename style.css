@@ -1199,6 +1199,57 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
 }
 
 
+
+
+
+/* Den bestehenden .flip-card Style ergänzen/überschreiben */
+.flip-card {
+  perspective: 500px; /* Erzeugt 3D-Tiefe */
+  background: none !important; /* Hintergrund kommt jetzt von den Panels */
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Gemeinsame Styles für alle Hälften */
+.flip-panel-top, .flip-panel-bottom, .flip-leaf-front, .flip-leaf-back {
+  position: absolute;
+  left: 0; width: 100%; height: 50%;
+  overflow: hidden;
+  background: linear-gradient(180deg, #43433f 0%, #282925 100%); /* Dein Original-Style */
+  color: #f4efe5;
+  display: flex; justify-content: center;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.flip-panel-top, .flip-leaf-front {
+  top: 0;
+  align-items: flex-end;
+  border-radius: 8px 8px 0 0;
+  border-bottom: 1px solid rgba(0,0,0,0.5);
+}
+
+.flip-panel-bottom, .flip-leaf-back {
+  bottom: 0;
+  align-items: flex-start;
+  border-radius: 0 0 8px 8px;
+  line-height: 0; /* Schiebt Text in der unteren Hälfte nach oben */
+}
+
+/* Die bewegliche Klappe */
+.flip-leaf {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 50%;
+  z-index: 4;
+  transform-origin: bottom;
+  transform-style: preserve-3d;
+}
+
+.flip-leaf-back {
+  transform: rotateX(-180deg);
+  height: 100%; /* Wichtig für die Drehung */
+}
+
 /* =========================
    LARGE DESKTOP (≥ 1600px)
 ========================= */
