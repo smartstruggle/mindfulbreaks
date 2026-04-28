@@ -748,7 +748,7 @@ function changeStickyStateWithFade(state) {
    FLIP CLOCK
 ========================= */
 
-const FLIP_DURATION = 0.52;
+const FLIP_DURATION = 0.48;
 const cardElements = {
   minTens: document.getElementById("flip-min-tens"),
   minOnes: document.getElementById("flip-min-ones"),
