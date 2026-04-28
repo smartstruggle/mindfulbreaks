@@ -272,8 +272,6 @@ const TIMING = {
 INIT
 ========================= */
 
-init();
-
 function init() {
   fillTimeOptions();
   updateFlipClock(0);
@@ -750,6 +748,30 @@ function changeStickyStateWithFade(state) {
    FLIP CLOCK (MASTER)
    ========================= */
 
+/* ============================================================
+   KOMPATIBILITÄTS-BRÜCKE (Altes System -> Neues Flip-System)
+   ============================================================ */
+function updateFlipClock(totalSeconds) {
+    // Falls der Timer auf 0 gesetzt wird (wie beim Start), 
+    // setzen wir die Ziffern einfach stillstehend auf "0"
+    if (totalSeconds === 0) {
+        const mStr = "00";
+        const sStr = "00";
+        
+        // Direkte Zuweisung ohne Animation für den Initialzustand
+        Object.values(cardElements).forEach(card => {
+            if(!card) return;
+            const panels = card.querySelectorAll('.flip-panel-top, .flip-panel-bottom, .flip-leaf-front, .flip-leaf-back');
+            panels.forEach(p => p.textContent = "0");
+            card.setAttribute("data-current", "0");
+        });
+        return;
+    }
+
+    // Falls die Funktion mit Sekunden aufgerufen wird, starte den echten Flip-Timer
+    startFlipTimer(totalSeconds);
+}
+
 // 1. Variablen-Setup
 const DURATION = 0.6; 
 let flipTimerId = null; // Um den Loop stoppen zu können
@@ -926,7 +948,7 @@ function showNotification(title, body) {
   }
 }
 
-
+init();
 /* =========================
 TIMER HELPERS
 ========================= */
