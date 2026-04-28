@@ -432,7 +432,7 @@ position: relative;
 4B. DESK PROPS
 Transition Decoration
 ========================= */
-.paper-sheet {
+/*.paper-sheet {
   position: relative;
   width: min(82vw, calc((100vh - 56px) * 210 / 297), 720px);
   aspect-ratio: 210 / 297;
@@ -440,7 +440,7 @@ Transition Decoration
   box-shadow: none;
   overflow: visible;
   z-index: 2;
-}
+}*/
 
 .paper-bg {
   position: absolute;
@@ -464,7 +464,7 @@ Transition Decoration
 .desk-prop--pen {
   position: absolute;
 
-  right: 25%;   /* vorher 14 → näher ran */
+  right: 30%;   /* vorher 14 → näher ran */
   top: 22%;     /* leicht runter */
 
   width: min(5vw, 48px);
@@ -478,7 +478,7 @@ Transition Decoration
   left: 50%;
   top: 50%;
 
-  width: min(95vw, 860px); /* statt 790 → sichtbarer Effekt */
+  width: min(98vw, 850px) !important;
 
   transform: translate(-50%, -50%) scale(1.12);
 }
