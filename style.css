@@ -540,7 +540,8 @@ body.night .paper-sheet {
   text-align: center;
   width: 100%;
   flex-shrink: 0;
-  margin-bottom: clamp(24px, 6%, 52px);
+
+  margin-bottom: clamp(48px, 10%, 90px);
 }
 
 .start-title {
