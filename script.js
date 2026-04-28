@@ -748,8 +748,7 @@ function changeStickyStateWithFade(state) {
    FLIP CLOCK
 ========================= */
 
-const FLIP_DURATION = 0.6;
-
+const FLIP_DURATION = 0.52;
 const cardElements = {
   minTens: document.getElementById("flip-min-tens"),
   minOnes: document.getElementById("flip-min-ones"),
@@ -828,18 +827,19 @@ function animateDigit(card, newValue) {
 
   card.classList.add("is-flipping");
 
-  gsap.to(parts.leaf, {
-    rotationX: -180,
-    duration: FLIP_DURATION,
-    ease: "power2.inOut",
-    onComplete: () => {
-      parts.bottom.textContent = newValue;
-      parts.leafFront.textContent = newValue;
+ gsap.to(parts.leaf, {
+  rotationX: -180,
+  duration: 0.52,
+  ease: "power1.in",
+  onComplete: () => {
+    parts.bottom.textContent = newValue;
+    parts.leafFront.textContent = newValue;
+    parts.leafBack.textContent = newValue;
 
-      gsap.set(parts.leaf, { rotationX: 0 });
-      card.classList.remove("is-flipping");
-    }
-  });
+    gsap.set(parts.leaf, { rotationX: 0 });
+    card.classList.remove("is-flipping");
+  }
+});
 }
 
 /* Hauptfunktion: wird von deiner App-Logik aufgerufen */
