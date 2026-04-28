@@ -471,11 +471,12 @@ Transition Decoration
 
 .desk-prop--pen {
   position: absolute;
-  right: 18%;
-  top: 22%;
-  width: min(5.4vw, 50px);
-  z-index: 4;
-  pointer-events: none;
+
+  right: 10%;   /* vorher 14 → näher ran */
+  top: 22%;     /* leicht runter */
+
+  width: min(5vw, 48px);
+
   transform: rotate(18deg);
 }
 
@@ -484,10 +485,10 @@ Transition Decoration
   position: absolute;
   left: 50%;
   top: 50%;
-  width: min(90vw, 790px);
-  z-index: 1;
-  pointer-events: none;
-  transform: translate(-50%, -50%) scale(1.1);
+
+  width: min(95vw, 860px); /* statt 790 → sichtbarer Effekt */
+
+  transform: translate(-50%, -50%) scale(1.12);
 }
 
 
@@ -1383,4 +1384,19 @@ height: 9px;
 .screen--break .sticky-note {
 width: min(72vw, 320px);
 }
+
+ /* MOBILE DESK PROPS */
+.desk-prop--book {
+  width: min(92vw, 520px);
+  left: 50%;
+  top: 54px;
+  transform: translateX(-50%) scale(1.08);
+  opacity: 0.75;
+  filter: brightness(1.18) saturate(0.75);
+}
+
+.desk-prop--pen {
+  display: none;
+}  
+   
 }
