@@ -1216,7 +1216,7 @@ inset 0 -4px 8px rgba(255, 255, 255, 0.04);
   }
 
   .sticky-note {
-    width: clamp(340px, 38vw, 520px);
+    width: clamp(234px, 47vw, 432px);
   }
 }
 /* =========================
