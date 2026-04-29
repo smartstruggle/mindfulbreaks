@@ -863,6 +863,8 @@ font-size: clamp(24px, 3vw, 34px);
 font-weight: 600;
 line-height: 1.18;
 letter-spacing: 0.01em;
+font-family: "Caveat", cursive;
+color: #3a2f1f;  
 }
 
 /* =========================
@@ -976,6 +978,8 @@ padding-top: 16px;
 .sticky-note__state--waiting .sticky-note__title {
 max-width: 86%;
 font-size: clamp(24px, 3vw, 34px);
+ font-family: "Caveat", cursive;
+color: #3a2f1f;  
 }
 
 /* =========================
@@ -988,6 +992,8 @@ padding-top: 6px;
 
 .sticky-note__state--break .sticky-note__title {
 font-size: clamp(28px, 3.6vw, 40px);
+font-family: "Caveat", cursive;
+color: #3a2f1f;   
 }
 
 /* =========================
