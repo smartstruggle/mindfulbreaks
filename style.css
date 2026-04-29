@@ -557,7 +557,7 @@ body.night .paper-sheet {
 
 .start-subtitle {
   width: 88%;
-  margin: clamp(40px, 5%, 5px) auto 0;
+  margin: clamp(60px, 5%, 5px) auto 0;
   font-size: clamp(12px, 1vw, 16px);
   line-height: 1.35;
  color: #1f3552;
