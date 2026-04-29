@@ -557,7 +557,7 @@ body.night .paper-sheet {
 
 .start-subtitle {
   width: 88%;
-  margin: clamp(40px, 5%, 20px) auto 0;
+  margin: clamp(40px, 5%, 5px) auto 0;
   font-size: clamp(12px, 1vw, 16px);
   line-height: 1.35;
  color: #1f3552;
@@ -604,7 +604,7 @@ letter-spacing: 0.02em;
 
 .time-group label {
   display: block;
-  margin: 0 0 clamp(9px, 1.8%, 16px);
+  margin: 0 0 clamp(5px, 1.8%, 16px);
   font-size: clamp(14px, 1.15vw, 18px);
   font-weight: 600;
   color: rgba(42, 63, 95, 0.72);
